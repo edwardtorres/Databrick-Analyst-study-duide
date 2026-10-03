@@ -5,6 +5,8 @@
 **Exam guide version targeted:** Oct 30, 2025
 **Overall:** the scaffold and Chapter 4 are complete and tested. 8 of 9 chapters and 3 of 6 labs are still to build. One real bug was found: Boss Battle XP can be farmed (see F1). The commit has **not been pushed** to GitHub because access was denied.
 
+> **Status update (later the same day):** F1, F2, F5 and F11 are fixed. Chapter 9 (Securing Data) and the Namespace Builder lab are built. With 63 questions, the Boss Battle now runs as the full 45-question, 90-minute exam. The tables below show the original audit, with fixed rows marked.
+
 ---
 
 ## 1. Requirements traceability
@@ -29,7 +31,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 6 | Dashboards & Visualizations | ⬜ topic list only |
 | 7 | AI/BI Genie Spaces | ⬜ topic list only |
 | 8 | Data Modeling | ⬜ topic list only |
-| 9 | Securing Data | ⬜ topic list only |
+| 9 | Securing Data | ✅ complete (added after this audit) |
 
 Every chapter page has lesson cards, subsections you can check off, and an end-of-chapter test. All of this works for Chapter 4. The other chapters will use the same template.
 
@@ -40,7 +42,7 @@ Every chapter page has lesson cards, subsections you can check off, and an end-o
 | Fix-the-broken-query challenges (missing GROUP BY, wrong join, HAVING vs WHERE) | ✅ | 5 fix challenges; see F4 for the GROUP BY caveat |
 | Join Visualizer | ✅ | 7 join types (incl. SEMI/ANTI/CROSS), predict-the-row-count game, plus a Set Ops lab |
 | Scenario Picker | 🟡 | Built as a question style (`scenario: true`, 15 questions in Ch 4), not a separate mode. Chart-type and ingestion scenarios belong to Chapters 3 and 6. |
-| Namespace Builder | ⬜ | Planned for Chapter 9 (placeholder in Labs) |
+| Namespace Builder | ✅ | Added with Chapter 9: drag or tap-to-place, GRANT builder, can-user-X-run-Y checks |
 | Medallion Sorter | ⬜ | Planned for Chapter 8 (placeholder) |
 | Genie Space Builder | ⬜ | Planned for Chapter 7 (placeholder) |
 | Time Travel Timeline | ✅ | VERSION/TIMESTAMP AS OF, `@v`, RESTORE, DML, VACUUM with retention and the safety check, a 7-day fast-forward, 4 missions |
@@ -121,17 +123,17 @@ These are already flagged in the app. They are the facts most likely to have cha
 
 | ID | Severity | Finding | Suggested fix |
 |---|---|---|---|
-| F1 | **Medium (bug)** | **Boss Battle XP can be farmed.** Starting a Boss and immediately choosing "Submit early" grants the completion bonus (+25 for the mini-boss, +100 for the full one) every time, even with zero answers. `src/pages/Boss.jsx` → `submit()`. | Only pay the bonus if most questions were answered, or only on the first completion per day. |
-| F2 | Low | **Importing a malformed progress file can break the app.** Import checks only that `xp` is a number, then merges at the top level. A file with e.g. `boss: {}` would crash the Boss page. `src/pages/Settings.jsx`, `store.jsx` | Validate the shape of nested fields, or deep-merge with `emptyProgress()`. |
+| F1 ✅ fixed | **Medium (bug)** | **Boss Battle XP can be farmed.** Starting a Boss and immediately choosing "Submit early" grants the completion bonus (+25 for the mini-boss, +100 for the full one) every time, even with zero answers. `src/pages/Boss.jsx` → `submit()`. | Only pay the bonus if most questions were answered, or only on the first completion per day. |
+| F2 ✅ fixed | Low | **Importing a malformed progress file can break the app.** Import checks only that `xp` is a number, then merges at the top level. A file with e.g. `boss: {}` would crash the Boss page. `src/pages/Settings.jsx`, `store.jsx` | Validate the shape of nested fields, or deep-merge with `emptyProgress()`. |
 | F3 | Low | **The sandbox engine is SQLite, not Databricks SQL.** Known differences: `7/2` returns 3 (Databricks returns 3.5); `LIKE` ignores case (Databricks is case-sensitive); there is no `QUALIFY`, `LEFT SEMI/ANTI JOIN` or time-travel syntax. All of these are listed in the in-app "Sandbox vs real Databricks SQL" note. | Possible future switch to DuckDB-WASM (closer dialect, about 10× larger download). |
 | F4 | Low | **The missing-GROUP-BY challenge can't show the real error.** SQLite quietly accepts the broken query instead of failing. The app detects "same output as the broken query" and shows the Databricks error message, but the learner never sees a real error. | Acceptable as is. A lint check for this pattern would make it stricter. |
-| F5 | Low | **The DDL syntax check is strict.** `c4-ddl-ctas` requires `AS` directly after the table name, so a CTAS that lists columns first is rejected. | Loosen the regex. |
+| F5 ✅ fixed | Low | **The DDL syntax check is strict.** `c4-ddl-ctas` requires `AS` directly after the table name, so a CTAS that lists columns first is rejected. | Loosen the regex. |
 | F6 | Low | **The Boss timer only acts while the Boss page is open.** If time runs out while you are on another page, the exam auto-submits when you return to Boss. The score is still correct. | Check for expiry in the app shell. |
 | F7 | Info | Answer options reshuffle if you reload mid-Boss. Answers are stored by original index, so scoring is unaffected. | Store the option order in the saved Boss state. |
 | F8 | Info | XP toasts merge within a 2.2-second window, so one toast can sum gains from two screens. Cosmetic only. | None needed |
 | F9 | Info | The progress reducer calls `Date.now()` and `dayKey()`, so it isn't strictly pure. It has no visible effect, even in development mode where React runs reducers twice. | Pass timestamps in through the action payload. |
 | F10 | Info | The Time Travel simulator rewrites every row into a new file on any UPDATE/DELETE/INSERT. Real Delta rewrites only the affected files. The teaching point is unaffected. | None needed |
-| F11 | Process | **Push to GitHub failed with a 403** because the Claude GitHub App has no access to the repo. The commit exists only locally, plus a backup git bundle in the session scratchpad. | Reconnect GitHub or install the app at https://claude.ai/connect-github, then push. |
+| F11 ✅ fixed | Process | **Push to GitHub failed with a 403** because the Claude GitHub App has no access to the repo. The commit exists only locally, plus a backup git bundle in the session scratchpad. | Reconnect GitHub or install the app at https://claude.ai/connect-github, then push. |
 
 ---
 
