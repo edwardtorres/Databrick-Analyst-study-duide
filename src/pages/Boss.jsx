@@ -4,7 +4,8 @@ import { CHAPTERS, allQuestions, questionById, chapterById } from '../data/chapt
 import { useProgress } from '../lib/store.jsx'
 import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
-import { EXAM } from '../data/examInfo.js'
+import { EXAM, SECTION_WEIGHTS } from '../data/examInfo.js'
+import { bossAllocation, rescaledWeights } from '../lib/bossWeights.js'
 import { bossCompletionBonus, BONUS_MIN_ANSWERED, payableCorrect } from '../lib/bossRewards.js'
 import { dayKey } from '../lib/dates.js'
 import { PageHeader } from '../components/ui.jsx'
@@ -13,18 +14,20 @@ import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
 const TARGET = 0.8
 const MINUTES_PER_Q = EXAM.minutes / EXAM.scoredQuestions // 2 min
 
-// Spread questions evenly across chapters that have content.
-function buildBoss() {
+// Draw questions per chapter in proportion to the exam-section weights,
+// rescaled to the chapters that are built.
+function poolByChapter() {
   const pool = allQuestions()
-  const byCh = CHAPTERS.filter((c) => c.content).map((c) => shuffled(pool.filter((q) => q.chapter === c.id)))
-  const n = Math.min(EXAM.scoredQuestions, pool.length)
-  const out = []
-  let k = 0
-  while (out.length < n) {
-    const b = byCh[k % byCh.length]
-    if (b.length) out.push(b.pop())
-    k++
-  }
+  return Object.fromEntries(CHAPTERS.filter((c) => c.content).map((c) => [c.id, pool.filter((q) => q.chapter === c.id)]))
+}
+
+function buildBoss() {
+  const byCh = poolByChapter()
+  const counts = bossAllocation(
+    Object.fromEntries(Object.entries(byCh).map(([id, qs]) => [id, qs.length])),
+    EXAM.scoredQuestions,
+  )
+  const out = Object.entries(byCh).flatMap(([id, qs]) => shuffled(qs).slice(0, counts[id] || 0))
   return shuffled(out).map((q) => q.id)
 }
 
@@ -91,6 +94,15 @@ export default function Boss() {
           }}
           passPct={TARGET}
         >
+          <div className="mt-3 rounded-xl bg-ink/50 p-2.5 text-sm">
+            <div className="font-bold">
+              Readiness estimate: {builtChapters} of 9 chapters built
+            </div>
+            <div className="mt-0.5 text-xs text-slate-400">
+              This score covers {builtChapters === 9 ? 'every exam section' : `only the built sections (${CHAPTERS.filter((c) => c.content).map((c) => c.id).join(', ')})`}, weighted by
+              the exam guide. {builtChapters < 9 && 'Treat it as a partial readiness check.'}
+            </div>
+          </div>
           <p className="mt-2 text-xs text-slate-400">Time used: {result.res.minutesUsed} min</p>
           <p className="mt-1 text-xs text-slate-400">
             {result.bonus
@@ -146,6 +158,7 @@ export default function Boss() {
             </span>
           </div>
         )}
+        <WeightTable />
         <button onClick={start} className="btn relative mt-4 w-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-3.5 text-base text-white">
           ⚔️ Start {full ? 'Boss Battle' : 'Mini-Boss'}
         </button>
@@ -167,6 +180,35 @@ export default function Boss() {
         </div>
       )}
       <p className="mt-3 text-center text-[11px] text-slate-500">Aim for {TARGET * 100}%+ on mock exams before booking. Check the official exam page for the real passing score.</p>
+    </div>
+  )
+}
+
+// Shows how the next Boss will be split across built chapters.
+function WeightTable() {
+  const byCh = poolByChapter()
+  const ids = Object.keys(byCh).map(Number)
+  const w = rescaledWeights(ids)
+  const counts = bossAllocation(Object.fromEntries(ids.map((id) => [id, byCh[id].length])), EXAM.scoredQuestions)
+  return (
+    <div className="relative mt-3 rounded-xl bg-ink/50 p-2.5 text-left text-xs">
+      <div className="mb-1 font-bold text-slate-300">Question mix (weighted by exam section)</div>
+      {ids.map((id) => {
+        const ch = chapterById(id)
+        return (
+          <div key={id} className="flex justify-between gap-2 text-slate-400">
+            <span className="truncate">
+              {ch.emoji} {id}. {ch.short} <span className="text-slate-600">({SECTION_WEIGHTS[id]}% of exam)</span>
+            </span>
+            <span className="shrink-0 font-mono text-slate-200">
+              {counts[id] || 0} Q · {Math.round(w[id] * 100)}%
+            </span>
+          </div>
+        )
+      })}
+      <div className="mt-1 text-[10px] text-slate-500">
+        Weights from the exam guide where known (verify in the current guide), rescaled to the {ids.length} built chapter(s). Unbuilt sections are not tested yet.
+      </div>
     </div>
   )
 }
