@@ -38,6 +38,7 @@ export const XP = {
   lab: 15,
   bossPerCorrect: 5,
   bossComplete: 100,
+  bossMiniComplete: 25,
 }
 
 export const DAILY_GOAL = 60

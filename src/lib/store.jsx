@@ -16,7 +16,7 @@ export const emptyProgress = () => ({
   challenges: {}, // challengeId -> { solved, attempts, solvedAt }
   labs: {}, // labId -> true (first-run XP claimed)
   tests: {}, // chapterId -> { best, last, attempts, passed }
-  boss: { history: [], active: null },
+  boss: { history: [], active: null, lastBonusDay: null },
   examDate: null,
 })
 
@@ -92,7 +92,14 @@ function reducer(state, action) {
       return { ...state, boss: { ...state.boss, active: action.active } }
     case 'bossDone':
       return withXp(
-        { ...state, boss: { active: null, history: [...state.boss.history, action.result].slice(-20) } },
+        {
+          ...state,
+          boss: {
+            active: null,
+            history: [...state.boss.history, action.result].slice(-20),
+            lastBonusDay: action.bonusDay || state.boss.lastBonusDay || null,
+          },
+        },
         action.xp,
       )
     case 'examDate':
@@ -155,7 +162,7 @@ export function ProgressProvider({ children }) {
       labDone: (id, xp) => dispatch({ type: 'lab', id, xp }),
       testDone: (chapter, score, passed, xp) => dispatch({ type: 'test', chapter, score, passed, xp }),
       setBossActive: (active) => dispatch({ type: 'bossActive', active }),
-      bossDone: (result, xp) => dispatch({ type: 'bossDone', result, xp }),
+      bossDone: (result, xp, bonusDay) => dispatch({ type: 'bossDone', result, xp, bonusDay }),
       setExamDate: (date) => dispatch({ type: 'examDate', date }),
       replaceAll: (s) => dispatch({ type: 'replace', state: s }),
       toast,

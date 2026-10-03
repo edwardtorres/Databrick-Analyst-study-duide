@@ -5,6 +5,8 @@ import { useProgress } from '../lib/store.jsx'
 import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
 import { EXAM } from '../data/examInfo.js'
+import { bossCompletionBonus, BONUS_MIN_ANSWERED } from '../lib/bossRewards.js'
+import { dayKey } from '../lib/dates.js'
 import { PageHeader } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
 
@@ -65,8 +67,11 @@ export default function Boss() {
       minutesUsed: Math.round((Math.min(Date.now(), active.endsAt) - active.startedAt) / 60000),
       byChapter,
     }
-    setResult({ qs, answers, res })
-    actions.bossDone(res, correct * XP.bossPerCorrect + (full ? XP.bossComplete : 25))
+    const answered = qs.filter((q) => answers[q.id] !== undefined).length
+    const today = dayKey()
+    const { bonus, reason } = bossCompletionBonus({ answered, total: qs.length, full, lastBonusDay: state.boss.lastBonusDay, today })
+    setResult({ qs, answers, res, bonus, bonusReason: reason })
+    actions.bossDone(res, correct * XP.bossPerCorrect + bonus, bonus ? today : null)
     window.scrollTo(0, 0)
   }
 
@@ -85,6 +90,13 @@ export default function Boss() {
           passPct={TARGET}
         >
           <p className="mt-2 text-xs text-slate-400">Time used: {result.res.minutesUsed} min</p>
+          <p className="mt-1 text-xs text-slate-400">
+            {result.bonus
+              ? `Completion bonus: +${result.bonus} XP`
+              : result.bonusReason === 'daily'
+                ? 'Completion bonus already earned today. Come back tomorrow.'
+                : `No completion bonus: answer at least ${BONUS_MIN_ANSWERED * 100}% of questions to earn it.`}
+          </p>
           <button onClick={() => setResult(null)} className="btn-primary mt-4 w-full">
             Back to Boss lobby
           </button>
