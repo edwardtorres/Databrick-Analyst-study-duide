@@ -1,11 +1,24 @@
-# Lakehouse Quest: Build Audit
+# Lakehouse Quest: Build Audit (v2)
 
 **Audit date:** 2026-10-03
-**Scope:** commit `8487562`, branch `claude/databricks-exam-study-game-ck55dn`
+**Scope:** branch `claude/databricks-exam-study-game-ck55dn` at `0e31b83` (confirmed on GitHub)
 **Exam guide version targeted:** Oct 30, 2025
-**Overall:** the scaffold and Chapter 4 are complete and tested. 8 of 9 chapters and 3 of 6 labs are still to build. One real bug was found: Boss Battle XP can be farmed (see F1). The commit has **not been pushed** to GitHub because access was denied.
+**Overall:** 2 of 9 chapters are complete (4 and 9), and 4 of 6 labs are built. The Boss Battle is now a full 45-question / 90-minute exam. Everything from the first audit except the Chapter 1–3 and 5–8 content is fixed or done. There are 6 new low-severity findings and no open bugs above Low.
 
-> **Status update (later the same day):** F1, F2, F5 and F11 are fixed. Chapter 9 (Securing Data) and the Namespace Builder lab are built. With 63 questions, the Boss Battle now runs as the full 45-question, 90-minute exam. The tables below show the original audit, with fixed rows marked.
+---
+
+## 0. Changes since audit v1
+
+| Commit | Change |
+|---|---|
+| `dde8353` | **F1 fixed:** the Boss completion bonus requires ≥ 80% of questions answered and is paid at most once per calendar day |
+| `a46b3b6` | **F2 fixed:** imported and stored progress is deep-merged with `emptyProgress()` and checked field by field. Bad files are rejected with a friendly message. |
+| `072ff40` | **F5 fixed:** `CREATE TABLE t (cols) AS SELECT` is accepted. The sandbox rewrites it so SQLite can run it. |
+| `15572ec` | **Chapter 9** plus the **Namespace Builder** lab |
+| `0e31b83` | Audit v1 status update |
+| *(push)* | **F11 fixed:** GitHub access restored; all commits are on GitHub |
+
+**Corrections to my earlier summary:** Chapter 9 has **11** lesson cards, not 12, and **15** "verify" flags in its content, not 18. The Namespace Builder adds one more in-lab verify note, about INSERT/MODIFY.
 
 ---
 
@@ -16,124 +29,143 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 ### Exam facts and home screen
 | Requirement | Status | Where |
 |---|---|---|
-| 45 scored MCQ, 90 min, online or test-center proctored | ✅ | `src/data/examInfo.js`, `src/pages/Home.jsx` |
-| Guide version Oct 30, 2025 is shown | ✅ | Home → "The exam" card |
-| "Re-check the guide 2 weeks before your exam" note | ✅ | Home. If you set an exam date, it calculates the exact re-check date and turns red inside the 2-week window. |
+| 45 scored MCQ, 90 min, online or test-center proctored | ✅ | `src/data/examInfo.js`, Home |
+| Guide version Oct 30, 2025 is shown | ✅ | Home → "The exam" |
+| Re-check the guide 2 weeks before the exam | ✅ | Home. Calculates the re-check date from your exam date and turns red inside the 2-week window. |
 
-### Chapters (one per exam section)
+### Chapters
 | # | Chapter | Status |
 |---|---|---|
-| 1 | Data Intelligence Platform | ⬜ topic list only ("coming soon") |
+| 1 | Data Intelligence Platform | ⬜ topic list only |
 | 2 | Managing Data | ⬜ topic list only |
 | 3 | Importing Data | ⬜ topic list only |
-| 4 | Executing Queries with Databricks SQL & SQL Warehouses | ✅ complete (see §2) |
+| 4 | Executing Queries with Databricks SQL & SQL Warehouses | ✅ complete |
 | 5 | Analyzing Queries | ⬜ topic list only |
 | 6 | Dashboards & Visualizations | ⬜ topic list only |
 | 7 | AI/BI Genie Spaces | ⬜ topic list only |
 | 8 | Data Modeling | ⬜ topic list only |
-| 9 | Securing Data | ✅ complete (added after this audit) |
-
-Every chapter page has lesson cards, subsections you can check off, and an end-of-chapter test. All of this works for Chapter 4. The other chapters will use the same template.
+| 9 | Securing Data | ✅ complete |
 
 ### Interactive elements
 | Element | Status | Notes |
 |---|---|---|
-| SQL Sandbox (in-browser engine, sample dataset with dirty rows, graded challenges) | ✅ | sql.js (SQLite 3.49), 4 tables, 19 challenges graded by comparing result sets |
-| Fix-the-broken-query challenges (missing GROUP BY, wrong join, HAVING vs WHERE) | ✅ | 5 fix challenges; see F4 for the GROUP BY caveat |
-| Join Visualizer | ✅ | 7 join types (incl. SEMI/ANTI/CROSS), predict-the-row-count game, plus a Set Ops lab |
-| Scenario Picker | 🟡 | Built as a question style (`scenario: true`, 15 questions in Ch 4), not a separate mode. Chart-type and ingestion scenarios belong to Chapters 3 and 6. |
-| Namespace Builder | ✅ | Added with Chapter 9: drag or tap-to-place, GRANT builder, can-user-X-run-Y checks |
-| Medallion Sorter | ⬜ | Planned for Chapter 8 (placeholder) |
-| Genie Space Builder | ⬜ | Planned for Chapter 7 (placeholder) |
-| Time Travel Timeline | ✅ | VERSION/TIMESTAMP AS OF, `@v`, RESTORE, DML, VACUUM with retention and the safety check, a 7-day fast-forward, 4 missions |
+| SQL Sandbox + graded challenges | ✅ | sql.js (SQLite 3.49) with Databricks-style shims; 19 challenges (Ch 4) |
+| Fix-the-broken-query challenges | ✅ | 5 (missing GROUP BY, HAVING vs WHERE, wrong join type, WHERE on an outer join, `= NULL`) |
+| Join Visualizer | ✅ | 7 join types, predict the row count; plus a Set Ops lab |
+| Time Travel Timeline | ✅ | VERSION/TIMESTAMP AS OF, `@v`, RESTORE, DML, VACUUM with the retention safety check |
+| Namespace Builder | ✅ | Drag or tap-to-place catalog → schema → table/volume; GRANT builder; "can user X run Y?" checks with the missing privilege and the fixing GRANT; least-privilege mission |
+| Scenario Picker | 🟡 | A question style (24 scenario questions across Ch 4 and 9). Chart-type and ingestion scenario sets come with Ch 6 and 3. |
+| Medallion Sorter | ⬜ | Chapter 8 |
+| Genie Space Builder | ⬜ | Chapter 7 |
 
 ### Game mechanics
 | Requirement | Status | Notes |
 |---|---|---|
-| XP, levels, daily streak | ✅ | Plus a daily XP goal (60) and level titles |
-| Per-chapter mastery meter | ✅ | 60% question mastery + 25% subsections checked + 15% challenges solved (`src/lib/mastery.js`) |
-| Missed questions come back more often | ✅ | Leitner boxes 0–5. A missed question returns immediately and gets weight 8; correct answers space it out to 4h, 1d, 3d, 7d, 14d. |
-| Boss Battle: 45 Q, 90-min timer, per-section breakdown | 🟡 | The engine is complete, and the timer and answers survive a reload. With 42 questions in the bank, it runs as a 42-question "mini-boss" (84 min). It becomes the full 45/90 automatically once more chapters exist. |
-| Every option explains why it is right or wrong | ✅ | Enforced by a test (`tests/content.test.js`) |
+| XP, levels, daily streak | ✅ | Plus a daily XP goal |
+| Per-chapter mastery meter | ✅ | 60% question mastery + 25% subsections + 15% challenges. Chapters without challenges use 70/30. |
+| Missed questions come back more often | ✅ | Leitner boxes 0–5 |
+| Boss Battle: 45 Q, 90 min, per-section breakdown | ✅ | Full exam now that the bank has 63 questions. The bonus rules are tested. |
+| Every option explained | ✅ | Enforced by tests for both chapters |
 
-### Content rules
-| Rule | Status |
-|---|---|
-| Original, scenario-style questions; nothing copied | ✅ All written for this app |
-| Facts that may have changed are flagged "verify in Databricks docs" | ✅ 19 flags (see §3) |
-
-### Tech
+### Content rules and tech
 | Requirement | Status |
 |---|---|
-| React + Vite + Tailwind, client-side only, no backend | ✅ React 19, Vite 8, Tailwind 4 |
-| Progress saved in localStorage | ✅ Key `lakehouse-quest:v1`, plus export/import in Settings |
-| Mobile-friendly | ✅ Designed for a 390px-wide phone screen: bottom nav, tap-to-insert SQL keywords, sticky Continue button |
-| Deployable as a static site on a subdomain | ✅ Relative asset paths and hash routing, so no server rewrite rules are needed |
+| Original scenario-style questions | ✅ |
+| "Verify in Databricks docs" flags | ✅ 34 in content (Ch 4: 19, Ch 9: 15) + 1 in the Namespace Builder lab |
+| React + Vite + Tailwind, client-side, localStorage, mobile, static deploy | ✅ |
 
 ---
 
-## 2. Chapter 4 content inventory
+## 2. Content inventory
 
-| Level | Lesson cards | Questions (scenario) | SQL challenges | Labs |
-|---|---|---|---|---|
-| Databricks Assistant | 3 | 3 (0) | 0 | none |
-| SQL Warehouses | 3 | 5 (3) | 0 | none |
-| Federated Queries | 2 | 3 (2) | 0 | none |
-| Views, MVs & Streaming Tables | 3 | 5 (3) | 1 (DDL) | none |
-| Aggregations | 3 | 5 (1) | 6 (5 write, 1 fix) | none |
-| Joins & Set Operations | 3 | 6 (3) | 6 (4 write, 2 fix) | Join Visualizer, Set Ops |
-| Filtering & Sorting | 2 | 4 (0) | 4 (2 write, 2 fix) | none |
-| Creating Tables | 3 | 6 (2) | 2 (DDL) | none |
-| Delta Time Travel | 2 | 5 (1) | 0 | Time Travel Timeline |
-| **Total** | **24** | **42 (15)** | **19** | **3** |
+| Ch | Level | Cards | Questions (scenario) | SQL challenges | Labs |
+|---|---|---|---|---|---|
+| 4 | Databricks Assistant | 3 | 3 (0) | 0 | none |
+| 4 | SQL Warehouses | 3 | 5 (3) | 0 | none |
+| 4 | Federated Queries | 2 | 3 (2) | 0 | none |
+| 4 | Views, MVs & Streaming Tables | 3 | 5 (3) | 1 | none |
+| 4 | Aggregations | 3 | 5 (1) | 6 | none |
+| 4 | Joins & Set Operations | 3 | 6 (3) | 6 | Join Visualizer, Set Ops |
+| 4 | Filtering & Sorting | 2 | 4 (0) | 4 | none |
+| 4 | Creating Tables | 3 | 6 (2) | 2 | none |
+| 4 | Delta Time Travel | 2 | 5 (1) | 0 | Time Travel |
+| 9 | The 3-Level Namespace | 3 | 4 (1) | 0 | Namespace Builder |
+| 9 | Privileges & Roles | 3 | 8 (4) | 0 | none |
+| 9 | Table Ownership | 2 | 4 (1) | 0 | none |
+| 9 | Protecting PII | 3 | 5 (3) | 0 | none |
+| | **Total** | **35** | **63 (24)** | **19** | **4** |
 
-- Every question appears in a level. 15 of the 19 challenges appear in a level. The other 4 are only in the SQL Arena: `c4-sql-avg-region`, `c4-sql-stats`, `c4-sql-orphans`, `c4-sql-union`.
-- Thin spots: Assistant, Federation and Time Travel have no SQL challenges because the SQLite engine can't run those features. The Time Travel lab covers that topic hands-on instead.
+- 4 Chapter 4 challenges are only in the SQL Arena, not in a level: `c4-sql-avg-region`, `c4-sql-stats`, `c4-sql-orphans`, `c4-sql-union`.
+- Chapter 9 has no SQL challenges. GRANT and masking can't be run in SQLite, so the Namespace Builder covers that hands-on.
 
 ---
 
 ## 3. Facts to re-verify before the exam
 
-These are already flagged in the app. They are the facts most likely to have changed since the Oct 2025 guide.
-
+### Chapter 4
 | Item | What to check |
 |---|---|
-| Assistant slash commands (`/explain`, `/fix`, `/doc`, `/optimize`) and the "Diagnose error" button | Current command list and names. `/optimize` is the one I am least sure of. |
-| SQL warehouse types (Serverless / Pro / Classic) | Which features require Pro or Serverless |
-| Lakehouse Federation | Supported sources, `CREATE CONNECTION` option syntax, required warehouse or runtime |
-| Materialized views | `SCHEDULE` syntax, incremental refresh support, Lakeflow vs DLT naming |
-| `GROUP BY ALL` | Minimum runtime or warehouse version |
-| NULL sort order (ASC → NULLS FIRST) and `ILIKE` | Databricks defaults |
-| Notebook "Data Profile" | UI location |
-| Managed tables | Predictive optimization defaults; DROP/UNDROP retention windows |
-| External table prerequisites | Exact privilege names (e.g., `CREATE EXTERNAL TABLE`) |
+| Assistant slash commands (`/explain`, `/fix`, `/doc`, `/optimize`) and "Diagnose error" | Current names. `/optimize` is the least certain. |
+| SQL warehouse types | Which features require Pro or Serverless |
+| Lakehouse Federation | Sources, `CREATE CONNECTION` options, required compute |
+| Materialized views | `SCHEDULE` syntax, incremental refresh, Lakeflow vs DLT naming |
+| `GROUP BY ALL` | Minimum version |
+| NULL sort order and `ILIKE` | Databricks defaults |
+| Notebook Data Profile | UI location |
+| Managed tables | Predictive optimization; DROP/UNDROP windows |
+| External table prerequisites | Privilege names |
 | `CREATE OR REPLACE` | Whether grants and the table ID survive |
-| VACUUM | 7-day default retention; whether predictive optimization runs VACUUM automatically |
+| VACUUM | 7-day default; automatic VACUUM by predictive optimization |
 
-**Not flagged, but worth knowing:**
-- Error messages in the Time Travel simulator (`[DELTA_TIMESTAMP_GREATER_THAN_COMMIT]`, `[FAILED_READ_FILE]`, etc.) are illustrative, not word-for-word Databricks output.
-- The simulator does not show the `VACUUM START` / `VACUUM END` entries that Databricks may record in `DESCRIBE HISTORY`.
-- Error class names quoted in SQL hints (`MISSING_AGGREGATION`, `INVALID_WHERE_CONDITION`, `UNRESOLVED_COLUMN`, `TABLE_OR_VIEW_NOT_FOUND`) are correct to my knowledge but not re-verified.
-- The passing score is deliberately not stated. The app says "aim for 80%+" and points to the official exam page.
-- The Boss spreads questions evenly across built chapters. It does **not** copy the official per-section weighting.
+### Chapter 9
+| Item | What to check |
+|---|---|
+| Securable object types | The list keeps growing (models, functions, etc.) |
+| Newer privileges | `BROWSE` and `MANAGE`, and whether the exam expects them |
+| Admin roles | Account / metastore / workspace admin responsibilities |
+| Ownership | Parent-owner rights; whether owners still need USE CATALOG / USE SCHEMA (the lab assumes yes) |
+| `ALTER … OWNER TO` | Exact syntax per object type |
+| No DENY in Unity Catalog | Still true? |
+| Views | Readers need SELECT on the view only; owner requirements for base tables |
+| Row filters and column masks | Compute and version requirements |
+| `is_account_group_member` vs `is_member` | Current recommendation |
+| Tags / ABAC | Tag-driven policies may now enforce masks from tags |
+| INSERT vs UPDATE/DELETE (lab note) | The lab treats INSERT as needing MODIFY only; UPDATE/DELETE/MERGE also need SELECT |
+
+**Also worth knowing:**
+- Time Travel error messages are illustrative, not word-for-word Databricks output, and the lab doesn't show VACUUM START/END history rows.
+- The passing score is deliberately not stated.
+- The Boss splits questions evenly across built chapters, not by official section weights.
 
 ---
 
 ## 4. Findings
 
+### Open, new in v2
 | ID | Severity | Finding | Suggested fix |
 |---|---|---|---|
-| F1 ✅ fixed | **Medium (bug)** | **Boss Battle XP can be farmed.** Starting a Boss and immediately choosing "Submit early" grants the completion bonus (+25 for the mini-boss, +100 for the full one) every time, even with zero answers. `src/pages/Boss.jsx` → `submit()`. | Only pay the bonus if most questions were answered, or only on the first completion per day. |
-| F2 ✅ fixed | Low | **Importing a malformed progress file can break the app.** Import checks only that `xp` is a number, then merges at the top level. A file with e.g. `boss: {}` would crash the Boss page. `src/pages/Settings.jsx`, `store.jsx` | Validate the shape of nested fields, or deep-merge with `emptyProgress()`. |
-| F3 | Low | **The sandbox engine is SQLite, not Databricks SQL.** Known differences: `7/2` returns 3 (Databricks returns 3.5); `LIKE` ignores case (Databricks is case-sensitive); there is no `QUALIFY`, `LEFT SEMI/ANTI JOIN` or time-travel syntax. All of these are listed in the in-app "Sandbox vs real Databricks SQL" note. | Possible future switch to DuckDB-WASM (closer dialect, about 10× larger download). |
-| F4 | Low | **The missing-GROUP-BY challenge can't show the real error.** SQLite quietly accepts the broken query instead of failing. The app detects "same output as the broken query" and shows the Databricks error message, but the learner never sees a real error. | Acceptable as is. A lint check for this pattern would make it stricter. |
-| F5 ✅ fixed | Low | **The DDL syntax check is strict.** `c4-ddl-ctas` requires `AS` directly after the table name, so a CTAS that lists columns first is rejected. | Loosen the regex. |
-| F6 | Low | **The Boss timer only acts while the Boss page is open.** If time runs out while you are on another page, the exam auto-submits when you return to Boss. The score is still correct. | Check for expiry in the app shell. |
-| F7 | Info | Answer options reshuffle if you reload mid-Boss. Answers are stored by original index, so scoring is unaffected. | Store the option order in the saved Boss state. |
-| F8 | Info | XP toasts merge within a 2.2-second window, so one toast can sum gains from two screens. Cosmetic only. | None needed |
-| F9 | Info | The progress reducer calls `Date.now()` and `dayKey()`, so it isn't strictly pure. It has no visible effect, even in development mode where React runs reducers twice. | Pass timestamps in through the action payload. |
-| F10 | Info | The Time Travel simulator rewrites every row into a new file on any UPDATE/DELETE/INSERT. Real Delta rewrites only the affected files. The teaching point is unaffected. | None needed |
-| F11 ✅ fixed | Process | **Push to GitHub failed with a 403** because the Claude GitHub App has no access to the repo. The commit exists only locally, plus a backup git bundle in the session scratchpad. | Reconnect GitHub or install the app at https://claude.ai/connect-github, then push. |
+| N1 | Low | **Damaged saved progress resets without telling you.** If the browser's saved progress fails validation on startup, the app starts fresh. The raw copy is kept under `lakehouse-quest:v1:damaged:<time>`, but no message is shown. `src/lib/store.jsx` → `load()` | Show a one-time notice with a "download damaged copy" option. |
+| N2 | Low | **Per-correct XP can still be repeated.** The Boss and chapter tests pay 5 XP per correct answer on every run. The completion-bonus farming (F1) is fixed. This needs right answers, so the impact is small. | Cap test XP per day, or pay only for questions newly answered correctly. |
+| N3 | Low | **Namespace Builder progress isn't saved.** The tree and grants reset when you leave the lab; only the XP is kept. | Save the lab state in progress, with a Reset button. |
+| N4 | Low (content) | **The lab's access model is simplified:** no owner rights over child objects, INSERT = MODIFY only, no BROWSE/MANAGE, no metastore-admin role. Flagged in the lab and lessons. | Extend the model if the docs confirm more rules. |
+| N5 | Low | **Touch drag is untested on a real phone.** It was tested with a mouse in Chromium; touch dragging uses `touch-action: none` and Pointer Events. Tap-to-place is the fallback. | Test on iOS Safari and Android Chrome. |
+| N6 | Info | **Boss question mix ≠ exam weighting.** Questions are spread evenly across built chapters (about 22–23 from each of Ch 4 and 9). | Weight by the official section percentages once all chapters exist. |
+| N7 | Info | **No error boundary.** An unexpected runtime error blanks the whole app instead of showing a recovery screen. | Add a top-level React error boundary with "Back to Home". |
+
+### Carried over from v1
+| ID | Severity | Finding | Status |
+|---|---|---|---|
+| F1 | Medium | Boss XP farming | ✅ Fixed in `dde8353` |
+| F2 | Low | Malformed import could crash the app | ✅ Fixed in `a46b3b6` |
+| F3 | Low | Sandbox is SQLite, not Databricks SQL (`7/2`, `LIKE` case, no QUALIFY/SEMI/ANTI/time travel) | Open; documented in the app |
+| F4 | Low | Missing-GROUP-BY challenge shows the Databricks error by detection, not a real error | Open; acceptable |
+| F5 | Low | CTAS with a column list was rejected | ✅ Fixed in `072ff40` |
+| F6 | Low | Boss timer only auto-submits when the Boss page is open | Open |
+| F7 | Info | Boss options reshuffle on reload | Open; scoring unaffected |
+| F8 | Info | XP toasts can merge across screens | Open; cosmetic |
+| F9 | Info | Reducer reads the clock (`Date.now`, `dayKey`) | Open; no visible effect |
+| F10 | Info | Time Travel DML rewrites every row into a new file | Open; teaching point unaffected |
+| F11 | Process | Push blocked by GitHub access | ✅ Fixed; all commits pushed |
 
 ---
 
@@ -141,28 +173,27 @@ These are already flagged in the app. They are the facts most likely to have cha
 
 | Check | Result |
 |---|---|
-| `npm test` | **30 / 30 pass**: every challenge's reference solution passes; every starter broken query fails; shims work; wrong row order is detected; `mustMatch` rejects DROP + CREATE; each question has exactly one correct answer and an explanation for every option; every quiz ID resolves to a real question |
-| `npm run build` | Succeeds. JS 433 kB (138 kB gzip), CSS 50 kB (8 kB gzip), SQL engine `.wasm` 658 kB (326 kB gzip). Total download about 470 kB gzipped. |
+| `npm test` | **45 / 45 pass.** Covers SQL challenges and shims; CTAS with a column list; Boss bonus rules (80% answered, once per day, mini vs full); progress import (round trip, deep merge, malformed nested fields, non-JSON); Unity Catalog access logic (missing USE grants, inheritance, group membership, owner still needs USE, least-privilege mission); content integrity for Ch 4 and 9; unique question IDs across chapters |
+| `npm run build` | Succeeds. JS 478 kB (152 kB gzip), CSS 54 kB (9 kB gzip), `.wasm` 658 kB (326 kB gzip) |
 | `npm audit` | 0 vulnerabilities |
-| Browser test (Chromium, 390×844) | All main pages load with **0 console errors**. Tested: solving a challenge, a wrong attempt showing the custom message, Free-play queries, a level step-through, a join prediction, Time Travel (VACUUM → v1 fails as expected; TIMESTAMP AS OF returns the correct 5 rows), answering a question, starting a Boss, and XP saving to localStorage. |
-| Not tested | Real iOS Safari or Android devices, screen readers or keyboard-only navigation, very old browsers (needs WebAssembly), slow networks, a full 42-question Boss run through to timer expiry |
+| Browser test (Chromium, 390×844) | 0 console errors. Namespace Builder: an invalid drop explained the rule, the drag-built and tap-placed tree completed, a denied access check showed the correct fixing GRANTs, and the least-privilege mission completed. Settings: a malformed import showed a friendly error. Boss: the full 45-question exam started; an empty early submit gave no bonus, with the reason shown. Chapter 4 checks from v1 still pass. |
+| Not tested | Real iOS/Android devices (touch drag), screen readers and keyboard-only use, a full 45-question Boss run to timer expiry, very old browsers |
 
 ---
 
 ## 6. Security and privacy
 
-- No backend and no network calls after load. All data stays in the browser's localStorage.
-- No `dangerouslySetInnerHTML`. Lesson text formatting is parsed into React elements, and the content is hard-coded in the source anyway.
-- SQL runs in an isolated in-memory SQLite database inside the browser; nothing persists or leaves the device.
-- The only data input is the progress-file import (see F2). The worst case is a broken app state, fixed by "Reset all progress".
-- No analytics, cookies or third-party scripts. Fonts fall back to system fonts, so nothing is fetched from a CDN.
+- No backend and no network calls after load. All data stays in this browser's localStorage.
+- Imported files are now validated before use (F2). Damaged stored data is set aside, not used (see N1).
+- No `dangerouslySetInnerHTML`, no analytics, cookies or third-party scripts.
+- SQL runs in an in-memory SQLite database inside the browser.
 
 ---
 
 ## 7. Recommended next steps
 
-1. Fix GitHub access and push. **Do this first**: the commit lives only in a temporary session container.
-2. Fix F1 (XP farming) and F2 (import validation). Both are small.
-3. Build Chapter 9 (Securing Data) with the Namespace Builder, then Chapter 8 (Data Modeling) with the Medallion Sorter.
-4. Add the chart-type and ingestion-method Scenario Picker sets with Chapters 6 and 3.
-5. Two weeks before the exam: work through §3, then update the app's guide version if Databricks has published a newer guide.
+1. Quick fixes: N1 (notice for reset progress), N7 (error boundary), N3 (save the lab state).
+2. Build Chapter 8 (Data Modeling) with the Medallion Sorter, then Chapter 7 (Genie Space Builder).
+3. Then Chapters 1, 2, 3, 5 and 6, adding the ingestion and chart-type Scenario Picker sets.
+4. Test touch drag on your phone (N5). Tell me if the Namespace Builder scrolls instead of dragging.
+5. Two weeks before the exam: work through §3 and check whether there is a newer exam guide.
