@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Download, Upload, Trash2 } from 'lucide-react'
 import { useProgress, emptyProgress } from '../lib/store.jsx'
+import { parseProgress } from '../lib/progressSchema.js'
 import { PageHeader } from '../components/ui.jsx'
 import { EXAM } from '../data/examInfo.js'
 
@@ -19,14 +20,20 @@ export default function Settings() {
   }
 
   const importJson = async (file) => {
+    let text
     try {
-      const data = JSON.parse(await file.text())
-      if (typeof data !== 'object' || data === null || typeof data.xp !== 'number') throw new Error('Not a Lakehouse Quest progress file.')
-      actions.replaceAll(data)
-      setMsg('✅ Progress imported.')
-    } catch (e) {
-      setMsg(`❌ ${e.message}`)
+      text = await file.text()
+    } catch {
+      setMsg({ ok: false, text: 'Could not read that file.' })
+      return
     }
+    const parsed = parseProgress(text)
+    if (!parsed.ok) {
+      setMsg({ ok: false, text: parsed.error })
+      return
+    }
+    actions.replaceAll(parsed.value)
+    setMsg({ ok: true, text: 'Progress imported.' })
   }
 
   return (
@@ -45,13 +52,21 @@ export default function Settings() {
             <Upload size={16} /> Import
           </button>
         </div>
-        <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={(e) => e.target.files[0] && importJson(e.target.files[0])} />
-        {msg && <p className="text-sm">{msg}</p>}
+        <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={(e) => {
+            if (e.target.files[0]) importJson(e.target.files[0])
+            e.target.value = ''
+          }} />
+        {msg && (
+          <p className={`rounded-xl p-2.5 text-sm ${msg.ok ? 'bg-emerald-500/10 text-emerald-200' : 'bg-rose-500/10 text-rose-200'}`}>
+            {msg.ok ? '✅ ' : '⚠️ '}
+            {msg.text}
+          </p>
+        )}
         <button
           onClick={() => {
             if (confirm('Erase ALL progress (XP, streak, answers, tests)? This cannot be undone.')) {
               actions.replaceAll(emptyProgress())
-              setMsg('Progress reset.')
+              setMsg({ ok: true, text: 'Progress reset.' })
             }
           }}
           className="btn w-full border border-rose-500/50 text-rose-300"

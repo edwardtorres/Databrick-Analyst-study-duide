@@ -2,29 +2,21 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { nextStat } from './srs.js'
 import { dayKey, daysBetween } from './dates.js'
 import { levelInfo } from './levels.js'
+import { emptyProgress, parseProgress } from './progressSchema.js'
+
+export { emptyProgress }
 
 const STORAGE_KEY = 'lakehouse-quest:v1'
-
-export const emptyProgress = () => ({
-  version: 1,
-  xp: 0,
-  streak: { count: 0, best: 0, lastDay: null },
-  today: { day: null, xp: 0 },
-  cards: {}, // cardId -> true
-  subsections: {}, // "4:joins" -> true (checked off)
-  questions: {}, // qid -> SRS stat
-  challenges: {}, // challengeId -> { solved, attempts, solvedAt }
-  labs: {}, // labId -> true (first-run XP claimed)
-  tests: {}, // chapterId -> { best, last, attempts, passed }
-  boss: { history: [], active: null, lastBonusDay: null },
-  examDate: null,
-})
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return emptyProgress()
-    return { ...emptyProgress(), ...JSON.parse(raw) }
+    const parsed = parseProgress(raw)
+    if (parsed.ok) return parsed.value
+    // Keep the damaged copy so nothing is lost, then start clean.
+    localStorage.setItem(`${STORAGE_KEY}:damaged:${Date.now()}`, raw)
+    return emptyProgress()
   } catch {
     return emptyProgress()
   }
@@ -105,7 +97,7 @@ function reducer(state, action) {
     case 'examDate':
       return { ...state, examDate: action.date || null }
     case 'replace':
-      return { ...emptyProgress(), ...action.state }
+      return action.state
     default:
       return state
   }
