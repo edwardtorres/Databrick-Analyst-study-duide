@@ -1,5 +1,6 @@
 import ch4 from './ch4/index.js'
 import ch9 from './ch9/index.js'
+import ch7 from './ch7/index.js'
 
 // One chapter per exam-guide section. `content` is null until a chapter is
 // built; its topic list still shows so you can see what's coming.
@@ -101,7 +102,7 @@ export const CHAPTERS = [
       'Permissions and embedding',
       'Improving accuracy: feedback, benchmarks, updating instructions',
     ],
-    content: null,
+    content: ch7,
   },
   {
     id: 8,

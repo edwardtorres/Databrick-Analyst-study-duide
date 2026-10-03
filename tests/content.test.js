@@ -2,8 +2,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import ch4 from '../src/data/ch4/index.js'
 import ch9 from '../src/data/ch9/index.js'
+import ch7 from '../src/data/ch7/index.js'
 
-const chapters = { 4: ch4, 9: ch9 }
+const chapters = { 4: ch4, 7: ch7, 9: ch9 }
 
 for (const [num, ch] of Object.entries(chapters)) {
   const qIds = new Set(ch.questions.map((q) => q.id))
