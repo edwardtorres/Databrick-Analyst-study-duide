@@ -37,6 +37,7 @@ export const XP = {
   testPass: 100,
   lab: 15,
   bossPerCorrect: 5,
+  testPerCorrect: 5,
   bossComplete: 100,
   bossMiniComplete: 25,
 }

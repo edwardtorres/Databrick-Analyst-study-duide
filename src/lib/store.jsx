@@ -89,7 +89,7 @@ function reducer(state, action) {
         attempts: prev.attempts + 1,
         passed: prev.passed || action.passed,
       }
-      return withXp({ ...state, tests: { ...state.tests, [action.chapter]: t } }, action.xp)
+      return withXp({ ...state, tests: { ...state.tests, [action.chapter]: t }, testXp: action.testXp || state.testXp }, action.xp)
     }
     case 'bossActive':
       return { ...state, boss: { ...state.boss, active: action.active } }
@@ -102,6 +102,7 @@ function reducer(state, action) {
             history: [...state.boss.history, action.result].slice(-20),
             lastBonusDay: action.bonusDay || state.boss.lastBonusDay || null,
           },
+          testXp: action.testXp || state.testXp,
         },
         action.xp,
       )
@@ -170,9 +171,9 @@ export function ProgressProvider({ children }) {
       setSubsection: (key, done, xp) => dispatch({ type: 'subsection', key, done, xp }),
       challengeAttempt: (id, solved, xp) => dispatch({ type: 'challenge', id, solved, xp }),
       labDone: (id, xp) => dispatch({ type: 'lab', id, xp }),
-      testDone: (chapter, score, passed, xp) => dispatch({ type: 'test', chapter, score, passed, xp }),
+      testDone: (chapter, score, passed, xp, testXp) => dispatch({ type: 'test', chapter, score, passed, xp, testXp }),
       setBossActive: (active) => dispatch({ type: 'bossActive', active }),
-      bossDone: (result, xp, bonusDay) => dispatch({ type: 'bossDone', result, xp, bonusDay }),
+      bossDone: (result, xp, bonusDay, testXp) => dispatch({ type: 'bossDone', result, xp, bonusDay, testXp }),
       setExamDate: (date) => dispatch({ type: 'examDate', date }),
       setLabState: (id, value) => dispatch({ type: 'labState', id, value }),
       replaceAll: (s) => dispatch({ type: 'replace', state: s }),

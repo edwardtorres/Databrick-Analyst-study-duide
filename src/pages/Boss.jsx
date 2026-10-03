@@ -5,7 +5,7 @@ import { useProgress } from '../lib/store.jsx'
 import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
 import { EXAM } from '../data/examInfo.js'
-import { bossCompletionBonus, BONUS_MIN_ANSWERED } from '../lib/bossRewards.js'
+import { bossCompletionBonus, BONUS_MIN_ANSWERED, payableCorrect } from '../lib/bossRewards.js'
 import { dayKey } from '../lib/dates.js'
 import { PageHeader } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
@@ -70,8 +70,10 @@ export default function Boss() {
     const answered = qs.filter((q) => answers[q.id] !== undefined).length
     const today = dayKey()
     const { bonus, reason } = bossCompletionBonus({ answered, total: qs.length, full, lastBonusDay: state.boss.lastBonusDay, today })
-    setResult({ qs, answers, res, bonus, bonusReason: reason })
-    actions.bossDone(res, correct * XP.bossPerCorrect + bonus, bonus ? today : null)
+    const correctIds = qs.filter((q) => q.options[answers[q.id]]?.ok).map((q) => q.id)
+    const paid = payableCorrect({ correctIds, ledger: state.testXp, today })
+    setResult({ qs, answers, res, bonus, bonusReason: reason, repeats: correctIds.length - paid.newIds.length })
+    actions.bossDone(res, paid.newIds.length * XP.bossPerCorrect + bonus, bonus ? today : null, paid.ledger)
     window.scrollTo(0, 0)
   }
 
@@ -97,6 +99,9 @@ export default function Boss() {
                 ? 'Completion bonus already earned today. Come back tomorrow.'
                 : `No completion bonus: answer at least ${BONUS_MIN_ANSWERED * 100}% of questions to earn it.`}
           </p>
+          {result.repeats > 0 && (
+            <p className="mt-1 text-xs text-slate-400">{result.repeats} correct answer(s) already earned XP today, so they paid 0 this time.</p>
+          )}
           <button onClick={() => setResult(null)} className="btn-primary mt-4 w-full">
             Back to Boss lobby
           </button>

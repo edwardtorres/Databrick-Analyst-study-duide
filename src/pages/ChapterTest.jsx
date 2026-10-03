@@ -4,6 +4,8 @@ import { chapterById } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
+import { payableCorrect } from '../lib/bossRewards.js'
+import { dayKey } from '../lib/dates.js'
 import { PageHeader } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
 import { go } from '../lib/router.js'
@@ -31,6 +33,7 @@ export default function ChapterTest({ id }) {
   const [answers, setAnswers] = useState({})
   const [index, setIndex] = useState(0)
   const [done, setDone] = useState(false)
+  const [xpNote, setXpNote] = useState(null)
 
   if (!ch?.content) return <PageHeader title="No test yet" back={`/chapter/${id}`} />
   const prev = state.tests[ch.id]
@@ -47,7 +50,14 @@ export default function ChapterTest({ id }) {
     const score = correct / qs.length
     const passed = score >= PASS
     qs.forEach((q) => answers[q.id] !== undefined && actions.answer(q.id, !!q.options[answers[q.id]].ok, 0))
-    actions.testDone(ch.id, score, passed, correct * 5 + (passed && !prev?.passed ? XP.testPass : 0))
+    const correctIds = qs.filter((q) => q.options[answers[q.id]]?.ok).map((q) => q.id)
+    const paid = payableCorrect({ correctIds, ledger: state.testXp, today: dayKey() })
+    setXpNote(
+      paid.newIds.length < correctIds.length
+        ? `${correctIds.length - paid.newIds.length} correct answer(s) already earned XP today, so they paid 0 this time.`
+        : null,
+    )
+    actions.testDone(ch.id, score, passed, paid.newIds.length * XP.testPerCorrect + (passed && !prev?.passed ? XP.testPass : 0), paid.ledger)
     setDone(true)
     window.scrollTo(0, 0)
   }
@@ -81,6 +91,7 @@ export default function ChapterTest({ id }) {
       <div>
         <PageHeader title="Test results" back={`/chapter/${ch.id}`} subtitle={ch.title} />
         <ExamResults questions={qs} answers={answers} groupOf={(q) => q.sub} groupLabel={subTitle} passPct={PASS}>
+          {xpNote && <p className="mt-2 text-xs text-slate-400">{xpNote}</p>}
           <div className="mt-4 grid grid-cols-2 gap-2">
             <button onClick={start} className="btn-ghost">
               Retake
