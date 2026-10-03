@@ -4,6 +4,7 @@ import { useProgress } from './lib/store.jsx'
 import { allQuestions } from './data/chapters.js'
 import { dueQuestions } from './lib/srs.js'
 import { Toasts } from './components/ui.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import Home from './pages/Home.jsx'
 import Chapters from './pages/Chapters.jsx'
 import Chapter from './pages/Chapter.jsx'
@@ -33,6 +34,15 @@ const ROUTES = [
   ['/settings', Settings],
 ]
 
+// Dev-only route for checking the error boundary (`#/__crash`).
+if (import.meta.env.DEV)
+  ROUTES.push([
+    '/__crash',
+    () => {
+      throw new Error('Deliberate test crash')
+    },
+  ])
+
 function resolve(path) {
   for (const [pattern, Comp] of ROUTES) {
     const params = match(pattern, path)
@@ -60,7 +70,10 @@ export default function App() {
     <div className="mx-auto min-h-dvh max-w-2xl">
       <Toasts />
       <main className="pb-safe px-4 pt-4">
-        <Page {...params} key={path} />
+        {/* Inner boundary keeps the nav bar usable and resets on navigation. */}
+        <ErrorBoundary resetKey={path}>
+          <Page {...params} key={path} />
+        </ErrorBoundary>
       </main>
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink/95 backdrop-blur" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="mx-auto grid max-w-2xl grid-cols-5">
