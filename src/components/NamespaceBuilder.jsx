@@ -288,7 +288,10 @@ function TestPhase({ grants }) {
   const [guess, setGuess] = useState(null)
   const result = useMemo(() => checkAccess({ grants, owners: OWNERS }, principal, action, tgt), [grants, principal, action, tgt])
 
-  useEffect(() => setGuess(null), [principal, action, tgt, grants])
+  // `grants` is rebuilt from saved progress on every render, so key the reset
+  // on its contents; otherwise each re-render would wipe the prediction.
+  const grantsKey = JSON.stringify(grants)
+  useEffect(() => setGuess(null), [principal, action, tgt, grantsKey])
 
   const predict = (yes) => {
     setGuess(yes)
