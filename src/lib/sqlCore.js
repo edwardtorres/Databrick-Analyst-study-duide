@@ -32,10 +32,55 @@ function splitLiterals(sql) {
   return parts
 }
 
+// Split into statements on semicolons that are outside string literals.
+function splitStatements(sql) {
+  const out = ['']
+  for (const [text, isLit] of splitLiterals(sql)) {
+    if (isLit) {
+      out[out.length - 1] += text
+      continue
+    }
+    const pieces = text.split(';')
+    out[out.length - 1] += pieces[0]
+    for (const p of pieces.slice(1)) out.push(p)
+  }
+  return out
+}
+
+// Split "a INT, b DECIMAL(10,2)" on top-level commas.
+function splitTopLevel(list) {
+  const items = []
+  let depth = 0
+  let cur = ''
+  for (const ch of list) {
+    if (ch === '(') depth++
+    if (ch === ')') depth--
+    if (ch === ',' && depth === 0) {
+      items.push(cur)
+      cur = ''
+    } else cur += ch
+  }
+  items.push(cur)
+  return items.map((s) => s.trim()).filter(Boolean)
+}
+
+// CTAS with a column list: CREATE TABLE t (a INT, b STRING) AS SELECT ...
+// SQLite has no such form, so the column names are applied through a CTE.
+const CTAS_COLS =
+  /^(\s*CREATE\s+(?:OR\s+REPLACE\s+)?TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[\w.]+)\s*\(((?:[^()]|\([^()]*\))*)\)\s*(?:USING\s+DELTA\s*)?(?:COMMENT\s+'(?:[^']|'')*'\s*)?AS\s+([\s\S]+)$/i
+
+function rewriteCtasColumnList(stmt) {
+  const m = stmt.match(CTAS_COLS)
+  if (!m) return stmt
+  const names = splitTopLevel(m[2]).map((c) => c.split(/\s+/)[0])
+  return `${m[1]} AS WITH __ctas(${names.join(', ')}) AS (${m[3].trim()}) SELECT * FROM __ctas`
+}
+
 export function rewriteDatabricksSql(sql, extraTables = []) {
   const tables = [...SAMPLE_TABLES, ...extraTables].join('|')
   const threePart = new RegExp(`\\b[A-Za-z_]\\w*\\.[A-Za-z_]\\w*\\.(${tables}|[A-Za-z_]\\w*)\\b`, 'g')
-  return splitLiterals(sql)
+  const withCtas = splitStatements(sql).map(rewriteCtasColumnList).join(';')
+  return splitLiterals(withCtas)
     .map(([text, isLit]) => {
       if (isLit) return text
       return (

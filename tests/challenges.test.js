@@ -46,3 +46,20 @@ test('mustMatch rejects DROP + CREATE', () => {
   const r = checkChallenge(SQL, ch, 'DROP TABLE gold_tier_counts; CREATE TABLE gold_tier_counts AS SELECT tier, COUNT(*) FROM customers GROUP BY tier')
   assert.equal(r.ok, false)
 })
+
+test('c4-ddl-ctas accepts a CTAS with a column list (audit F5)', () => {
+  const ch = challenges.find((c) => c.id === 'c4-ddl-ctas')
+  const body = `SELECT p.category, SUM(o.amount) FROM orders o JOIN products p ON o.product_id = p.product_id
+WHERE o.status = 'completed' GROUP BY p.category`
+  for (const sql of [
+    `CREATE TABLE gold_category_sales (category STRING, revenue DOUBLE) AS ${body}`,
+    `CREATE TABLE quest.retail.gold_category_sales (category, revenue) USING DELTA AS ${body}`,
+    `CREATE OR REPLACE TABLE gold_category_sales AS ${body}`,
+  ]) {
+    const r = checkChallenge(SQL, ch, sql)
+    assert.equal(r.ok, true, `${sql}\n${r.reason || r.error}`)
+  }
+  // An INSERT-based approach still isn't a CTAS
+  const r = checkChallenge(SQL, ch, `CREATE TABLE gold_category_sales (category TEXT, revenue REAL); INSERT INTO gold_category_sales ${body}`)
+  assert.equal(r.ok, false)
+})

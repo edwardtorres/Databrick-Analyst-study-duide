@@ -304,7 +304,13 @@ HAVING SUM(amount) > 150`,
       "Create a table named gold_category_sales with columns category and revenue (SUM of amount for completed orders), using CREATE TABLE ... AS SELECT.",
     check: 'SELECT * FROM gold_category_sales',
     hints: ['CREATE TABLE gold_category_sales AS SELECT p.category, SUM(o.amount) AS revenue FROM ... GROUP BY p.category'],
-    mustMatch: [{ re: /CREATE\s+(OR\s+REPLACE\s+)?TABLE\s+(\w+\.\w+\.)?gold_category_sales\s+(USING\s+DELTA\s+)?AS\b/i, msg: 'Use CREATE TABLE gold_category_sales AS SELECT ...' }],
+    mustMatch: [
+      {
+        // Accepts an optional column list, USING DELTA, COMMENT/TBLPROPERTIES etc. before AS SELECT.
+        re: /CREATE\s+(OR\s+REPLACE\s+)?TABLE\s+(IF\s+NOT\s+EXISTS\s+)?(\w+\.\w+\.)?gold_category_sales\b[\s\S]*?\bAS\s*\(?\s*(SELECT|WITH)\b/i,
+        msg: 'Use CREATE TABLE gold_category_sales ... AS SELECT ...',
+      },
+    ],
     solution: `CREATE TABLE gold_category_sales AS
 SELECT p.category, SUM(o.amount) AS revenue
 FROM orders o JOIN products p ON o.product_id = p.product_id
