@@ -58,7 +58,7 @@ export default function Chapter({ id }) {
             {done}/{c.subsections.length} levels
           </span>
           <span className="rounded-full bg-ink/20 px-2 py-0.5">{c.questions.length} questions</span>
-          <span className="rounded-full bg-ink/20 px-2 py-0.5">{c.challenges.length} SQL challenges</span>
+          {c.challenges.length > 0 && <span className="rounded-full bg-ink/20 px-2 py-0.5">{c.challenges.length} SQL challenges</span>}
         </div>
       </section>
 
@@ -107,6 +107,7 @@ export default function Chapter({ id }) {
           <div className="mt-1 font-bold">Weak Spots</div>
           <div className="text-xs text-slate-300">Practice what you miss most</div>
         </button>
+        {c.challenges.length > 0 && (
         <button onClick={() => go('/sql')} className="card bg-gradient-to-br from-emerald-500/30 to-panel text-left">
           <Terminal className="text-emerald-300" />
           <div className="mt-1 font-bold">SQL Arena</div>
@@ -114,6 +115,7 @@ export default function Chapter({ id }) {
             {c.challenges.filter((x) => state.challenges[x.id]?.solved).length}/{c.challenges.length} solved
           </div>
         </button>
+        )}
         {labs.length > 0 && (
           <button onClick={() => go('/labs')} className="card bg-gradient-to-br from-sky-500/30 to-panel text-left">
             <FlaskConical className="text-sky-300" />

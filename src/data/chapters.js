@@ -1,4 +1,5 @@
 import ch4 from './ch4/index.js'
+import ch9 from './ch9/index.js'
 
 // One chapter per exam-guide section. `content` is null until a chapter is
 // built; its topic list still shows so you can see what's coming.
@@ -128,7 +129,7 @@ export const CHAPTERS = [
       'Table ownership',
       'Protecting PII',
     ],
-    content: null,
+    content: ch9,
   },
 ]
 

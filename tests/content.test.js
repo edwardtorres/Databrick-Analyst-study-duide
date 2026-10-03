@@ -1,8 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import ch4 from '../src/data/ch4/index.js'
+import ch9 from '../src/data/ch9/index.js'
 
-const chapters = { 4: ch4 }
+const chapters = { 4: ch4, 9: ch9 }
 
 for (const [num, ch] of Object.entries(chapters)) {
   const qIds = new Set(ch.questions.map((q) => q.id))
@@ -29,3 +30,8 @@ for (const [num, ch] of Object.entries(chapters)) {
     for (const id of qIds) assert.ok(used.has(id), `question ${id} not placed in any subsection`)
   })
 }
+
+test('question ids are unique across all chapters', () => {
+  const ids = Object.values(chapters).flatMap((c) => c.questions.map((q) => q.id))
+  assert.equal(new Set(ids).size, ids.length)
+})
