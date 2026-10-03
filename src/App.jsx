@@ -5,6 +5,7 @@ import { allQuestions } from './data/chapters.js'
 import { dueQuestions } from './lib/srs.js'
 import { Toasts } from './components/ui.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import DamagedNotice from './components/DamagedNotice.jsx'
 import Home from './pages/Home.jsx'
 import Chapters from './pages/Chapters.jsx'
 import Chapter from './pages/Chapter.jsx'
@@ -69,6 +70,7 @@ export default function App() {
   return (
     <div className="mx-auto min-h-dvh max-w-2xl">
       <Toasts />
+      <DamagedNotice />
       <main className="pb-safe px-4 pt-4">
         {/* Inner boundary keeps the nav bar usable and resets on navigation. */}
         <ErrorBoundary resetKey={path}>

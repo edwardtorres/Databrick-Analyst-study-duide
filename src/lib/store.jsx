@@ -8,18 +8,29 @@ export { emptyProgress }
 
 const STORAGE_KEY = 'lakehouse-quest:v1'
 
+// Loads saved progress. If it fails validation, the raw copy is kept under a
+// backup key and returned as `damaged` so the app can tell the learner.
+// Cached so React StrictMode's double initialisation doesn't back up twice.
+let bootCache = null
 function load() {
+  if (bootCache) return bootCache
+  let result = { state: emptyProgress(), damaged: null }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return emptyProgress()
-    const parsed = parseProgress(raw)
-    if (parsed.ok) return parsed.value
-    // Keep the damaged copy so nothing is lost, then start clean.
-    localStorage.setItem(`${STORAGE_KEY}:damaged:${Date.now()}`, raw)
-    return emptyProgress()
+    if (raw) {
+      const parsed = parseProgress(raw)
+      if (parsed.ok) result = { state: parsed.value, damaged: null }
+      else {
+        const backupKey = `${STORAGE_KEY}:damaged:${Date.now()}`
+        localStorage.setItem(backupKey, raw)
+        result = { state: emptyProgress(), damaged: { raw, backupKey, reason: parsed.error } }
+      }
+    }
   } catch {
-    return emptyProgress()
+    /* storage unavailable: start fresh in memory */
   }
+  bootCache = result
+  return result
 }
 
 function withXp(state, amount) {
@@ -106,7 +117,8 @@ function reducer(state, action) {
 const Ctx = createContext(null)
 
 export function ProgressProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, undefined, load)
+  const [state, dispatch] = useReducer(reducer, undefined, () => load().state)
+  const [damaged, setDamaged] = useState(() => load().damaged)
   const [toasts, setToasts] = useState([])
   const prevLevel = useRef(levelInfo(state.xp).level)
   const prevXp = useRef(state.xp)
@@ -162,7 +174,9 @@ export function ProgressProvider({ children }) {
     [toast],
   )
 
-  return <Ctx.Provider value={{ state, actions, toasts }}>{children}</Ctx.Provider>
+  const dismissDamaged = useCallback(() => setDamaged(null), [])
+
+  return <Ctx.Provider value={{ state, actions, toasts, damaged, dismissDamaged }}>{children}</Ctx.Provider>
 }
 
 export function useProgress() {
