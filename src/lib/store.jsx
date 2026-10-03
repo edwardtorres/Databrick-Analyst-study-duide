@@ -105,6 +105,12 @@ function reducer(state, action) {
         },
         action.xp,
       )
+    case 'labState': {
+      const labState = { ...state.labState }
+      if (action.value) labState[action.id] = action.value
+      else delete labState[action.id]
+      return { ...state, labState }
+    }
     case 'examDate':
       return { ...state, examDate: action.date || null }
     case 'replace':
@@ -168,6 +174,7 @@ export function ProgressProvider({ children }) {
       setBossActive: (active) => dispatch({ type: 'bossActive', active }),
       bossDone: (result, xp, bonusDay) => dispatch({ type: 'bossDone', result, xp, bonusDay }),
       setExamDate: (date) => dispatch({ type: 'examDate', date }),
+      setLabState: (id, value) => dispatch({ type: 'labState', id, value }),
       replaceAll: (s) => dispatch({ type: 'replace', state: s }),
       toast,
     }),

@@ -15,6 +15,7 @@ export const emptyProgress = () => ({
   tests: {}, // chapterId -> { best, last, attempts, passed }
   boss: { history: [], active: null, lastBonusDay: null },
   examDate: null,
+  labState: {}, // labId -> saved lab UI state (sanitized by each lab)
 })
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v)
@@ -84,6 +85,7 @@ export function validateProgress(p) {
     if (!dayOrNull(b.lastBonusDay)) errors.push('boss.lastBonusDay should be a date or null')
   }
   if (!dayOrNull(p.examDate)) errors.push('examDate should be a YYYY-MM-DD date or null')
+  checkMap(errors, 'labState', p.labState, (v) => (isObj(v) ? null : 'should be an object'))
   return errors
 }
 

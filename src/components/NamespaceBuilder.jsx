@@ -1,20 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Database, FolderTree, Table2, HardDrive, ShieldCheck, Trash2, Hand, CheckCircle2, XCircle } from 'lucide-react'
+import { Database, FolderTree, Table2, HardDrive, ShieldCheck, Trash2, Hand, CheckCircle2, XCircle, RotateCcw } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { PRINCIPALS, GRANTABLE, ACTIONS, checkAccess, grantSql, missionStatus } from '../lib/ucAccess.js'
+import { PIECES, TARGET, OWNERS, OBJECTS, typeOf, sanitizeNamespaceLab } from '../lib/namespaceLab.js'
 
 // Three phases: build the namespace by dragging, grant privileges, then
 // test whether a user can run a query (with the missing privilege explained).
 
-const PIECES = [
-  { id: 'sales', type: 'catalog', name: 'sales' },
-  { id: 'gold', type: 'schema', name: 'gold' },
-  { id: 'raw', type: 'schema', name: 'raw' },
-  { id: 'orders', type: 'table', name: 'orders' },
-  { id: 'customers', type: 'table', name: 'customers' },
-  { id: 'landing', type: 'volume', name: 'landing' },
-]
-const TARGET = { sales: 'ms', gold: 'sales', raw: 'sales', orders: 'gold', customers: 'gold', landing: 'raw' }
 const PARENT_TYPE = { catalog: 'metastore', schema: 'catalog', table: 'schema', volume: 'schema' }
 const ICON = { catalog: Database, schema: FolderTree, table: Table2, volume: HardDrive }
 const TONE = {
@@ -23,23 +15,6 @@ const TONE = {
   table: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40',
   volume: 'bg-amber-500/20 text-amber-200 border-amber-400/40',
 }
-const OWNERS = {
-  sales: 'data_admins',
-  'sales.gold': 'data_admins',
-  'sales.raw': 'data_admins',
-  'sales.gold.orders': 'engineers',
-  'sales.gold.customers': 'engineers',
-  'sales.raw.landing': 'engineers',
-}
-const OBJECTS = [
-  ['sales', 'catalog'],
-  ['sales.gold', 'schema'],
-  ['sales.raw', 'schema'],
-  ['sales.gold.orders', 'table'],
-  ['sales.gold.customers', 'table'],
-  ['sales.raw.landing', 'volume'],
-]
-const typeOf = (full) => OBJECTS.find((o) => o[0] === full)?.[1]
 const pieceById = (id) => PIECES.find((p) => p.id === id)
 
 function invalidReason(piece, targetType) {
@@ -399,10 +374,13 @@ function TestPhase({ grants }) {
 
 export default function NamespaceBuilder() {
   const { state, actions } = useProgress()
-  const [phase, setPhase] = useState('build')
-  const [place, setPlace] = useState({})
-  const [grants, setGrants] = useState([])
-  const [skipped, setSkipped] = useState(false)
+  // Lab state lives in saved progress so it survives leaving the page.
+  const lab = sanitizeNamespaceLab(state.labState?.namespaceBuilder)
+  const { phase, place, grants, skipped } = lab
+  const save = (patch) => actions.setLabState('namespaceBuilder', { ...lab, ...patch })
+  const setPhase = (p) => save({ phase: p })
+  const setPlace = (p) => save({ place: p })
+  const setGrants = (g) => save({ grants: g })
   const built = Object.entries(TARGET).every(([id, parent]) => place[id] === parent)
   useEffect(() => {
     if (built && !skipped) actions.labDone('ns-build', 15)
@@ -417,7 +395,18 @@ export default function NamespaceBuilder() {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">🔐 Namespace Builder</h3>
-        {state.labs['ns-mission'] && <span className="chip border-emerald-500/50 text-emerald-300">🏆 Mission done</span>}
+        <div className="flex items-center gap-2">
+          {state.labs['ns-mission'] && <span className="chip border-emerald-500/50 text-emerald-300">🏆 Mission done</span>}
+          <button
+            onClick={() => {
+              if (confirm('Reset the Namespace Builder? Your tree and grants will be cleared. XP you earned is kept.')) actions.setLabState('namespaceBuilder', null)
+            }}
+            className="chip text-slate-300"
+            aria-label="Reset lab"
+          >
+            <RotateCcw size={11} /> Reset
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-3 rounded-xl bg-panel2 p-1 text-xs font-bold">
         {[
@@ -441,10 +430,7 @@ export default function NamespaceBuilder() {
           setPlace={setPlace}
           done={built}
           onDone={() => setPhase('grant')}
-          onSkip={() => {
-            setSkipped(true)
-            setPlace({ ...TARGET })
-          }}
+          onSkip={() => save({ skipped: true, place: { ...TARGET } })}
         />}
       {phase === 'grant' && <GrantPhase grants={grants} setGrants={setGrants} />}
       {phase === 'test' && <TestPhase grants={grants} />}
