@@ -45,7 +45,15 @@ function useTapLabel() {
     },
   })
   const label = sel ? <ValueLabel x={sel.x} y={sel.y} text={sel.text} /> : null
-  return { props, label, clear: () => setSel(null), sel }
+  // The SVG label is created fresh on each tap, and live regions only
+  // announce changes to elements that already exist. This persistent,
+  // visually hidden region carries the same text for screen readers.
+  const live = (
+    <span className="sr-only" role="status" aria-live="polite" data-testid="value-live">
+      {sel ? sel.text : ''}
+    </span>
+  )
+  return { props, label, live, clear: () => setSel(null), sel }
 }
 
 function ValueLabel({ x, y, text }) {
@@ -107,7 +115,8 @@ function Bars({ spec }) {
   const bw = Math.min(24, Math.max(2, band - 2))
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} showEvery={Math.ceil(spec.labels.length / 6)} />
       {spec.values.map((v, i) => {
         const h = (v / max) * IH
@@ -124,7 +133,9 @@ function Bars({ spec }) {
         )
       })}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 
@@ -136,7 +147,8 @@ function Lines({ spec }) {
   const y = (v) => PAD.t + IH - (v / max) * IH
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} showEvery={Math.ceil(n / 6)} />
       {series.map((s, si) => (
         <g key={s.name}>
@@ -160,7 +172,9 @@ function Lines({ spec }) {
         </g>
       ))}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 
@@ -179,7 +193,8 @@ function Stacked({ spec }) {
   const bw = Math.min(24, band - 4)
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} />
       {spec.labels.map((l, i) => {
         let base = PAD.t + IH
@@ -204,7 +219,9 @@ function Stacked({ spec }) {
         })
       })}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 
@@ -217,7 +234,8 @@ function Pie({ spec }) {
   let a0 = -Math.PI / 2
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       {spec.values.map((v, i) => {
         const a1 = a0 + (v / total) * Math.PI * 2
         const large = a1 - a0 > Math.PI ? 1 : 0
@@ -248,7 +266,9 @@ function Pie({ spec }) {
         )
       })}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 
@@ -259,7 +279,8 @@ function Scatter({ spec }) {
   const yMax = niceMax(Math.max(...ys))
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={yMax} labels={[]} />
       <text x={PAD.l} y={H - 6} fontSize="8" fill="#94a3b8">
         0
@@ -282,7 +303,9 @@ function Scatter({ spec }) {
         </circle>
       ))}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 
@@ -291,7 +314,8 @@ function Hist({ spec }) {
   const band = IW / spec.bins.length
   const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.bins.map((b) => b.label.split('–')[0])} />
       {spec.bins.map((b, i) => {
         const h = (b.count / max) * IH
@@ -307,7 +331,9 @@ function Hist({ spec }) {
         )
       })}
       {tap.label}
-    </svg>
+      </svg>
+      {tap.live}
+    </>
   )
 }
 

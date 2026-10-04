@@ -69,3 +69,14 @@ test('Chart Picker: tapping a mark shows its value (touch has no hover)', async 
   await best.locator('svg').tap({ position: { x: 5, y: 5 } })
   await expect(best.getByTestId('value-label')).toHaveCount(0)
 })
+
+test('Chart Picker: tapped values are announced through a polite live region', async ({ page }) => {
+  await page.goto('#/lab/chart-picker')
+  await page.getByRole('button', { name: 'Bar', exact: true }).click()
+  const yours = page.locator('figure').first()
+  const live = yours.getByTestId('value-live')
+  await expect(live).toHaveAttribute('aria-live', 'polite')
+  await expect(live).toHaveText('')
+  await yours.locator('[data-mark]').first().tap()
+  await expect(live).toHaveText('Jan: 310 $k')
+})
