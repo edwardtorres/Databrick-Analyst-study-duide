@@ -1,22 +1,19 @@
-# Lakehouse Quest: Build Audit (v6)
+# Lakehouse Quest: Build Audit (v7, final build)
 
 **Audit date:** 2026-10-04
-**Scope:** branch `claude/databricks-exam-study-game-ck55dn` at `8a0c583`, plus this audit commit
+**Scope:** branch `claude/databricks-exam-study-game-ck55dn` at `f494715`, plus this audit commit
 **Exam guide version targeted:** Oct 30, 2025
-**Overall:** 7 of 9 chapters are complete (1, 2, 4, 5, 6, 7, 9) and 11 of 12 labs are built. T1 and T2 from v5 are fixed. `npm run verify` passed before this push: 122 unit tests, 54 e2e tests (27 dev + 27 prod), and the build. **iPhone result: not tested yet.** The WebKit project is ready but skipped here because WebKit isn't installed in this environment.
+**Overall:** **Complete.** All 9 chapters and all 15 labs are built. The Boss Battle draws the full 45 questions across every exam section, and the readiness line shows 9 of 9. `npm run verify` passed before this push: 146 unit tests, 70 e2e tests (35 dev + 35 prod), and the build. **iPhone: still not tested** (U1).
 
 ---
 
-## 0. Changes since audit v5
+## 0. Changes since audit v6
 
 | Commit | Change |
 |---|---|
-| `722d4bf` | **T1 fixed:** Retry no longer reads the URL from the error message. A Vite plugin writes `chunk-map.json` (chapter → hashed chunk file) at build time. Retry looks up the chunk there and re-imports it with a `?retry=N` query, so it works the same in every browser. In dev it uses the source module URL. A new **`webkit`** Playwright project (iPhone 13 profile) is added only when WebKit is installed. Otherwise it is skipped with a one-line message. |
-| `2806ae3` | **T2 fixed:** each chart in the Chart Picker has a visually hidden `aria-live="polite"` region that announces the tapped value. It is always present, because a label that only mounts on tap isn't announced reliably. |
-| `1e84470` | **Chapter 1 (Data Intelligence Platform):** 4 levels, 9 cards, 26 questions, and the **Platform Match** lab |
-| `25b18dc` | **Chapter 2 (Managing Data):** 3 levels, 6 cards, 26 questions, 9 cleaning challenges, and the **Catalog Explorer** lab (shared with Chapter 1) |
-| `cf2fcc6` | Six Chapter 1 questions rewritten as workplace scenarios (now 16 of 26). README status updated. |
-| `8a0c583` | **`try_cast` works in the sandbox** and returns NULL for junk, as in Databricks. Catalog Explorer shows mission feedback next to the action buttons so phone users don't have to scroll up. |
+| `0d6e318` | **Chapter 3 (Importing Data):** 5 levels, 11 cards, 26 questions, the **Ingestion Picker** lab (12 scenarios) and the **Upload Wizard** lab. Platform Match and the Ingestion Picker now share one `ScenarioPicker` component. |
+| `6d22e27` | **Chapter 8 (Data Modeling):** 4 levels, 9 cards, 26 questions, 5 SQL challenges, the **Medallion Sorter** and the **Star Schema Builder**. The Boss page says "Every exam section is included" once all 9 are built. Tests check the full 45-question mix and "9 of 9". |
+| `f494715` | README status: **complete** |
 
 ---
 
@@ -27,51 +24,55 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 ### This round
 | Requirement | Status | Where / notes |
 |---|---|---|
-| T1: Retry independent of error message | ✅ | `vite.config.js` (`chapterChunkMap` plugin), `src/data/chapters.js` (`chunkUrl`, `importChapter`). A prod e2e test checks `chunk-map.json` lists every built chapter and that each file loads. Both the chapter-page and Boss Retry tests pass in dev and prod. |
-| T1: WebKit project, auto-skipped when missing | ✅ | `playwright.config.js`. On your Mac: `npx playwright install webkit`, then `npm run test:e2e`. |
-| T1: iPhone result | ⬜ **Not tested yet** | You left the placeholder in the request. The fix doesn't rely on any Safari behavior, but it hasn't run on WebKit or a real iPhone. |
-| T2: `aria-live="polite"` on Chart Picker values | ✅ | `src/components/MiniChart.jsx`. An e2e test checks the region is empty, then reads "Jan: 310 $k" after a tap. |
-| Ch 1 lessons: core components | ✅ | Delta Lake, Unity Catalog, Databricks SQL, Lakeflow Jobs, Lakeflow Declarative Pipelines (DLT), Mosaic AI, Data Intelligence Engine. What each does and when an analyst touches it. |
-| Ch 1 lessons: Catalog Explorer | ✅ | Catalogs, schemas, managed vs external, views, certified/deprecated, lineage, plus the Catalog Explorer lab |
-| Ch 1 lessons: Marketplace | ✅ | What it offers, who provides, public/private listings, delivery via Delta Sharing as a read-only catalog |
-| Platform Match lab (tap-based) | ✅ | 10 scenarios (scheduled ETL, table owner, ACID, BI SQL, expectations, RAG, semantics, third-party data, partner sharing, lineage). Tap a component → verdict → why each of the 4 options does or doesn't fit. |
-| Ch 2 lessons | ✅ | Discovering and querying certified data; tags (UI and `SET TAGS`) and lineage; cleaning in SQL |
-| Catalog Explorer lab (tap-based, Ch 1 + 2) | ✅ | 3 catalogs (prod, raw, dev), 7 tables/views, a job, 3 dashboards, a notebook. Five missions: find the certified table (deprecated one rejected), managed vs external from Details, tag `email` as `pii = email`, trace upstream to the raw source, flag every dashboard downstream (one is two hops away through a view). Saved in progress and sanitized on load. |
-| 6+ cleaning challenges on the dirty rows | ✅ | **9:** email placeholders → 'unknown' (CASE or COALESCE/NULLIF); fix COUNT counting junk; valid orders (qty > 0, known status); CASE quality flags; LOWER/TRIM standardizing; DISTINCT for exact duplicates; ROW_NUMBER for the latest row per normalized email; fix CAST on '$12.50' (clean first, or `try_cast`); LEFT JOIN + COALESCE 'Unassigned'. |
-| 25+ questions each, scenario-heavy, every option explained, verify flags | ✅ | Ch 1: 26 (16 scenario, 19 flags). Ch 2: 26 (19 scenario, 12 flags). Unit tests enforce one correct answer and an explanation for every option. |
-| Labs and challenges in e2e (dev + prod) | ✅ | `tests/e2e/ch1.spec.js`, `tests/e2e/ch2.spec.js`: Platform Match wrong and right; all five Catalog Explorer missions including wrong answers and reload persistence; three cleaning challenges (fix → explained → solved); chapter pages; lab inside Ch 1's level |
+| Ch 3 lessons: S3 / cloud storage | ✅ | External locations (storage credential + path, READ FILES / WRITE FILES / CREATE EXTERNAL TABLE), volumes (`/Volumes/…`), COPY INTO (idempotent, FORMAT_OPTIONS, mergeSchema), CTAS from `read_files` (one-off snapshot; re-runs reread everything) |
+| Ch 3 lessons: Auto Loader | ✅ | Incremental discovery with a checkpoint, directory vs file-notification, schema inference and evolution, `_rescued_data`, streaming tables for SQL users, COPY INTO vs Auto Loader decision card |
+| Ch 3 lessons: Delta Sharing | ✅ | Open vs Databricks-to-Databricks, provider (share, recipient, grant) vs recipient (catalog from share), read-only, live, cross-cloud |
+| Ch 3 lessons: APIs, Marketplace | ✅ | Lakeflow Connect first; otherwise a scheduled job lands API JSON in a volume and COPY INTO / Auto Loader loads it; Lakehouse Federation for query-in-place; Marketplace as a read-only catalog |
+| Ch 3 lessons: UI upload | ✅ | Supported formats, size limit, choosing catalog/schema/name, required privileges, header and type detection, managed Delta result |
+| **Ingestion Picker** (tap-based Scenario Picker, 10+) | ✅ | **12 scenarios** over 10 methods: hourly CSVs at 2M files (Auto Loader), non-Databricks partner on another cloud (open sharing), one-off 20 MB spreadsheet (upload), 3,000 daily Parquet files (COPY INTO), one-off JSON snapshot (CTAS), weather vendor (Marketplace), REST API with no connector (custom intake), Salesforce (Lakeflow Connect), 40,000 PDFs (volume), monthly join to Postgres (Federation), another Databricks account (D2D sharing), evolving JSON (Auto Loader rescue). Tap → verdict → why each of the 4 options fits or doesn't. |
+| **Upload Wizard** (tap-based) | ✅ | Pick a file → catalog/schema/name → preview with header toggle and per-column type selects → create. Simulated mistakes: unsupported file (video), oversized file (6.4 GB), **no CREATE TABLE** (prod.sales), **wrong schema** (main.default), read-only catalog (samples), bad table name, **header read as data** (`_c0…`, all STRING), **wrong inferred type** (ZIP as BIGINT turns 02134 into 2134). Each is explained. A "Mistakes explored 4/4" checklist covers the four you named plus the type fix. |
+| Ch 8 lessons | ✅ | Star (facts, dimensions, grain first, additive/semi-additive, degenerate dimension, SCD 1/2, Unknown member); snowflake (pros/cons, when it fits); data vault (hubs, links, satellites; insert-only, auditable); 3NF; informational PK/FK; medallion mapping (bronze raw → silver cleaned/conformed, often vault or 3NF → gold stars and aggregates) |
+| **Medallion Sorter** (tap-based) | ✅ | 12 cards (4 per layer): tap a card, tap Bronze/Silver/Gold. Each placement shows ✓/✗ and why; misplaced cards can be moved. Saved in progress. |
+| **Star Schema Builder** (tap-based) | ✅ | Retail sales process. 1) Pick the grain (order line ✓; order, store-day, product explained). 2) Tap 14 columns into fact_sales or dim_customer/product/date/store; keys pre-placed; wrong placements say where they belong and why. 3) Snowflake opportunity (region → dim_region ✓). Saved in progress. |
+| **4+ star/snowflake SQL challenges** | ✅ | **5:** fact joined to two dims; extra hop through regions; gold aggregate at a declared grain (year × month × category); **fix a fan-out** (category targets summed per order line, 4,000 vs 500); Unknown member with LEFT JOINs so totals reconcile |
+| 25+ questions each, scenario-heavy, every option explained, verify flags | ✅ | Ch 3: 26 (20 scenario, 18 flags). Ch 8: 26 (19 scenario, 7 flags; modeling theory is stable). Tests enforce one correct answer and an explanation for every option. |
+| Labs and challenges in e2e (dev + prod) | ✅ | `ch3.spec.js`: Ingestion Picker wrong/right; the Upload Wizard through every mistake to a created table. `ch8.spec.js`: Medallion Sorter wrong → move → all 12 → reload persists; Star Schema Builder all three steps with wrong picks; the fan-out fix challenge explains, then passes; snowflake challenge; chapter pages. |
+| Boss draws the full weighted 45 | ✅ | e2e: 45 unique questions, all 9 sections, mix **5/4/2/7/7/7/7/2/4**. Unit: same allocation, and the rescaled weights equal the exam weights. |
+| Readiness shows 9 of 9 | ✅ | e2e: "Readiness estimate: 9 of 9 chapters built" and "This score covers every exam section"; no mini-boss text |
+| README says complete | ✅ | Status line, lab list (15) |
 
 ### Chapters
 | # | Chapter | Status |
 |---|---|---|
-| 1 | Data Intelligence Platform | ✅ new |
-| 2 | Managing Data | ✅ new |
-| 3 | Importing Data | ⬜ topic list only |
+| 1 | Data Intelligence Platform | ✅ |
+| 2 | Managing Data | ✅ |
+| 3 | Importing Data | ✅ new |
 | 4 | Executing Queries | ✅ |
 | 5 | Analyzing Queries | ✅ |
 | 6 | Dashboards & Visualizations | ✅ |
 | 7 | AI/BI Genie Spaces | ✅ |
-| 8 | Data Modeling | ⬜ topic list only |
+| 8 | Data Modeling | ✅ new |
 | 9 | Securing Data | ✅ |
 
-### Interactive elements
+### Interactive elements (original spec)
 | Element | Status |
 |---|---|
-| SQL Sandbox: 34 graded challenges (9 in Ch 2, 19 in Ch 4, 6 in Ch 5) | ✅ |
-| Platform Match, Catalog Explorer | ✅ new |
-| Join Visualizer, Set Ops, Time Travel | ✅ |
-| Query Profile Detective, Cache Lab | ✅ |
-| Chart Picker, Dashboard Config | ✅ |
-| Genie Space Builder, Namespace Builder | ✅ |
-| Scenario Picker | 🟡 102 scenario questions plus Platform Match and Chart Picker; an ingestion set comes with Ch 3 |
-| Medallion Sorter | ⬜ Chapter 8 (will be tap-based) |
+| SQL Sandbox: 39 graded challenges (Ch 2: 9, Ch 4: 19, Ch 5: 6, Ch 8: 5) | ✅ |
+| Join Visualizer | ✅ |
+| Scenario Picker | ✅ Platform Match (10) and Ingestion Picker (12) on one shared component, plus 141 scenario questions |
+| Namespace Builder | ✅ |
+| Medallion Sorter | ✅ new |
+| Genie Space Builder | ✅ |
+| Time Travel Timeline | ✅ |
+| Also built | Set Ops, Query Profile Detective, Cache Lab, Chart Picker, Dashboard Config, Catalog Explorer, Upload Wizard, Star Schema Builder |
 
-### Engineering
+### Game mechanics (original spec)
 | Item | Status |
 |---|---|
-| Failed chunk → Retry/Reload | ✅ chunk map, tested on Chromium in dev and prod; WebKit project ready |
-| `npm run verify` before every push, gated on exit codes | ✅ exit 0 |
-| Main bundle | 358 kB (114 kB gzip), no warning |
+| XP, levels, streaks, daily goal | ✅ |
+| Mastery meter per chapter | ✅ |
+| Spaced repetition (Leitner) | ✅ |
+| Boss Battle: 45 Q, 90 min, per-section breakdown | ✅ full exam, all sections |
 
 ---
 
@@ -81,80 +82,91 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 |---|---|---|---|---|---|---|
 | 1 | 4 | 9 | 26 (16) | 0 | 19 | Platform Match, Catalog Explorer |
 | 2 | 3 | 6 | 26 (19) | 9 | 12 | Catalog Explorer |
+| 3 | 5 | 11 | 26 (20) | 0 | 18 | Ingestion Picker, Upload Wizard |
 | 4 | 9 | 24 | 42 (15) | 19 | 19 | Join Visualizer, Set Ops, Time Travel |
 | 5 | 6 | 12 | 26 (15) | 6 | 18 | Query Profile Detective, Cache Lab |
 | 6 | 5 | 15 | 28 (13) | 0 | 26 | Chart Picker, Dashboard Config |
 | 7 | 4 | 11 | 31 (15) | 0 | 27 | Genie Space Builder |
+| 8 | 4 | 9 | 26 (19) | 5 | 7 | Medallion Sorter, Star Schema Builder |
 | 9 | 4 | 11 | 21 (9) | 0 | 15 | Namespace Builder |
-| **Total** | **35** | **88** | **200 (102)** | **34** | **136** + 7 in-lab notes | **11** |
+| **Total** | **44** | **108** | **252 (141)** | **39** | **161** + 14 in-lab notes | **15** |
 
-### Boss weighting with chapters 1, 2, 4, 5, 6, 7, 9 built
-| Section | Exam weight | Rescaled share | Questions (of 45) | Pool |
-|---|---|---|---|---|
-| 1. Platform | 11% (given) | 12.2% | 5 | 26 |
-| 2. Managing Data | 8% (given) | 8.9% | 4 | 26 |
-| 4. Querying | 15.75% (assumed) | 17.5% | 8 | 42 |
-| 5. Analyzing | 15.75% (assumed) | 17.5% | 8 | 26 |
-| 6. Dashboards | 15.75% (assumed) | 17.5% | 8 | 28 |
-| 7. Genie | 15.75% (assumed) | 17.5% | 8 | 31 |
-| 9. Securing | 8% (given) | 8.9% | 4 | 21 |
+### Boss weighting, all chapters built
+| Section | Exam weight | Questions (of 45) | Pool |
+|---|---|---|---|
+| 1. Platform | 11% (given) | 5 | 26 |
+| 2. Managing Data | 8% (given) | 4 | 26 |
+| 3. Importing | 5% (given) | 2 | 26 |
+| 4. Querying | 15.75% (assumed) | 7 | 42 |
+| 5. Analyzing | 15.75% (assumed) | 7 | 26 |
+| 6. Dashboards | 15.75% (assumed) | 7 | 28 |
+| 7. Genie | 15.75% (assumed) | 7 | 31 |
+| 8. Modeling | 5% (given) | 2 | 26 |
+| 9. Securing | 8% (given) | 4 | 21 |
 
-The built chapters now cover 90% of the exam by weight. Only sections 3 (5%) and 8 (5%) are missing.
+Weights are no longer rescaled: each section gets its exam weight. Largest-remainder rounding gives 45 exactly (sections 1, 2 and 9 get the three leftover questions).
 
 ---
 
 ## 3. Facts to re-verify before the exam
 
-Content flags: **136** (Ch 1: 19 · Ch 2: 12 · Ch 4: 19 · Ch 5: 18 · Ch 6: 26 · Ch 7: 27 · Ch 9: 15), plus in-lab notes.
+Content flags: **161** (Ch 1: 19 · Ch 2: 12 · Ch 3: 18 · Ch 4: 19 · Ch 5: 18 · Ch 6: 26 · Ch 7: 27 · Ch 8: 7 · Ch 9: 15), plus 14 in-lab notes.
 
-### Chapter 1 (new)
+### Chapter 3 (new)
 | Item | What to check |
 |---|---|
-| Product names | Workflows → Lakeflow Jobs; Delta Live Tables → Lakeflow Declarative Pipelines; DatabricksIQ → Data Intelligence Engine. Which names the exam uses. |
-| Mosaic AI | Current component names (serving, vector search, agent framework, evaluation) |
-| AI functions | Names and availability (`ai_query`, sentiment and classification functions) |
-| Certification / deprecation | Applied as system tags; how Catalog Explorer shows them |
-| Marketplace | Asset types offered, private exchanges, consumer requirements (Unity Catalog workspace, privileges) |
+| External locations and volumes | Privilege names (READ FILES, WRITE FILES, CREATE EXTERNAL TABLE, READ VOLUME, WRITE VOLUME) |
+| COPY INTO | FORMAT_OPTIONS / COPY_OPTIONS names; current file-count guidance vs Auto Loader |
+| read_files | Option names; the older ``format.`path` `` syntax |
+| Auto Loader | Default `schemaEvolutionMode`; whether CSV/JSON default to STRING (`cloudFiles.inferColumnTypes`); file-notification setup |
+| Streaming tables | `CREATE OR REFRESH STREAMING TABLE … STREAM read_files(…)` syntax in Databricks SQL |
+| Delta Sharing | Shareable asset types; open-sharing authentication (token, OIDC federation); cross-cloud egress |
+| Lakeflow Connect / Federation | Supported connectors and sources |
+| UI upload | Size limit (about 2 GB at the time of writing), file count, supported formats (Excel is newer) |
 
-### Chapter 2 (new)
+### Chapter 8 (new)
 | Item | What to check |
 |---|---|
-| Tags | `ALTER TABLE … ALTER COLUMN … SET TAGS` syntax; governed tags and tag policies; who can set them |
-| Lineage | Retention period; lineage system tables; which asset types and column-level lineage appear |
-| Discovery | BROWSE privilege; Sample Data requirements; semantic search |
-| Casting | ANSI mode default on SQL warehouses; `try_cast` behavior (the sandbox's `try_cast` accepts only whole numbers for integer types) |
+| SCD helpers | APPLY CHANGES / AUTO CDC naming in declarative pipelines |
+| Keys | Informational PK/FK, the RELY option, identity columns for surrogate keys |
+| Medallion conventions | How Databricks currently describes silver modeling (data vault / 3NF vs source-aligned) |
+| Product names | Lakeflow Declarative Pipelines vs Delta Live Tables |
 
-### Chapters 4–7 and 9
-Unchanged from v5.
+### Other chapters
+Unchanged from v6.
 
 ---
 
 ## 4. Findings
 
-### New in v6
+### New in v7
 | ID | Severity | Finding | Suggested fix |
 |---|---|---|---|
-| U1 | **Low (matters on iPhone)** | **WebKit and iPhone still untested.** T1 no longer depends on the error text, so the Safari gap from v5 is closed in code. But neither WebKit nor a real iPhone has run the suite. | On your Mac: `npx playwright install webkit && npm run test:e2e`. On the phone: turn on airplane mode, open an unvisited chapter, turn it off, tap Retry. |
-| U2 | Info (content) | **Catalog Explorer is a simplified mock.** No Permissions, History or Insights tabs; certification is a badge rather than a system tag; four fixed tag presets. Flagged in the lab. | None needed |
-| U3 | Info | **Sandbox CAST differs from Databricks.** SQLite turns `'$12.50'` into 0, where Databricks with ANSI mode raises an error. The fix challenge explains this, and `try_cast` now behaves like Databricks. | None needed; documented in the challenge |
-| U4 | Info | **Catalog Explorer's done banner stays visible** on later object pages until you pick another mission. It is a little noisy but harmless. | Auto-advance to the next unfinished mission, if you want |
+| V1 | Info | **Chapter 3 has no runnable SQL challenges.** COPY INTO, read_files and Auto Loader need cloud storage, which the SQLite sandbox can't simulate. The chapter is covered by the two labs and 26 questions. | None needed |
+| V2 | Info | **Upload Wizard progress isn't saved.** The wizard and its mistakes checklist reset when you leave; the completion XP is kept. Intentional, as with the Cache Lab. | None needed |
+| V3 | Info | **Scenario pickers restart at scenario 1** when reopened. Solved scenarios stay counted, but you tap Next to reach unsolved ones. | Start at the first unsolved scenario |
+| V4 | Info (content) | **Medallion placements are conventions.** Two cards (data vault in silver, ML features in gold) follow common practice that some teams draw differently. Flagged in the lab. | None needed |
+| V5 | Info (content) | **Chapters 3 and 8 get 2 Boss questions each** (5% weight). That matches the exam, but their 26-question banks mostly get practiced through chapter tests and spaced repetition. | None needed |
 
 ### Carried over
 | ID | Severity | Finding | Status |
 |---|---|---|---|
-| T1 | Low | Retry depended on the browser's error text (Safari) | ✅ Fixed in `722d4bf` (see U1) |
-| T2 | Info | Tapped values not announced to screen readers | ✅ Fixed in `2806ae3`; not tested with VoiceOver/TalkBack |
-| T3 | Info | Cache lab progress isn't saved (intentional) | Open |
-| T4 | Info (content) | Detective and Cache lab numbers are illustrative | Open; flagged |
-| S5 | Info | Brief 0% / spinner while chunks load | Open |
-| S6 | Info | Noisy e2e output from the crash test | Open |
+| U1 | **Low (matters on iPhone)** | WebKit and iPhone untested | Open. Steps in §7. |
+| U2 | Info (content) | Catalog Explorer is a simplified mock | Open; flagged |
+| U3 | Info | Sandbox CAST differs from Databricks (`try_cast` now matches) | Open; documented |
+| U4 | Info | Catalog Explorer done banner stays until another mission is picked | Open |
+| T2 | Info | Live-region announcements not tested with VoiceOver/TalkBack | Open |
+| T3, T4 | Info | Cache Lab not saved; Detective/Cache numbers illustrative | Open; by design |
+| S5, S6 | Info | Brief spinner on chunk load; noisy crash-test output | Open |
 | R5 | Low (content) | Genie lab scores instructions by keyword | Open |
-| R6 | Info | Weights for sections 4–7 assumed (15.75% each) | Open |
+| R6 | Info | Weights for sections 4–7 assumed (15.75% each) | Open. Check the current exam guide. |
 | R7 | Info | Readiness estimate shows coverage only | Open (as requested) |
 | N4 | Low (content) | Simplified Unity Catalog access model | Open; flagged |
-| F3 | Low | Sandbox is SQLite, not Databricks SQL | Open; documented (see U3) |
+| F3 | Low | Sandbox is SQLite, not Databricks SQL | Open; documented |
 | F4, F6 | Low | GROUP BY detection; Boss timer only on the Boss page | Open |
 | F7–F10 | Info | Minor UI and model simplifications | Open |
+
+No open Medium or High findings.
 
 ---
 
@@ -163,23 +175,23 @@ Unchanged from v5.
 | Check | Result |
 |---|---|
 | `npm run verify` (exit 0) | Unit tests, e2e (dev + prod) and build all passed before this push. Commits and the push were gated on exit codes. |
-| `npm test` | **122 / 122 pass.** New: Ch 1 and Ch 2 content integrity and minimums; every widget block names a registered lab; every Ch 2 solution passes; both Ch 2 fix starters run and show their explanation; alternative answers accepted (COALESCE/NULLIF, GROUP BY dedupe, USING join, `try_cast`) and naive ones rejected; Catalog Explorer lineage, missions, feedback and sanitizing; Platform Match scenarios; `try_cast` semantics |
-| `npm run test:e2e` | **54 pass, 1 skipped** (27 dev + 27 prod; the dev-only crash test is skipped in prod). The webkit project was skipped: WebKit not installed. New: Retry via chunk map; chunk map lists every chapter (prod); live region announces the tapped value; Platform Match; the full Catalog Explorer run with inline feedback and reload persistence; Ch 2 challenges; Ch 1 and Ch 2 pages |
-| `npm run build` | No warnings. Main 358 kB (114 kB gzip). Chunks: ch1 22 kB, ch2 30 kB, ch4 58 kB, ch5 32 kB, ch6 26 kB, ch7 30 kB, ch9 22 kB; Catalog Explorer 19 kB, Platform Match 11 kB |
+| `npm test` | **146 / 146 pass.** New: Ch 3 and Ch 8 content integrity and minimums; all 9 chapters built and loadable; Ingestion Picker (12 scenarios, 4 explained options, key methods covered); Upload Wizard (file, destination, header, inferred-type rules); Medallion Sorter and Star Schema Builder (explanations, scoring, sanitizing); Ch 8 solutions, the fan-out starter runs and explains, MAX(target) accepted, inner join rejected for the Unknown-member challenge; Boss allocation 5/4/2/7/7/7/7/2/4 = 45 |
+| `npm run test:e2e` | **70 pass, 1 skipped** (35 dev + 35 prod; the dev-only crash test is skipped in prod). The webkit project was skipped: WebKit not installed. New: both Ch 3 labs, both Ch 8 labs, Ch 8 challenges, Ch 3 and Ch 8 pages, Boss mix across 9 sections, readiness 9 of 9, no mini-boss |
+| `npm run build` | No warnings. Main 360 kB (115 kB gzip). Chunks: ch1 22, ch2 30, ch3 25, ch4 58, ch5 32, ch6 26, ch7 30, ch8 28, ch9 22 kB. New labs: Upload Wizard 12, Ingestion Picker 12, Star Schema 9, Medallion 6, ScenarioPicker 3 kB. `chunk-map.json` lists all 9 chapters. |
 | `npm audit` | 0 vulnerabilities |
-| Visual check (375 px) | Catalog Explorer schema list with badges and the lineage view; no horizontal scroll |
+| Visual check (375 px) | Medallion Sorter (sticky layer bar), Star Schema Builder (sticky table bar added after the first check showed targets too far below the chips), Upload Wizard preview (made to fit after the first check cut off a column); no horizontal page scroll |
 | Not tested | WebKit and real phones (U1), screen readers (T2), a full Boss run to timer expiry |
 
 ---
 
 ## 6. Security and privacy
 
-No change to the model: no backend, no analytics, localStorage only. The app now also fetches `chunk-map.json` (same origin, `no-store`) when a chapter download fails. Retry imports only same-origin chunk paths listed in that file. Catalog Explorer state is sanitized against the lab's known objects, columns and tags before use.
+No change: no backend, no analytics, localStorage only, same-origin chunk loading. Lab state (Catalog Explorer, Medallion Sorter, Star Schema Builder) is sanitized against known ids before use.
 
 ---
 
 ## 7. Recommended next steps
 
-1. **U1:** run the WebKit project on your Mac and do the airplane-mode Retry check on your iPhone. Send me the result.
-2. Build **Chapter 3 (Importing Data)** and **Chapter 8 (Data Modeling)** with a tap-based Medallion Sorter. That covers the remaining 10% of the exam.
-3. Two weeks before the exam: work through §3. Chapters 1, 5, 6 and 7 have the most product-specific details.
+1. **U1, iPhone check.** On your Mac: `npm run build && npx vite preview --host`, open the Network URL on your iPhone, then turn Wi-Fi off, open an unvisited chapter, turn Wi-Fi on and tap Retry. Also try the tap labs. Optionally run `npx playwright install webkit && npm run test:e2e`.
+2. **Two weeks before the exam:** work through §3, then check R6 (section weights 4–7) against the current exam guide.
+3. **Study plan:** each chapter's levels → chapter test → daily Review queue → a Boss Battle every few days. Book the exam after scoring 80%+ on two Boss runs in a row.
