@@ -11,24 +11,22 @@ export const questions = [
     sub: 'assistant',
     stem: 'You inherited a 200-line query full of nested CTEs. You want a plain-language walkthrough of what it does, right in the SQL editor, without changing the code. What is the fastest option?',
     options: [
-      { t: 'Ask Databricks Assistant with /explain', ok: true, why: '/explain describes what the selected code does in plain language and leaves the code unchanged.' },
+      { t: 'Ask Databricks Assistant with /explain', ok: true, why: 'In the current product the Assistant is called Genie Code; /explain works the same. /explain describes what the selected code does in plain language and leaves the code unchanged.' },
       { t: 'Ask Databricks Assistant with /fix', why: '/fix proposes code changes to resolve an error. Your query works; you only want to understand it.' },
       { t: 'Open the Query Profile', why: 'Query Profile shows execution metrics such as operators, time, and rows. It does not explain business logic.' },
       { t: 'Run DESCRIBE HISTORY on each table', why: 'DESCRIBE HISTORY lists table versions and operations. It says nothing about what your query means.' },
     ],
-    verify: 'Assistant slash commands change over time. Check the current list in the Databricks docs.',
   },
   {
     id: 'c4-q-assist-fix',
     sub: 'assistant',
     stem: 'A teammate renamed a column. Your saved query now fails with an UNRESOLVED_COLUMN error. You want the Assistant to suggest corrected SQL you can accept or reject. Which command fits best?',
     options: [
-      { t: '/fix', ok: true, why: '/fix (also offered as "Diagnose error" on failures) uses the error and table metadata to propose corrected code for you to review.' },
+      { t: '/fix', ok: true, why: 'The Diagnose error button runs /fix automatically. /fix (also offered as "Diagnose error" on failures) uses the error and table metadata to propose corrected code for you to review.' },
       { t: '/explain', why: '/explain describes code. It is not aimed at producing a corrected version of a failing query.' },
       { t: '/doc', why: '/doc adds comments or documentation to code. It does not resolve errors.' },
       { t: 'Restart the SQL warehouse', why: 'The error is semantic: the column name no longer exists. Restarting compute will not change that.' },
     ],
-    verify: 'Command names and the "Diagnose error" button label may change. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-assist-context',
@@ -84,12 +82,11 @@ export const questions = [
     scenario: true,
     stem: 'Your team wants a SQL warehouse that starts in seconds, scales quickly, and requires no cloud capacity management in your own account. Which type fits?',
     options: [
-      { t: 'Serverless SQL warehouse', ok: true, why: 'Serverless compute runs in Databricks-managed infrastructure, starts fast, and scales without you managing instances.' },
+      { t: 'Serverless SQL warehouse', ok: true, why: 'Serverless starts in about 2–6 seconds and adds Intelligent Workload Management. Serverless compute runs in Databricks-managed infrastructure, starts fast, and scales without you managing instances.' },
       { t: 'Classic SQL warehouse', why: 'Classic warehouses run in your cloud account and start more slowly.' },
       { t: 'Pro SQL warehouse', why: 'Pro adds features over Classic, but its compute still runs in your account and starts more slowly than serverless.' },
       { t: 'A job cluster', why: 'Job clusters run scheduled jobs, not interactive SQL from dashboards and the SQL editor.' },
     ],
-    verify: 'Warehouse types and the features each supports change. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-wh-autostop',
@@ -121,12 +118,11 @@ export const questions = [
     sub: 'federation',
     stem: 'Which sequence correctly sets up a federated query against an external MySQL database?',
     options: [
-      { t: 'Create a CONNECTION (host and credentials), create a FOREIGN CATALOG from it, then query catalog.schema.table', ok: true, why: 'The connection stores how to reach the source. The foreign catalog mirrors its databases and tables into Unity Catalog.' },
+      { t: 'Create a CONNECTION (host and credentials), create a FOREIGN CATALOG from it, then query catalog.schema.table', ok: true, why: 'Then grant privileges on the foreign catalog. The connection stores how to reach the source. The foreign catalog mirrors its databases and tables into Unity Catalog.' },
       { t: 'Create an EXTERNAL LOCATION, then CREATE TABLE ... LOCATION pointing to MySQL', why: 'External locations are for cloud object storage paths, not database servers.' },
       { t: 'Create a Delta Sharing recipient for MySQL', why: 'Recipients receive shared data. They do not connect to source databases.' },
       { t: 'Create a streaming table that reads the MySQL binlog', why: 'Change data capture is an ingestion pattern. Federation queries the source directly.' },
     ],
-    verify: 'Supported sources and required warehouse types for federation evolve. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-fed-tradeoff',
@@ -183,12 +179,11 @@ export const questions = [
     sub: 'views',
     stem: 'Which statement about materialized views in Databricks SQL is true?',
     options: [
-      { t: 'They store precomputed results that refresh on a schedule or on demand (REFRESH MATERIALIZED VIEW), incrementally when possible.', ok: true, why: 'This is the core MV trade-off: fast reads in exchange for managed refreshes.' },
+      { t: 'They store precomputed results that refresh on a schedule or on demand (REFRESH MATERIALIZED VIEW), incrementally when possible.', ok: true, why: 'Refresh with SCHEDULE EVERY/CRON, TRIGGER ON UPDATE, or REFRESH MATERIALIZED VIEW; a serverless pipeline does the work. This is the core MV trade-off: fast reads in exchange for managed refreshes.' },
       { t: 'They always return real-time results with zero latency.', why: 'MV results are as fresh as the last refresh. A standard view is computed at query time.' },
       { t: 'Dropping a materialized view also drops its source tables.', why: 'Dropping an MV removes only the MV.' },
       { t: 'They can only be defined in Python.', why: 'You create them in SQL with CREATE MATERIALIZED VIEW ... AS SELECT.' },
     ],
-    verify: 'MV refresh options (schedules, triggers, incremental refresh support) evolve. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-tempview',
@@ -247,7 +242,6 @@ export const questions = [
       { t: 'Groups by every column in the table, even ones not selected', why: 'It only uses the non-aggregated SELECT expressions.' },
       { t: 'Produces all grouping combinations, like CUBE', why: 'CUBE and ROLLUP produce subtotal combinations. GROUP BY ALL does not.' },
     ],
-    verify: 'GROUP BY ALL requires a recent runtime or warehouse version. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-median',
@@ -365,7 +359,6 @@ export const questions = [
       { t: 'ORDER BY discount DESC', why: 'This reverses the order of the values too. You only want to move the NULLs.' },
       { t: 'WHERE discount IS NOT NULL', why: 'This removes those rows instead of moving them to the bottom.' },
     ],
-    verify: 'Default NULL ordering differs between SQL engines. Verify in the Databricks ORDER BY docs.',
   },
   {
     id: 'c4-q-qualify',
@@ -409,12 +402,11 @@ export const questions = [
     scenario: true,
     stem: 'You are building a new gold table that has no requirement for a specific storage path or outside readers. Which table type does Databricks generally recommend?',
     options: [
-      { t: 'A managed table', ok: true, why: 'Managed tables let Unity Catalog handle storage and lifecycle, and they unlock automatic optimizations such as predictive optimization.' },
+      { t: 'A managed table', ok: true, why: 'Docs: managed tables are the default and recommended table type, and Unity Catalog handles their storage and optimization. Managed tables let Unity Catalog handle storage and lifecycle, and they unlock automatic optimizations such as predictive optimization.' },
       { t: 'An external table', why: 'External tables are for when you need to control the path or share files with other tools.' },
       { t: 'A temporary view', why: 'Temp views are not persisted.' },
       { t: 'A CSV file in a volume', why: 'Files in a volume are not tables. You lose Delta features such as ACID transactions and time travel.' },
     ],
-    verify: 'Recommendations and features for managed tables (e.g., predictive optimization defaults) evolve. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-cor',
@@ -448,7 +440,6 @@ export const questions = [
       { t: 'A Delta Sharing recipient', why: 'Recipients are for sharing data out, not for reading your own storage.' },
       { t: 'A running all-purpose cluster with an instance profile', why: 'With Unity Catalog, access goes through storage credentials and external locations, not per-cluster profiles.' },
     ],
-    verify: 'Exact privilege names may change. Verify in Unity Catalog docs.',
   },
 
   // ---------------- Time travel ----------------
@@ -491,12 +482,11 @@ export const questions = [
     sub: 'timetravel',
     stem: 'By default, VACUUM keeps data files that are no longer referenced by the current version for how long before they can be deleted?',
     options: [
-      { t: '7 days (168 hours)', ok: true, why: 'The default retention threshold is 7 days. Going lower requires overriding a safety check.' },
+      { t: '7 days (168 hours)', ok: true, why: 'Predictive optimization can run VACUUM for you on managed tables. The default retention threshold is 7 days. Going lower requires overriding a safety check.' },
       { t: '0 hours', why: 'RETAIN 0 HOURS is possible only after disabling the retention safety check, and it is risky.' },
       { t: '30 days', why: '30 days is the default retention for the transaction log (history entries), not for data files.' },
       { t: 'Forever. VACUUM only removes uncommitted files', why: 'VACUUM removes unreferenced files older than the retention threshold.' },
     ],
-    verify: 'Defaults and whether predictive optimization runs VACUUM automatically can change. Verify in Databricks docs.',
   },
   {
     id: 'c4-q-tt-restore-version',

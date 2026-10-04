@@ -22,12 +22,13 @@ const subsections = [
         'Slash commands to know',
         [
           '`/explain`: describe what the selected code does, in plain language.',
-          '`/fix`: propose a fix for an error. On a failed query you will also see a **Diagnose error** option.',
+          '`/fix`: propose a fix for an error, shown as a diff you Accept or Reject. On a failed cell, the **Diagnose error** button runs `/fix` for you.',
           '`/doc`: add comments or documentation to code.',
-          '`/optimize`: suggest a more efficient version of the code.',
+          '`/optimize`: suggest performance improvements for SQL. Also: `/findTables`, `/findQueries`, `/prettify`.',
+          'Naming: the exam guide says **Databricks Assistant**; the product is now called **Genie Code** (old Assistant docs redirect there). Same commands.',
           'Natural-language prompts work too, for example: "top 5 customers by revenue last quarter".',
         ],
-        { verify: 'The set of slash commands and their names changes over time.' },
+        
       ),
       card('assist-3', 'Exam lens', [
         'Match the command to the goal: **understand** code → /explain. **Error** to resolve → /fix. **Add docs/comments** → /doc.',
@@ -50,9 +51,10 @@ const subsections = [
         'Types',
         [
           '**Serverless**: Databricks-managed compute, starts in seconds, scales fast. This is generally the recommended choice.',
-          '**Pro** and **Classic**: compute runs in your cloud account and starts more slowly. Pro supports more features than Classic.',
+          '**Pro** and **Classic**: compute runs in your cloud account and starts more slowly. Serverless has Photon, Predictive IO and Intelligent Workload Management; Pro has Photon and Predictive IO; Classic has Photon only.',
+          'Choose **Pro** when serverless isn\'t available in your region or you need custom networking (e.g. federation to databases in your private network). Genie needs Pro or Serverless.',
         ],
-        { verify: 'Which features need Pro or Serverless changes over time.' },
+        
       ),
       card('wh-3', 'Size vs scaling: the #1 exam trap', [
         '**Cluster size** (2X-Small … 4X-Large) makes each query faster. Pick a larger size when **one heavy query** is slow.',
@@ -71,8 +73,8 @@ const subsections = [
         'fed-1',
         'Lakehouse Federation',
         [
-          '**Lakehouse Federation** lets you query external databases (for example PostgreSQL, MySQL, SQL Server, Snowflake, Redshift, BigQuery) **in place**, with no ingestion pipeline, governed by Unity Catalog.',
-          'Setup: create a **connection** (host and credentials), then a **foreign catalog** that mirrors the source. Query it like any table: `pg_sales.public.orders`.',
+          '**Lakehouse Federation** lets you query external databases (for example PostgreSQL, MySQL, SQL Server, Snowflake, Redshift, BigQuery) **in place** (read-only), with no ingestion pipeline, governed by Unity Catalog. Queries are pushed down to the source over JDBC.',
+          'Setup: create a **connection** (host and credentials), then a **foreign catalog** that mirrors the source, then grant privileges. Query it like any table: `pg_sales.public.orders`. Sources include MySQL, PostgreSQL, SQL Server, Oracle, Teradata, Redshift, Snowflake, BigQuery and Synapse.',
         ],
         {
           code: `CREATE CONNECTION pg_conn TYPE postgresql
@@ -82,8 +84,7 @@ CREATE FOREIGN CATALOG pg_sales USING CONNECTION pg_conn
   OPTIONS (database 'sales');
 
 SELECT * FROM pg_sales.public.orders LIMIT 10;`,
-          verify: 'Supported sources, option names, and required warehouse types change.',
-        },
+          },
       ),
       card('fed-2', 'When (not) to federate', [
         '**Good fit:** ad-hoc exploration, joining live operational data with lakehouse tables, proofs of concept, or avoiding yet another copy pipeline.',
@@ -106,7 +107,7 @@ SELECT * FROM pg_sales.public.orders LIMIT 10;`,
       card(
         'views-2',
         'Syntax at a glance',
-        ['MVs and STs are managed by Lakeflow Declarative Pipelines (formerly Delta Live Tables) behind the scenes.'],
+        ['In Databricks SQL, MVs and STs are refreshed by a **serverless pipeline** behind the scenes (Lakeflow pipelines, formerly Delta Live Tables). Refresh options: `SCHEDULE EVERY …`, `SCHEDULE CRON …`, `TRIGGER ON UPDATE`, or `REFRESH MATERIALIZED VIEW`.'],
         {
           code: `CREATE VIEW v_active AS SELECT * FROM customers WHERE active;
 
@@ -118,8 +119,7 @@ CREATE STREAMING TABLE st_events
 AS SELECT * FROM STREAM read_files('s3://acme/events/', format => 'json');
 
 REFRESH MATERIALIZED VIEW mv_daily_rev;`,
-          verify: 'Schedule syntax and the pipeline product names (Lakeflow / DLT) have changed recently.',
-        },
+          },
       ),
       card('views-3', 'Pick fast', [
         'Files or events keep arriving, append-only → **streaming table**.',
@@ -144,8 +144,8 @@ REFRESH MATERIALIZED VIEW mv_daily_rev;`,
       card('agg-2', 'Averages & summary stats', [
         '`AVG`, `SUM`, `MIN`, and `MAX` all **ignore NULLs**. AVG divides by the number of non-NULL values.',
         'For skewed data use `median(col)` or `percentile(col, 0.5)`. `percentile_approx` is the cheap version. `stddev` measures spread.',
-        'In notebooks, the results table also offers a **Data Profile** that shows summary statistics without writing SQL.',
-      ], { verify: 'Data Profile UI location in notebooks.' }),
+        'In notebooks, click **+** above the results and choose **Data Profile** to get summary statistics and histograms without writing SQL.',
+      ]),
       card(
         'agg-3',
         'GROUP BY rules',
@@ -212,7 +212,7 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY amount DESC) = 1;` 
           'In Databricks, `LIKE` is case-sensitive. Use `ILIKE` or `lower(col) LIKE ...` for case-insensitive matching.',
           'Without `ORDER BY`, result order is not guaranteed. For top-N queries, add a tie-breaker column.',
         ],
-        { verify: 'Default NULL ordering and ILIKE availability.' },
+        
       ),
       challenge('c4-sql-filter-sort'),
       challenge('c4-fix-having'),
@@ -227,10 +227,10 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY amount DESC) = 1;` 
     emoji: '🏗️',
     blocks: [
       card('tbl-1', 'Managed vs external', [
-        '**Managed table**: Unity Catalog chooses and manages the storage location. `DROP TABLE` removes the data too. This is the recommended default.',
+        '**Managed table**: Unity Catalog chooses and manages the storage location. `DROP TABLE` removes the data too, but you can **UNDROP** it within **7 days** by default (configurable to 0 or 7–30 days), then the files are purged. Managed is the recommended default.',
         '**External table**: you specify a `LOCATION` (for example an S3 path) covered by an **external location** and a **storage credential**. `DROP TABLE` removes only the metadata; the files stay.',
         'Use external tables when data must stay at a path you control or that other tools read.',
-      ], { verify: 'Managed-table drop/UNDROP retention windows.' }),
+      ]),
       card('tbl-2', 'The syntax', [
         'CTAS (`CREATE TABLE ... AS SELECT`) infers the schema and loads data in one step. Delta is the default format, so `USING DELTA` is optional.',
       ], {
@@ -243,10 +243,10 @@ CREATE TABLE quest.retail.raw_events (id INT, payload STRING)
 LOCATION 's3://acme-raw/events/';`,
       }),
       card('tbl-3', 'CREATE OR REPLACE vs DROP + CREATE', [
-        '`CREATE OR REPLACE TABLE` is **atomic**: readers never see a missing table, and Delta **history is kept**, so you can still time travel to versions from before the replace.',
+        '`CREATE OR REPLACE TABLE` is **atomic**: readers never see a missing table, and Delta **history is kept**, along with **granted privileges, row filters and column masks**, so you can still time travel to versions from before the replace.',
         '`DROP` then `CREATE` leaves a window where the table does not exist, **throws away history**, and creates a brand-new table object.',
         '`CREATE TABLE IF NOT EXISTS` does nothing (and raises no error) when the table already exists.',
-      ], { verify: 'Whether grants and table ID survive CREATE OR REPLACE.' }),
+      ]),
       challenge('c4-ddl-ctas'),
       challenge('c4-ddl-replace'),
       quiz('c4-q-ext-drop', 'c4-q-ext-when', 'c4-q-managed-default', 'c4-q-cor', 'c4-q-ctas', 'c4-q-ext-prereq'),
@@ -271,8 +271,9 @@ RESTORE TABLE inventory TO VERSION AS OF 2;` }),
           'Old versions point to data files that newer versions no longer use. `VACUUM` deletes unreferenced files **older than the retention threshold (default 7 days)**.',
           'After that, `DESCRIBE HISTORY` still **lists** the old version (the log is kept about 30 days by default), but reading it fails because its files are gone.',
           '`VACUUM t RETAIN 0 HOURS` requires disabling a safety check. It wipes out all time travel except the current version.',
+          'With **predictive optimization** (on by default for newer accounts, Unity Catalog managed tables), Databricks runs VACUUM for you.',
         ],
-        { verify: 'Retention defaults and whether predictive optimization runs VACUUM for you.' },
+        
       ),
       widget('time-travel'),
       quiz('c4-q-tt-syntax', 'c4-q-tt-vacuum', 'c4-q-tt-restore', 'c4-q-tt-retention', 'c4-q-tt-restore-version'),
