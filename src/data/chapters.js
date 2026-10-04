@@ -22,6 +22,8 @@ export const CHAPTERS = [
     title: 'Managing Data',
     emoji: '🗂️',
     color: 'from-emerald-500 to-teal-500',
+    built: true,
+    load: () => import('./ch2/index.js'),
     topics: [
       'Discovering and querying certified datasets in Unity Catalog',
       'Tagging assets',

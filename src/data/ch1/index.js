@@ -57,6 +57,7 @@ const subsections = [
         '**Certified** badge: data owners vouch for the asset, so prefer it. A **Deprecated** badge warns you off.',
         '**Lineage**: upstream sources and downstream consumers (tables, notebooks, jobs, dashboards).',
       ], { verify: 'How certification and deprecation are applied (system tags) and shown.' }),
+      widget('catalog-explorer'),
       quiz('c1-q-ce-what', 'c1-q-ce-managed', 'c1-q-ce-certified', 'c1-q-ce-lineage', 'c1-q-ce-view', 'c1-q-ce-schema', 'c1-q-ce-sample'),
     ],
   },

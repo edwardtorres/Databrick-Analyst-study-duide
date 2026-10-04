@@ -6,8 +6,9 @@ import ch7 from '../src/data/ch7/index.js'
 import ch6 from '../src/data/ch6/index.js'
 import ch5 from '../src/data/ch5/index.js'
 import ch1 from '../src/data/ch1/index.js'
+import ch2 from '../src/data/ch2/index.js'
 
-const chapters = { 1: ch1, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 9: ch9 }
+const chapters = { 1: ch1, 2: ch2, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 9: ch9 }
 
 for (const [num, ch] of Object.entries(chapters)) {
   const qIds = new Set(ch.questions.map((q) => q.id))
@@ -55,4 +56,15 @@ test('Chapter 5 has at least 25 questions and 6 fix challenges', () => {
 
 test('Chapter 1 has at least 25 questions', () => {
   assert.ok(ch1.questions.length >= 25, `only ${ch1.questions.length}`)
+})
+
+test('Chapter 2 has at least 25 questions and 6 cleaning challenges', () => {
+  assert.ok(ch2.questions.length >= 25, `only ${ch2.questions.length}`)
+  assert.ok(ch2.challenges.filter((c) => c.sub === 'cleaning').length >= 6)
+})
+
+test('every widget block names a registered lab', async () => {
+  const { LABS } = await import('../src/components/widgets.js')
+  const ids = new Set(LABS.map((l) => l.id))
+  for (const ch of Object.values(chapters)) for (const s of ch.subsections) for (const b of s.blocks) if (b.type === 'widget') assert.ok(ids.has(b.name), b.name)
 })

@@ -4,8 +4,9 @@ import initSqlJs from 'sql.js'
 import { checkChallenge, createDb, runSql } from '../src/lib/sqlCore.js'
 import { challenges as ch4 } from '../src/data/ch4/challenges.js'
 import { challenges as ch5 } from '../src/data/ch5/challenges.js'
+import { challenges as ch2 } from '../src/data/ch2/challenges.js'
 
-const challenges = [...ch4, ...ch5]
+const challenges = [...ch2, ...ch4, ...ch5]
 
 const SQL = await initSqlJs()
 
@@ -75,4 +76,30 @@ test('Chapter 5 fix challenges: the broken query runs (wrong result, not an erro
     assert.ok(ch.brokenNote, ch.id)
     assert.equal(r.reason, ch.brokenNote, `${ch.id}: running the starter should explain the trap`)
   }
+})
+
+test('Chapter 2 fix challenges: the broken query runs and explains the trap', () => {
+  for (const ch of ch2.filter((c) => c.kind === 'fix')) {
+    const r = checkChallenge(SQL, ch, ch.starter)
+    assert.ok(!r.error, `${ch.id}: ${r.error}`)
+    assert.equal(r.reason, ch.brokenNote, ch.id)
+  }
+})
+
+test('Chapter 2 cleaning: common alternative answers are accepted', () => {
+  const by = (id) => ch2.find((c) => c.id === id)
+  const alts = {
+    'c2-clean-email': "SELECT name, COALESCE(NULLIF(NULLIF(TRIM(email), ''), 'N/A'), 'unknown') FROM customers",
+    'c2-fix-usable-email': "SELECT COUNT(NULLIF(NULLIF(TRIM(email), ''), 'N/A')) FROM customers",
+    'c2-clean-distinct': 'SELECT customer_id, name FROM customers_load GROUP BY customer_id, name',
+    'c2-clean-region': "SELECT COALESCE(r.region_name, 'Unassigned'), COUNT(c.customer_id) FROM customers c LEFT JOIN regions r USING (region_id) GROUP BY 1",
+  }
+  for (const [id, sql] of Object.entries(alts)) {
+    const r = checkChallenge(SQL, by(id), sql)
+    assert.equal(r.ok, true, `${id}: ${r.reason || r.error}`)
+  }
+  // the naive versions are rejected
+  assert.equal(checkChallenge(SQL, by('c2-clean-distinct'), 'SELECT customer_id, name FROM customers_load').ok, false)
+  assert.equal(checkChallenge(SQL, by('c2-clean-latest'), 'SELECT DISTINCT LOWER(TRIM(email)), LOWER(TRIM(tier)) FROM raw_signups').ok, false)
+  assert.equal(checkChallenge(SQL, by('c2-clean-region'), 'SELECT r.region_name, COUNT(*) FROM customers c JOIN regions r ON c.region_id = r.region_id GROUP BY 1').ok, false)
 })
