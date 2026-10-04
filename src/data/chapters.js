@@ -37,6 +37,8 @@ export const CHAPTERS = [
     title: 'Importing Data',
     emoji: '📥',
     color: 'from-cyan-500 to-blue-500',
+    built: true,
+    load: () => import('./ch3/index.js'),
     topics: [
       'S3 / cloud object storage ingestion',
       'Delta Sharing',
