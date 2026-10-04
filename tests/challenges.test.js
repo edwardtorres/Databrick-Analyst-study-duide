@@ -2,7 +2,10 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import initSqlJs from 'sql.js'
 import { checkChallenge, createDb, runSql } from '../src/lib/sqlCore.js'
-import { challenges } from '../src/data/ch4/challenges.js'
+import { challenges as ch4 } from '../src/data/ch4/challenges.js'
+import { challenges as ch5 } from '../src/data/ch5/challenges.js'
+
+const challenges = [...ch4, ...ch5]
 
 const SQL = await initSqlJs()
 
@@ -62,4 +65,14 @@ WHERE o.status = 'completed' GROUP BY p.category`
   // An INSERT-based approach still isn't a CTAS
   const r = checkChallenge(SQL, ch, `CREATE TABLE gold_category_sales (category TEXT, revenue REAL); INSERT INTO gold_category_sales ${body}`)
   assert.equal(r.ok, false)
+})
+
+test('Chapter 5 fix challenges: the broken query runs (wrong result, not an error)', () => {
+  for (const ch of ch5) {
+    const r = checkChallenge(SQL, ch, ch.starter)
+    assert.equal(r.ok, false, ch.id)
+    assert.ok(!r.error, `${ch.id} broken query should run: ${r.error}`)
+    assert.ok(ch.brokenNote, ch.id)
+    assert.equal(r.reason, ch.brokenNote, `${ch.id}: running the starter should explain the trap`)
+  }
 })

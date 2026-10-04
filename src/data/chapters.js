@@ -58,6 +58,8 @@ export const CHAPTERS = [
     title: 'Analyzing Queries',
     emoji: '🔬',
     color: 'from-fuchsia-500 to-purple-500',
+    built: true,
+    load: () => import('./ch5/index.js'),
     topics: [
       'Photon',
       'Query Insights and Query Profile',

@@ -11,12 +11,16 @@ const NamespaceBuilder = lazy(() => import('./NamespaceBuilder.jsx'))
 const GenieBuilder = lazy(() => import('./GenieBuilder.jsx'))
 const ChartPicker = lazy(() => import('./ChartPicker.jsx'))
 const DashboardConfig = lazy(() => import('./DashboardConfig.jsx'))
+const QueryProfileDetective = lazy(() => import('./QueryProfileDetective.jsx'))
+const CacheLab = lazy(() => import('./CacheLab.jsx'))
 
 // Interactive labs. `chapter: null` + `component: null` = coming in a later chapter.
 export const LABS = [
   { id: 'join-visualizer', title: 'Join Visualizer', emoji: '🔗', chapter: 4, desc: 'Pick a join type, predict the row count, and see which rows survive.', component: JoinVisualizer },
   { id: 'set-ops', title: 'Set Operations', emoji: '🧬', chapter: 4, desc: 'UNION vs UNION ALL vs INTERSECT vs EXCEPT.', component: SetOps },
   { id: 'time-travel', title: 'Time Travel Timeline', emoji: '⏳', chapter: 4, desc: 'Query old Delta versions, RESTORE, then watch VACUUM break time travel.', component: TimeTravel },
+  { id: 'query-profile-detective', title: 'Query Profile Detective', emoji: '🕵️', chapter: 5, desc: 'Read a query profile, name the bottleneck, pick the fix, and see the after profile.', component: QueryProfileDetective },
+  { id: 'cache-lab', title: 'Cache Lab', emoji: '⚡', chapter: 5, desc: 'Run queries, change the table, and predict result-cache hits, misses and invalidations.', component: CacheLab },
   { id: 'chart-picker', title: 'Chart Picker', emoji: '📊', chapter: 6, desc: 'Match a business question to the right chart, then compare your pick with the best one.', component: ChartPicker },
   { id: 'dashboard-config', title: 'Dashboard Config', emoji: '🛠️', chapter: 6, desc: 'Wire a parameter, schedule a refresh, set an alert and sharing, then simulate the morning.', component: DashboardConfig },
   { id: 'namespace-builder', title: 'Namespace Builder', emoji: '🔐', chapter: 9, desc: 'Drag catalog → schema → table/volume, grant privileges, then test who can run what.', component: NamespaceBuilder },
