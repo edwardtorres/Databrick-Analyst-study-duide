@@ -42,12 +42,11 @@ export const questions = [
     sub: 'namespace',
     stem: 'In Unity Catalog, which container sits above catalogs and holds the metadata for them?',
     options: [
-      { t: 'The metastore', ok: true, why: 'A metastore is the top-level container (typically one per region). Catalogs live inside it.' },
+      { t: 'The metastore', ok: true, why: 'There is one metastore per region; all workspaces in the region share it. A metastore is the top-level container (typically one per region). Catalogs live inside it.' },
       { t: 'The schema', why: 'Schemas live inside catalogs, not above them.' },
       { t: 'The workspace', why: 'Workspaces attach to a metastore. They are not part of the object namespace.' },
       { t: 'The SQL warehouse', why: 'Warehouses are compute. They hold no metadata.' },
     ],
-    verify: 'Metastore-per-region and workspace-binding details. Verify in Databricks docs.',
   },
 
   // ---------------- Privileges ----------------
@@ -115,11 +114,10 @@ export const questions = [
     stem: 'A contractor group should immediately lose read access to the prod.gold schema. Which statement does that?',
     options: [
       { t: 'REVOKE SELECT ON SCHEMA prod.gold FROM `contractors`', ok: true, why: 'REVOKE removes a privilege that was granted. The syntax mirrors GRANT, with FROM instead of TO.' },
-      { t: 'DENY SELECT ON SCHEMA prod.gold TO `contractors`', why: 'Unity Catalog has no DENY statement. You remove access with REVOKE.' },
+      { t: 'DENY SELECT ON SCHEMA prod.gold TO `contractors`', why: 'The DENY statement is not supported by Unity Catalog (it applies only to the legacy hive_metastore). You remove access with REVOKE. (Separately, ABAC DENY policies exist in Beta.)' },
       { t: 'DROP SCHEMA prod.gold', why: 'This deletes the schema for everyone.' },
       { t: 'GRANT NONE ON SCHEMA prod.gold TO `contractors`', why: 'Not valid syntax.' },
     ],
-    verify: 'Confirm there is still no DENY in Unity Catalog. Verify in Databricks docs.',
   },
   {
     id: 'c9-q-priv-volume',
@@ -138,12 +136,11 @@ export const questions = [
     scenario: true,
     stem: 'You want analysts to see only an aggregated view, prod.gold.v_region_sales, but never the underlying detail table. What do they need?',
     options: [
-      { t: 'SELECT on the view (plus USE CATALOG and USE SCHEMA). No access to the base table is needed.', ok: true, why: 'In Unity Catalog, the view runs with its owner\'s access to the base table. Readers only need SELECT on the view.' },
+      { t: 'SELECT on the view (plus USE CATALOG and USE SCHEMA). No access to the base table is needed.', ok: true, why: 'On SQL warehouses and standard or serverless compute, Unity Catalog checks the view owner\'s permissions on the base table. Readers only need SELECT on the view. (Dedicated clusters on DBR 15.3 and below are the exception.)' },
       { t: 'SELECT on both the view and the base table', why: 'That would expose the detail table, which is exactly what you want to avoid.' },
       { t: 'MODIFY on the view', why: 'MODIFY is not needed to read, and views are not written to directly.' },
       { t: 'Ownership of the view', why: 'Owning it would let them redefine the view. That is far too much.' },
     ],
-    verify: 'View owner requirements for base tables. Verify in Unity Catalog docs.',
   },
 
   // ---------------- Ownership ----------------
@@ -169,31 +166,28 @@ export const questions = [
       { t: 'Do nothing, since ownership disappears automatically when the user is removed', why: 'Ownership does not move automatically. The objects need a new owner.' },
       { t: "Grant everyone ALL PRIVILEGES so it doesn't matter", why: 'This destroys least privilege.' },
     ],
-    verify: 'Exact OWNER TO syntax for each object type. Verify in Databricks docs.',
   },
   {
     id: 'c9-q-own-use',
     sub: 'ownership',
     stem: 'Raj owns the table prod.gold.orders but has no privileges on the prod catalog or the prod.gold schema. Can he query his table?',
     options: [
-      { t: 'No. Even an owner needs USE CATALOG on prod and USE SCHEMA on prod.gold to reach the table.', ok: true, why: 'Owning an object gives every privilege on that object, but not on its parents.' },
+      { t: 'No. Even an owner needs USE CATALOG on prod and USE SCHEMA on prod.gold to reach the table.', ok: true, why: 'Docs: usage privileges are a prerequisite to interact with an object; only MANAGE has reduced usage requirements, and only for metadata. Owning an object gives every privilege on that object, but not on its parents.' },
       { t: 'Yes. Ownership overrides every other check.', why: 'Ownership covers the owned object only. You still have to be able to reach it through the catalog and schema.' },
       { t: 'Only through a SQL warehouse he also owns', why: 'Warehouse ownership has nothing to do with data privileges.' },
       { t: 'Only if he first runs OPTIMIZE', why: 'OPTIMIZE has nothing to do with access.' },
     ],
-    verify: 'Owner access to parents (and MANAGE / parent-owner rules). Verify in Unity Catalog docs.',
   },
   {
     id: 'c9-q-own-grant',
     sub: 'ownership',
     stem: 'Who can grant SELECT on prod.gold.orders to another group?',
     options: [
-      { t: 'The table owner, or an admin or principal with the right to manage its privileges (e.g., a metastore admin, or MANAGE on the object)', ok: true, why: 'Granting is an owner and admin capability. Ordinary readers cannot pass access on.' },
+      { t: 'The table owner, the owner of its schema or catalog, a user with MANAGE on it, or a metastore admin', ok: true, why: 'These are exactly the principals the docs list. Ordinary readers cannot pass access on.' },
       { t: 'Anyone who has SELECT on it', why: 'Holding SELECT does not let you grant it to others.' },
       { t: 'Anyone with access to the SQL warehouse', why: 'Compute access has nothing to do with data grants.' },
       { t: 'Only Databricks support', why: 'Grants are managed by your own owners and admins.' },
     ],
-    verify: 'The MANAGE privilege and parent-owner rights are newer. Verify in Unity Catalog docs.',
   },
 
   // ---------------- PII protection ----------------
@@ -243,18 +237,16 @@ export const questions = [
       { t: 'current_user()', why: 'This returns the user name, not group membership. It is useful for per-user rules.' },
       { t: "has_privilege('SELECT')", why: 'Not a Databricks SQL function.' },
     ],
-    verify: 'Function names and recommendations. Verify in Databricks docs.',
   },
   {
     id: 'c9-q-pii-tags',
     sub: 'pii',
     stem: "You add the tag pii = 'email' to a column. What does this do on its own?",
     options: [
-      { t: 'It labels the column for discovery, search, and governance policies. It does not restrict access by itself.', ok: true, why: 'Tags are metadata. Access is enforced by privileges, masks, filters, or policies that use the tags.' },
+      { t: 'It labels the column for discovery, search, and governance policies. It does not restrict access by itself.', ok: true, why: 'Tags are metadata. Access is enforced by privileges, masks, filters, or ABAC policies that target governed tags (then the policy, not the tag, applies the mask).' },
       { t: 'It automatically masks the column for everyone', why: 'Tagging alone does not mask. You need a mask or a policy for that.' },
       { t: 'It encrypts the column at rest', why: 'Tags do not change how data is stored.' },
       { t: 'It revokes SELECT from all non-admins', why: 'Tags do not change grants.' },
     ],
-    verify: 'Tag-based (ABAC) policies are newer and may enforce masks from tags. Verify in Databricks docs.',
   },
 ]

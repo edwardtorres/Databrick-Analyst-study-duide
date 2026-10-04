@@ -368,7 +368,7 @@ function TestPhase({ grants, check, onCheck }) {
           )}
           {action === 'insert' && (
             <div className="mt-2 text-[11px] text-amber-200/80">
-              ⚠ Verify in Databricks docs: this lab treats INSERT as needing MODIFY only. UPDATE, DELETE and MERGE also read the table, so they need SELECT too.
+              ⚠ Verify in Databricks docs: this lab treats INSERT as needing MODIFY (plus USE CATALOG / USE SCHEMA), as the permissions-concepts table shows. The MODIFY entry in the privileges reference also says the user must have SELECT on the table, so grant both to be safe.
             </div>
           )}
         </div>
