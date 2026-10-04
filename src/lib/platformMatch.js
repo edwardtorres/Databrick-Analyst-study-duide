@@ -1,7 +1,8 @@
 // Platform Match lab: real-world needs → the Databricks platform component
 // that solves them. Every option explains why it does or doesn't fit.
-// Product names have changed recently (Workflows → Lakeflow Jobs,
-// DLT → Lakeflow Declarative Pipelines, DatabricksIQ → Data Intelligence
+// Names follow the exam guide, with current product names noted (checked
+// against docs.databricks.com, Sep 2026: Workflows → Lakeflow Jobs, DLT →
+// Lakeflow pipelines, DatabricksIQ → AI assistive features,
 // Engine), so the lab and lessons carry verify flags.
 
 export const COMPONENTS = {
@@ -9,9 +10,9 @@ export const COMPONENTS = {
   uc: { name: 'Unity Catalog', emoji: '🗂️', blurb: 'Governance: one place for permissions, ownership, lineage, tags, discovery and auditing.' },
   dbsql: { name: 'Databricks SQL', emoji: '⚡', blurb: 'SQL warehouses plus the SQL editor, queries, dashboards and alerts for analysts.' },
   jobs: { name: 'Lakeflow Jobs', emoji: '🗓️', blurb: 'Orchestration: schedule and chain notebooks, SQL, pipelines and other tasks, with retries and alerts.' },
-  ldp: { name: 'Lakeflow Declarative Pipelines', emoji: '🔁', blurb: 'Declarative ETL (formerly Delta Live Tables): define tables in SQL or Python with data-quality expectations.' },
+  ldp: { name: 'Lakeflow Declarative Pipelines', emoji: '🔁', blurb: 'Declarative ETL (formerly Delta Live Tables; docs now say Lakeflow pipelines): define tables in SQL or Python with data-quality expectations.' },
   mosaic: { name: 'Mosaic AI', emoji: '🧠', blurb: 'Build, serve, evaluate and govern ML models and generative-AI apps and agents.' },
-  die: { name: 'Data Intelligence Engine', emoji: '✨', blurb: 'The platform\'s built-in AI that understands your data. It powers the Assistant, Genie, AI-generated comments and smart search.' },
+  die: { name: 'Data Intelligence Engine', emoji: '✨', blurb: 'The platform\'s built-in AI that understands your data. It powers the Assistant (now Genie Code), Genie, AI-generated comments and intelligent search.' },
   market: { name: 'Databricks Marketplace', emoji: '🛒', blurb: 'Discover and get third-party and Databricks datasets, notebooks, models and more.' },
   sharing: { name: 'Delta Sharing', emoji: '🤝', blurb: 'Open protocol to share live data with other organizations and platforms without copying.' },
 }
@@ -83,7 +84,7 @@ export const SCENARIOS = [
     answer: 'mosaic',
     options: ['mosaic', 'die', 'dbsql', 'market'],
     why: {
-      mosaic: 'Mosaic AI covers building and serving generative-AI apps: vector search, model serving, agent tooling and evaluation.',
+      mosaic: 'Mosaic AI covers building and serving generative-AI apps: AI Search (formerly Vector Search), model serving, agent tooling and evaluation.',
       die: 'The Data Intelligence Engine powers Databricks\' own AI features. Building and serving your own agent is Mosaic AI.',
       dbsql: 'SQL warehouses can call AI functions from SQL, but building and serving a RAG app is Mosaic AI\'s job.',
       market: 'The Marketplace might provide a model, but building and serving the app is Mosaic AI.',
@@ -95,7 +96,7 @@ export const SCENARIOS = [
     answer: 'die',
     options: ['die', 'mosaic', 'uc', 'delta'],
     why: {
-      die: 'The Data Intelligence Engine uses AI plus your metadata and usage to understand your data. It powers the Assistant, Genie, AI-generated comments and semantic search.',
+      die: 'The Data Intelligence Engine uses AI plus your metadata and usage to understand your data. It powers the Assistant (now Genie Code), Genie, AI-generated comments and intelligent search.',
       mosaic: 'Mosaic AI is for building your own AI apps and models, not the platform\'s built-in assistance.',
       uc: 'Unity Catalog supplies the metadata the engine reads, but the "understanding" layer is the Data Intelligence Engine.',
       delta: 'Delta stores the data. It doesn\'t interpret meaning.',

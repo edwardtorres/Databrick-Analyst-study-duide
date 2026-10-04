@@ -16,9 +16,10 @@ const subsections = [
       ]),
       card('comp-2', 'Querying & pipelines', [
         '**Databricks SQL**: SQL warehouses (compute) plus the SQL editor, saved queries, AI/BI dashboards and alerts. The analyst\'s home base.',
-        '**Lakeflow Declarative Pipelines** (formerly **Delta Live Tables**): declare tables in SQL or Python. The pipeline handles dependencies, incremental refresh and data-quality **expectations**.',
-        '**Lakeflow Jobs** (formerly Workflows): **orchestration**: schedule and chain notebooks, SQL, pipelines and dashboard refreshes, with retries and notifications.',
-      ], { verify: 'Lakeflow naming (Jobs, Declarative Pipelines, Connect) changed in 2025.' }),
+        '**Lakeflow pipelines** (formerly **Delta Live Tables**, the exam guide\'s name; also called Lakeflow Declarative Pipelines, built on Apache Spark Declarative Pipelines): declare streaming tables and materialized views in SQL or Python. The pipeline handles dependencies, incremental refresh and data-quality **expectations**.',
+        '**Lakeflow Jobs** (formerly Workflows): **orchestration**: schedule (or trigger on file arrival) and chain notebooks, SQL, pipelines and dashboard refreshes, with if/else and for-each logic, retries and notifications.',
+        '**Lakeflow Connect**: managed connectors that ingest from SaaS apps and databases.',
+      ]),
       card('comp-3', 'How it fits together', [
         'One copy of data in open formats (the **lakehouse**) serves BI, data engineering and AI.',
         'Pipelines **build** tables, Jobs decide **when**, Delta **stores** them, Unity Catalog **governs** them, and Databricks SQL **queries** them.',
@@ -33,13 +34,13 @@ const subsections = [
     emoji: '🧠',
     blocks: [
       card('ai-1', 'Two kinds of AI on the platform', [
-        '**Mosaic AI**: tools to **build your own** ML and generative-AI apps: model serving, vector search, agent frameworks, evaluation, fine-tuning, plus governance of models and endpoints.',
-        '**Data Intelligence Engine**: the platform\'s **built-in** AI that understands your data from Unity Catalog metadata and usage. It powers the Databricks Assistant, Genie, AI-generated comments and semantic search.',
-      ], { verify: 'Data Intelligence Engine was formerly called DatabricksIQ; Mosaic AI component names change.' }),
+        '**Mosaic AI** (the exam guide\'s name): tools to **build your own** ML and generative-AI apps. Current docs name the parts directly: **Model Serving**, **AI Search** (formerly Vector Search), **Agent Bricks** / agent framework, and **MLflow** evaluation, all governed in Unity Catalog.',
+        '**Data Intelligence Engine** (formerly DatabricksIQ): the platform\'s **built-in** AI that understands your data from Unity Catalog metadata and usage. Docs now group these as **Databricks AI assistive features**: **Genie Code** (formerly the **Databricks Assistant**), Genie, AI-generated comments and intelligent search.',
+      ]),
       card('ai-2', 'Where analysts meet AI', [
-        'Writing SQL with the **Assistant**, asking **Genie**, accepting **AI-generated comments**, and calling **AI functions** in SQL (for example sentiment, classification, or `ai_query` against a served model).',
+        'Writing SQL with the **Assistant** (now **Genie Code**), asking **Genie**, accepting **AI-generated comments**, and calling **AI functions** in SQL: task-specific ones such as `ai_analyze_sentiment`, `ai_classify`, `ai_extract`, `ai_summarize`, `ai_translate`, or the general-purpose `ai_query`.',
         'Good comments and descriptions in Unity Catalog make all of these more accurate.',
-      ], { verify: 'AI function names and availability.' }),
+      ]),
       quiz('c1-q-mosaic', 'c1-q-die', 'c1-q-ai-functions', 'c1-q-comments', 'c1-q-metadata-ai'),
     ],
   },
@@ -54,9 +55,9 @@ const subsections = [
       ]),
       card('ce-2', 'What to read on a table page', [
         '**Type MANAGED vs EXTERNAL**: managed storage is handled by Unity Catalog (DROP deletes the data). External tables point to a path you manage (DROP leaves the files).',
-        '**Certified** badge: data owners vouch for the asset, so prefer it. A **Deprecated** badge warns you off.',
+        '**Certified** (check mark): data owners vouch for the asset, so prefer it. **Deprecated** (restricted icon) warns you off. Both come from the governed system tag `system.certification_status`, set with **Assign certification** or `SET TAG`, by users with ASSIGN on that tag.',
         '**Lineage**: upstream sources and downstream consumers (tables, notebooks, jobs, dashboards).',
-      ], { verify: 'How certification and deprecation are applied (system tags) and shown.' }),
+      ]),
       widget('catalog-explorer'),
       quiz('c1-q-ce-what', 'c1-q-ce-managed', 'c1-q-ce-certified', 'c1-q-ce-lineage', 'c1-q-ce-view', 'c1-q-ce-schema', 'c1-q-ce-sample'),
     ],
@@ -67,13 +68,14 @@ const subsections = [
     emoji: '🛒',
     blocks: [
       card('mk-1', 'What it is', [
-        'An open exchange for **data and AI products**: datasets, notebooks, ML models, solution accelerators. Free or commercial, from **Databricks and third-party providers**.',
-        'Providers publish **public** listings or **private** ones for specific consumers.',
-      ], { verify: 'Current asset types and private exchange features.' }),
+        'An open exchange for **data and AI products**: datasets (tables or volumes), notebooks, AI models, apps and MCP servers. Free or commercial, from **Databricks and third-party providers**.',
+        'Providers publish **public** listings or share through a **private exchange** visible only to member consumers. Providers join through the Data Partner Program (or self-service signup for private exchanges only).',
+      ]),
       card('mk-2', 'How data arrives', [
-        'Getting a listing delivers data through **Delta Sharing**. It appears as a **read-only catalog** in Unity Catalog that you query like any other, with no ingestion pipeline and no copy to maintain.',
+        'Getting a listing delivers data through **Delta Sharing** (docs now call it **OpenSharing**). It appears as a **read-only catalog** in Unity Catalog that you query like any other, with no ingestion pipeline and no copy to maintain.',
+        'You need a Unity Catalog-enabled workspace and the `USE MARKETPLACE ASSETS` privilege (granted to all users by default). Some listings are instant; others need provider approval.',
         'The Marketplace is the storefront and Delta Sharing is the delivery.',
-      ], { verify: 'Consumer requirements (Unity Catalog-enabled workspace, privileges to get listings).' }),
+      ]),
       quiz('c1-q-market-what', 'c1-q-market-arrival', 'c1-q-market-providers', 'c1-q-market-vs-sharing', 'c1-q-market-private'),
     ],
   },

@@ -9,7 +9,7 @@ export default function PlatformMatch() {
       scenarios={SCENARIOS}
       prefix="pm"
       question="Which platform component solves it?"
-      verify="Product names have changed recently: Workflows → Lakeflow Jobs, Delta Live Tables → Lakeflow Declarative Pipelines, DatabricksIQ → Data Intelligence Engine."
+      note="Names follow the exam guide. Current product names: Workflows → Lakeflow Jobs, Delta Live Tables → Lakeflow pipelines, Databricks Assistant → Genie Code, Vector Search → AI Search, Delta Sharing → OpenSharing."
     />
   )
 }

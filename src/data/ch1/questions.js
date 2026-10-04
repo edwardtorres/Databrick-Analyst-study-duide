@@ -44,25 +44,23 @@ export const questions = [
     scenario: true,
     stem: 'A nightly process must run a SQL file, then a notebook, then refresh a dashboard, with retries and a failure email. What should you use?',
     options: [
-      { t: 'Lakeflow Jobs: a multi-task job with dependencies, a schedule, retries and notifications', ok: true, why: 'Jobs orchestrates heterogeneous tasks in order, on a schedule, with retry and alerting.' },
+      { t: 'Lakeflow Jobs: a multi-task job with dependencies, a schedule, retries and notifications', ok: true, why: 'Jobs run notebook, SQL, pipeline, dashboard and other task types with dependencies, triggers, retries and notifications. Jobs orchestrates heterogeneous tasks in order, on a schedule, with retry and alerting.' },
       { t: 'A SQL alert', why: 'Alerts notify on a query condition. They don\'t run multi-step workflows.' },
       { t: 'Delta Sharing', why: 'Sharing shares data outward.' },
       { t: 'The Marketplace', why: 'The Marketplace distributes data products.' },
     ],
-    verify: 'Lakeflow Jobs naming (formerly Databricks Workflows/Jobs) and supported task types.',
   },
   {
     id: 'c1-q-ldp',
     sub: 'components',
     scenario: true,
-    stem: 'Engineers want to declare bronze, silver and gold tables in SQL, have them refresh incrementally, and quarantine rows that break rules like "email IS NOT NULL". Which product fits?',
+    stem: 'Engineers want to declare bronze, silver and gold tables in SQL, have them refresh incrementally, and drop or flag rows that break rules like "email IS NOT NULL". Which product fits?',
     options: [
-      { t: 'Lakeflow Declarative Pipelines (formerly Delta Live Tables), using expectations for the rules', ok: true, why: 'Declarative pipelines manage dependencies and incremental refresh, and expectations enforce data quality.' },
+      { t: 'Lakeflow pipelines (formerly Delta Live Tables), using expectations for the rules', ok: true, why: 'Pipelines manage dependencies and incremental refresh; expectations (CONSTRAINT … EXPECT) can warn, drop the row or fail the update.' },
       { t: 'Lakeflow Jobs alone', why: 'Jobs can trigger a pipeline, but the declarative tables and expectations come from pipelines.' },
       { t: 'Unity Catalog tags', why: 'Tags label data. They don\'t build or validate tables.' },
       { t: 'A Genie space', why: 'Genie answers questions. It doesn\'t build pipelines.' },
     ],
-    verify: 'Pipeline product naming and expectation syntax.',
   },
   {
     id: 'c1-q-analyst-touch',
@@ -104,12 +102,11 @@ export const questions = [
     scenario: true,
     stem: 'Your team built a pipeline that keeps silver and gold tables up to date, and now wants it to run at 2 a.m. and then refresh a dashboard. A new hire asks why you need both Lakeflow Declarative Pipelines and Lakeflow Jobs. What is the difference?',
     options: [
-      { t: 'Pipelines define how tables are built and kept up to date. Jobs orchestrate when and in what order tasks (including pipelines) run.', ok: true, why: 'Pipelines are the "what". Jobs are the "when and in which order".' },
+      { t: 'Pipelines define how tables are built and kept up to date. Jobs orchestrate when and in what order tasks (including pipelines) run.', ok: true, why: 'Lakeflow Connect is the third piece: managed ingestion connectors. Pipelines are the "what". Jobs are the "when and in which order".' },
       { t: 'They are the same product with two names', why: 'They work together but solve different problems.' },
       { t: 'Jobs build tables; pipelines send emails', why: 'That reverses their roles.' },
       { t: 'Pipelines only run Python; jobs only run SQL', why: 'Both support SQL and Python in various forms.' },
     ],
-    verify: 'Current Lakeflow product boundaries (Connect / Declarative Pipelines / Jobs).',
   },
 
   // ---------------- AI: Mosaic AI & Data Intelligence Engine ----------------
@@ -119,24 +116,22 @@ export const questions = [
     scenario: true,
     stem: 'A team wants to build a RAG chatbot over internal documents, serve it behind an endpoint, and evaluate answer quality. Which part of the platform is this?',
     options: [
-      { t: 'Mosaic AI (vector search, model serving, agent tooling, evaluation)', ok: true, why: 'Mosaic AI covers building, serving and evaluating ML and generative-AI applications.' },
+      { t: 'Mosaic AI (AI Search, formerly Vector Search; Model Serving; agent tooling; evaluation)', ok: true, why: 'This is the build-your-own AI side of the platform. Current docs name the parts directly (AI Search, Model Serving, Agent Bricks, MLflow) rather than the Mosaic AI brand.' },
       { t: 'The Data Intelligence Engine', why: 'That powers Databricks\' built-in AI features, not your custom app.' },
       { t: 'Databricks SQL', why: 'DBSQL serves analytics, not custom AI apps.' },
       { t: 'Delta Sharing', why: 'Sharing distributes data.' },
     ],
-    verify: 'Mosaic AI component names.',
   },
   {
     id: 'c1-q-die',
     sub: 'ai',
     stem: 'What is the Data Intelligence Engine?',
     options: [
-      { t: 'The platform\'s built-in AI that uses your metadata and usage to understand your data. It powers features like the Assistant, Genie, AI-generated comments and semantic search.', ok: true, why: 'This is the "intelligence" in the Data Intelligence Platform.' },
+      { t: 'The platform\'s built-in AI that uses your metadata and usage to understand your data. It powers features like the Assistant (now Genie Code), Genie, AI-generated comments and intelligent search.', ok: true, why: 'This is the "intelligence" in the Data Intelligence Platform. Formerly DatabricksIQ; docs now describe these as Databricks AI assistive features.' },
       { t: 'A new type of SQL warehouse', why: 'It isn\'t compute you provision.' },
       { t: 'A replacement for Unity Catalog', why: 'It builds on Unity Catalog metadata. It doesn\'t replace it.' },
       { t: 'A data marketplace', why: 'That is Databricks Marketplace.' },
     ],
-    verify: 'Naming (formerly DatabricksIQ) and the list of features it powers.',
   },
   {
     id: 'c1-q-ai-functions',
@@ -144,12 +139,11 @@ export const questions = [
     scenario: true,
     stem: 'An analyst wants to classify 10,000 support tickets by sentiment directly in a SQL query, without writing Python. What should they look at?',
     options: [
-      { t: 'AI functions in SQL (e.g., ai_analyze_sentiment / ai_query), which call models served through Mosaic AI', ok: true, why: 'AI functions bring model calls into SQL, so analysts can use AI on table data.' },
+      { t: 'AI functions in SQL (e.g., ai_analyze_sentiment, or ai_query with a chosen model)', ok: true, why: 'Task-specific AI functions run Databricks-managed models; ai_query calls a model you choose. Analysts use AI on table data without Python.' },
       { t: 'A SQL alert', why: 'Alerts check thresholds. They don\'t classify text.' },
       { t: 'Delta time travel', why: 'Time travel reads old versions.' },
       { t: 'Liquid Clustering', why: 'Clustering changes data layout, not meaning.' },
     ],
-    verify: 'Current AI function names and availability.',
   },
   {
     id: 'c1-q-comments',
@@ -157,12 +151,11 @@ export const questions = [
     scenario: true,
     stem: 'Catalog Explorer suggests a description for a table you just created. Where does that suggestion come from?',
     options: [
-      { t: 'AI-generated comments powered by the Data Intelligence Engine. Review them before accepting.', ok: true, why: 'The platform drafts descriptions from metadata. A human should check them.' },
+      { t: 'AI-generated comments (part of the platform\'s built-in AI). Review them before accepting.', ok: true, why: 'An LLM drafts descriptions from metadata such as the schema and column names. Owners or users who can modify the object review and save them.' },
       { t: 'They are copied from the Marketplace', why: 'Suggestions are generated for your table, not pulled from listings.' },
       { t: 'Delta writes them automatically on every insert', why: 'Delta doesn\'t author descriptions.' },
       { t: 'The SQL warehouse logs', why: 'Logs don\'t produce table descriptions.' },
     ],
-    verify: 'AI-generated comments feature name and behaviour.',
   },
   {
     id: 'c1-q-metadata-ai',
@@ -206,12 +199,11 @@ export const questions = [
     scenario: true,
     stem: 'Searching for "revenue" returns five similar tables. One has a "Certified" badge. What should you conclude?',
     options: [
-      { t: 'The data owners have marked it as the trusted, approved source, so prefer it for reporting', ok: true, why: 'Certification signals that a data asset is vetted for use.' },
+      { t: 'The data owners have marked it as the trusted, approved source, so prefer it for reporting', ok: true, why: 'Certification is the system tag system.certification_status = certified. Certification signals that a data asset is vetted for use.' },
       { t: 'It\'s the newest table', why: 'Certification is about trust, not age.' },
       { t: 'It\'s the fastest table to query', why: 'The badge says nothing about performance.' },
       { t: 'It\'s read-only for everyone', why: 'Permissions decide access. The badge doesn\'t.' },
     ],
-    verify: 'How certification (and deprecation) is applied and shown, e.g., via system tags.',
   },
   {
     id: 'c1-q-ce-lineage',
@@ -259,7 +251,7 @@ export const questions = [
       { t: 'The Marketplace', why: 'The Marketplace lists external products.' },
       { t: 'Lakeflow Jobs', why: 'Jobs run tasks.' },
     ],
-    verify: 'Sample Data requires access to a running warehouse and SELECT on the table.',
+    verify: "Exact compute and permission requirements for the Sample Data tab weren't stated on the pages checked.",
   },
 
   // ---------------- Marketplace ----------------
@@ -268,12 +260,11 @@ export const questions = [
     sub: 'marketplace',
     stem: 'What can you get from Databricks Marketplace?',
     options: [
-      { t: 'Data products such as datasets, notebooks, ML models and solution accelerators, free or commercial, from Databricks and third-party providers', ok: true, why: 'The Marketplace is an open exchange for data and AI assets.' },
+      { t: 'Data products such as datasets, notebooks, AI models, apps and MCP servers, free or commercial, from Databricks and third-party providers', ok: true, why: 'The Marketplace is an open exchange for data and AI assets.' },
       { t: 'Only Databricks\' own sample data', why: 'Third-party providers publish listings too.' },
       { t: 'Only paid compute credits', why: 'It is about data and AI assets, not compute.' },
       { t: 'Browser extensions', why: 'Not what the Marketplace offers.' },
     ],
-    verify: 'Current Marketplace asset types.',
   },
   {
     id: 'c1-q-market-arrival',
@@ -281,12 +272,11 @@ export const questions = [
     scenario: true,
     stem: 'You get a dataset listing from the Marketplace. How does the data show up in your workspace?',
     options: [
-      { t: 'As a read-only catalog in Unity Catalog, shared live via Delta Sharing. No copy pipeline is needed.', ok: true, why: 'Marketplace data is delivered through Delta Sharing and appears as a shared catalog you query like any other.' },
+      { t: 'As a read-only catalog in Unity Catalog, shared live via Delta Sharing. No copy pipeline is needed.', ok: true, why: 'You need a Unity Catalog-enabled workspace and USE MARKETPLACE ASSETS (granted to everyone by default). Marketplace data is delivered through Delta Sharing and appears as a shared catalog you query like any other.' },
       { t: 'As CSV files emailed to you', why: 'Delivery is governed sharing, not email.' },
       { t: 'You must build an ingestion pipeline first', why: 'The point is to avoid that.' },
       { t: 'It\'s copied into your personal home folder', why: 'It arrives as a governed catalog.' },
     ],
-    verify: 'Requirements such as a Unity Catalog-enabled workspace and privileges to get listings.',
   },
   {
     id: 'c1-q-market-providers',
@@ -294,12 +284,11 @@ export const questions = [
     scenario: true,
     stem: 'A weather-data company wants to offer its forecasts to Databricks customers, some publicly and some only to one partner. Who can publish listings like that on Databricks Marketplace?',
     options: [
-      { t: 'Approved data providers (companies and Databricks) who list public or private offerings', ok: true, why: 'Providers publish listings, either publicly or privately to specific consumers.' },
+      { t: 'Approved data providers (companies and Databricks) who list public offerings or share through private exchanges', ok: true, why: 'Providers apply through the Databricks Data Partner Program (private-exchange-only providers can self-serve) and need a Unity Catalog-enabled premium workspace.' },
       { t: 'Any anonymous user, with no approval', why: 'Providers go through a provider program.' },
       { t: 'Only Databricks employees', why: 'Third-party providers list too.' },
       { t: 'Only the consumer\'s own admins', why: 'Consumers get listings. Providers publish them.' },
     ],
-    verify: 'The provider program and private exchange details.',
   },
   {
     id: 'c1-q-market-vs-sharing',
@@ -318,11 +307,10 @@ export const questions = [
     scenario: true,
     stem: 'A data vendor wants to offer a dataset only to three named customers, not to everyone browsing the Marketplace. What fits?',
     options: [
-      { t: 'A private listing (or private exchange) visible only to those consumers', ok: true, why: 'Providers can make listings private and target specific consumers.' },
+      { t: 'A private listing (or private exchange) visible only to those consumers', ok: true, why: 'In a private exchange, listings are discoverable only by member consumers. Providers can make listings private and target specific consumers.' },
       { t: 'A public listing with a password in the description', why: "Passwords in descriptions aren't access control." },
       { t: 'Email the files to each customer', why: 'That throws away live sharing and governance.' },
       { t: 'It isn\'t possible. All listings are public.', why: 'Private listings exist for this purpose.' },
     ],
-    verify: 'Private listings and exchanges in the current Marketplace.',
   },
 ]

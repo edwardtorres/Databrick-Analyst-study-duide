@@ -6,7 +6,7 @@ import { VerifyFlag } from './ui.jsx'
 // Tap-based scenario set: read a need, tap the option that solves it, then see
 // why every option does or doesn't fit. Shared by Platform Match (Ch 1) and
 // the Ingestion Picker (Ch 3).
-export default function ScenarioPicker({ title, items: COMPONENTS, scenarios: SCENARIOS, prefix, question, verify, label = 'Matched' }) {
+export default function ScenarioPicker({ title, items: COMPONENTS, scenarios: SCENARIOS, prefix, question, verify, note, label = 'Matched' }) {
   const { state, actions } = useProgress()
   const [i, setI] = useState(0)
   const [pick, setPick] = useState(null)
@@ -81,6 +81,7 @@ export default function ScenarioPicker({ title, items: COMPONENTS, scenarios: SC
         </>
       )}
       {verify && <VerifyFlag text={verify} />}
+      {note && <p className="text-[11px] text-slate-500">{note}</p>}
     </div>
   )
 }
