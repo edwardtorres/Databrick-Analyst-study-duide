@@ -1,6 +1,9 @@
 import { lazy } from 'react'
 
 // Each lab is its own chunk, loaded the first time it's opened.
+// Rule: labs are tap-based (taps, selects, checkboxes). Don't add drag-and-
+// drop to new labs. The Namespace Builder keeps its drag, which tap-to-place
+// fully duplicates.
 const JoinVisualizer = lazy(() => import('./JoinVisualizer.jsx'))
 const SetOps = lazy(() => import('./SetOps.jsx'))
 const TimeTravel = lazy(() => import('./TimeTravel.jsx'))

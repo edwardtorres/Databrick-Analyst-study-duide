@@ -41,6 +41,10 @@ The e2e tests use Playwright's Chromium. On a new machine, install it once with 
 
 The Boss Battle pulls from every built chapter automatically. It runs as a shorter "mini-boss" until the question bank reaches 45.
 
+## Lab interaction rule
+
+**Labs are tap-based.** New labs use taps, selects and checkboxes only. No drag-and-drop, because drag on phones hasn't been confirmed on a real device. The one exception is the Namespace Builder: it keeps its existing drag, and tap-to-place (tap a piece, then tap where it goes) does the same thing.
+
 ## Content note
 
 All questions and lessons are original practice material, not official Databricks or third-party exam questions.
