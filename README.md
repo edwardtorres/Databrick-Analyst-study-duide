@@ -18,9 +18,13 @@ React + Vite + Tailwind, fully client-side. Progress is saved in `localStorage`.
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # validates every SQL challenge + content integrity
+npm test         # unit tests: SQL challenges, content integrity, lab logic
+npm run test:e2e # Playwright browser tests (starts the dev server itself)
 npm run build    # static site in dist/
+npm run verify   # all three. Run this before every push.
 ```
+
+The e2e tests use Playwright's Chromium. On a new machine, install it once with `npx playwright install chromium`. Every e2e test fails on any console error unless it opts out with `test.use({ allowConsoleErrors: true })`.
 
 ## Deploy (static hosting on a subdomain)
 

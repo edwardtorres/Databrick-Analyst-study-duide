@@ -278,23 +278,25 @@ function GrantPhase({ grants, setGrants }) {
 
 const USERS = Object.keys(PRINCIPALS).filter((p) => PRINCIPALS[p].kind === 'user')
 
-function TestPhase({ grants }) {
+function TestPhase({ grants, check, onCheck }) {
   const { actions } = useProgress()
-  const [principal, setPrincipal] = useState(USERS[0])
-  const [action, setAction] = useState('select')
-  const targets = OBJECTS.filter(([, t]) => t === ACTIONS[action].on).map(([o]) => o)
-  const [target, setTarget] = useState('sales.gold.orders')
-  const tgt = targets.includes(target) ? target : targets[0]
-  const [guess, setGuess] = useState(null)
-  const result = useMemo(() => checkAccess({ grants, owners: OWNERS }, principal, action, tgt), [grants, principal, action, tgt])
-
-  // `grants` is rebuilt from saved progress on every render, so key the reset
-  // on its contents; otherwise each re-render would wipe the prediction.
+  // The current question and prediction are saved with the lab, so they
+  // survive a reload. A prediction only counts for the grants it was made on.
   const grantsKey = JSON.stringify(grants)
-  useEffect(() => setGuess(null), [principal, action, tgt, grantsKey])
+  const principal = check?.principal || USERS[0]
+  const action = check?.action || 'select'
+  const targets = OBJECTS.filter(([, t]) => t === ACTIONS[action].on).map(([o]) => o)
+  const tgt = targets.includes(check?.target) ? check.target : targets[0]
+  const guess = check?.guess !== null && check?.guess !== undefined && check?.grantsKey === grantsKey ? check.guess : null
+  const result = useMemo(() => checkAccess({ grants, owners: OWNERS }, principal, action, tgt), [grantsKey, principal, action, tgt]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const set = (patch) => onCheck({ principal, action, target: tgt, ...patch, guess: null, grantsKey })
+  const setPrincipal = (p) => set({ principal: p })
+  const setAction = (a) => set({ action: a, target: OBJECTS.find(([, t]) => t === ACTIONS[a].on)[0] })
+  const setTarget = (t) => set({ target: t })
 
   const predict = (yes) => {
-    setGuess(yes)
+    onCheck({ principal, action, target: tgt, guess: yes, grantsKey })
     if (yes === result.allowed) actions.labDone(`ns-p-${principal}-${action}-${tgt}-${result.allowed}`, 3)
   }
 
@@ -436,7 +438,7 @@ export default function NamespaceBuilder() {
           onSkip={() => save({ skipped: true, place: { ...TARGET } })}
         />}
       {phase === 'grant' && <GrantPhase grants={grants} setGrants={setGrants} />}
-      {phase === 'test' && <TestPhase grants={grants} />}
+      {phase === 'test' && <TestPhase grants={grants} check={lab.check} onCheck={(c) => save({ check: c })} />}
 
       {phase !== 'build' && (
         <div className="rounded-xl border border-line p-3">

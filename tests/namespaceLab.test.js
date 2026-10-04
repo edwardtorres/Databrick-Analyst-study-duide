@@ -4,7 +4,7 @@ import { sanitizeNamespaceLab, emptyNamespaceLab, TARGET } from '../src/lib/name
 import { parseProgress, emptyProgress } from '../src/lib/progressSchema.js'
 
 test('saved lab state round-trips through sanitize', () => {
-  const saved = { phase: 'grant', place: { ...TARGET }, grants: [{ principal: 'analysts', privilege: 'SELECT', securable: 'sales.gold' }], skipped: false }
+  const saved = { phase: "grant", place: { ...TARGET }, grants: [{ principal: "analysts", privilege: "SELECT", securable: "sales.gold" }], skipped: false, check: null }
   assert.deepEqual(sanitizeNamespaceLab(saved), saved)
 })
 

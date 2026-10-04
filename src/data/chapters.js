@@ -55,6 +55,7 @@ export const CHAPTERS = [
     emoji: '⚡',
     color: 'from-orange-500 to-rose-500',
     topics: [],
+    built: true,
     content: ch4,
   },
   {
@@ -102,6 +103,7 @@ export const CHAPTERS = [
       'Permissions and embedding',
       'Improving accuracy: feedback, benchmarks, updating instructions',
     ],
+    built: true,
     content: ch7,
   },
   {
@@ -130,6 +132,7 @@ export const CHAPTERS = [
       'Table ownership',
       'Protecting PII',
     ],
+    built: true,
     content: ch9,
   },
 ]

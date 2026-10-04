@@ -1,4 +1,4 @@
-import { PRINCIPALS, GRANTABLE } from './ucAccess.js'
+import { PRINCIPALS, GRANTABLE, ACTIONS } from './ucAccess.js'
 
 // Fixed scenario data for the Namespace Builder lab, plus a sanitizer for
 // the lab state saved in progress (so a stale or tampered save can't break it).
@@ -30,7 +30,7 @@ export const OBJECTS = [
 ]
 export const typeOf = (full) => OBJECTS.find((o) => o[0] === full)?.[1]
 
-export const emptyNamespaceLab = () => ({ phase: 'build', place: {}, grants: [], skipped: false })
+export const emptyNamespaceLab = () => ({ phase: 'build', place: {}, grants: [], skipped: false, check: null })
 
 const PHASES = ['build', 'grant', 'test']
 const pieceIds = new Set(PIECES.map((p) => p.id))
@@ -53,5 +53,20 @@ export function sanitizeNamespaceLab(saved) {
     place,
     grants,
     skipped: saved.skipped === true,
+    check: sanitizeCheck(saved.check),
+  }
+}
+
+// Last "can user X run Y?" check, so a prediction survives a reload.
+function sanitizeCheck(c) {
+  if (!c || typeof c !== 'object') return null
+  const action = ACTIONS[c.action]
+  if (!action || PRINCIPALS[c.principal]?.kind !== 'user' || typeOf(c.target) !== action.on) return null
+  return {
+    principal: c.principal,
+    action: c.action,
+    target: c.target,
+    guess: typeof c.guess === 'boolean' ? c.guess : null,
+    grantsKey: typeof c.grantsKey === 'string' ? c.grantsKey : '',
   }
 }
