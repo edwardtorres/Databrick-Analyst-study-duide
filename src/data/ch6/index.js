@@ -12,16 +12,17 @@ const subsections = [
     blocks: [
       card('dash-1', 'Datasets, then widgets', [
         'An **AI/BI dashboard** has a **data** side and a **canvas** side. On the data side you define **datasets**: SQL queries, or tables and views from Unity Catalog. A dashboard can have **several datasets**.',
-        'On the canvas, **widgets** read from datasets: **visualizations**, **text** (Markdown, which can include images and links), and **filter** widgets. One dataset can feed many widgets.',
-      ], { verify: 'Widget types and how images are added.' }),
+        'On the canvas, **widgets** read from datasets: **visualizations**, **text** widgets (formatted text or Markdown, with links, tables and **images** inserted by URL or path), and **filter** widgets. One dataset can feed many widgets.',
+      ]),
       card('dash-2', 'Pages & interactivity', [
         'Dashboards can have **multiple pages**, for example "Summary" for executives and "Operations" for the team.',
-        '**Filters** narrow what widgets show. **Cross-filtering** lets a click on one chart filter the related charts.',
-      ], { verify: 'Cross-page filters and cross-filtering scope.' }),
+        '**Filters**: **global** filters apply across all pages, **page-level** filter widgets apply to one page, and **widget-level** filters are fixed by the author. All of them affect only visualizations that share the filtered dataset.',
+        '**Cross-filtering**: clicking a bar or legend item filters the other visualizations that use the **same dataset**. **Drill-through** opens another page with the filter pre-set.',
+      ]),
       card('dash-3', 'Draft vs published', [
         'You edit a **draft**. Viewers see the **published** version, so your edits stay invisible until you publish again.',
-        'Publishing is also where you choose whose **credentials** the queries run with (see Sharing).',
-      ], { verify: 'Draft/publish workflow details.' }),
+        'Publishing is also where you choose **Share data permissions** or **Individual data permissions** (see Sharing). You can hide work-in-progress pages from the published version.',
+      ]),
       quiz('c6-q-dash-pages', 'c6-q-dash-datasets', 'c6-q-dash-multi-datasets', 'c6-q-dash-widgets', 'c6-q-dash-draft', 'c6-q-crossfilter'),
     ],
   },
@@ -31,9 +32,9 @@ const subsections = [
     emoji: '📈',
     blocks: [
       card('viz-1', 'Charts everywhere', [
-        'Besides dashboards, you can add **visualizations to query results** in the **SQL editor** and in **notebooks** (display a result, then add a visualization). No plotting code needed.',
+        'Besides dashboards, you can add **visualizations to query results** in the **SQL editor** and in **notebooks** (click **+** above a result and choose **Visualization**). No plotting code needed. Notebooks can also generate a **data profile** with summary statistics and histograms.',
         'Common types: line, bar, area, pie, scatter, histogram, heatmap, box, counter (KPI), pivot/table, map, funnel.',
-      ], { verify: 'The visualization type list and where the control sits in each editor.' }),
+      ]),
       card('viz-2', 'Pick by the question', [
         '**Trend over time** → line. **Compare categories** → bar (sorted). **Part of a whole, few parts** → pie or 100% stacked bar.',
         '**Distribution** → histogram (or box). **Relationship between two measures** → scatter. **One headline number** → counter. **Exact lookup** → table.',
@@ -54,8 +55,9 @@ const subsections = [
     blocks: [
       card('param-1', 'Define a parameter', [
         'Add a **named parameter marker** to a query, for example `WHERE region = :region AND order_date >= :start_date`. The SQL editor and dashboard datasets then show an input for it.',
-        'Types include text, number, date or date range, and dropdowns (static lists or values from a query).',
-      ], { verify: 'Named :param markers vs legacy {{ }} syntax, and parameter type names.', code: `SELECT order_date, SUM(revenue) AS revenue
+        'Named `:param` markers are current; `{{ param }}` (mustache) is the **legacy** syntax.',
+        'Types: **String**, **Integer/Decimal** (Numeric), **Date**, **Date and Time**; dashboards add **Date Range** (`:p.min` / `:p.max`) and **multiple selections** (used with `array_contains`). A **query-based parameter** fills a dropdown from a dataset (e.g. `SELECT DISTINCT region …`).',
+      ], { code: `SELECT order_date, SUM(revenue) AS revenue
 FROM prod.sales.orders
 WHERE region = :region
   AND order_date BETWEEN :start_date AND :end_date
@@ -77,19 +79,19 @@ GROUP BY order_date` }),
     emoji: '🔗',
     blocks: [
       card('share-1', 'Who can open it', [
-        'Share the **published** dashboard with **users or groups** at the lowest level they need (view-only for consumers).',
-        'Sharing a dashboard doesn\'t grant table access. That depends on the credentials setting below.',
-      ], { verify: 'Permission level names for dashboards.' }),
+        'Share the **published** dashboard with **users or groups** at the lowest level they need: **CAN VIEW**, **CAN RUN** (view, interact, refresh), **CAN EDIT**, **CAN MANAGE**. Account users without workspace access are limited to CAN RUN.',
+        'Sharing a dashboard doesn\'t grant table access. That depends on the data-permissions setting below.',
+      ]),
       card('share-2', 'Whose credentials run the queries', [
-        '**Embedded credentials**: queries run with the **publisher\'s** permissions, so viewers see the results without their own table access. Powerful; use it deliberately.',
-        '**Viewer (individual) credentials**: each viewer needs their own Unity Catalog access to the data.',
-        '**Don\'t embed credentials when per-viewer security matters.** Row filters and column masks are evaluated for whoever runs the query. With embedded credentials that is the publisher, so every viewer would see what the publisher sees.',
-        'For people outside the workspace, look at **embedding** options (iframe, or embedding for external users where available). Admins may need to allow embedding domains.',
-      ], { verify: 'Embedded credentials naming, link sharing, and external embedding options. These change often.' }),
+        '**Share data permissions** (the default; often called *embedded credentials*): queries run with the **publisher\'s** data permissions, so viewers see results without their own table access. Powerful; use it deliberately.',
+        '**Individual data permissions**: each viewer\'s own Unity Catalog permissions decide what they see. Compute always uses the publisher\'s credentials.',
+        '**Use Individual data permissions when per-viewer security matters.** With Share data permissions every viewer sees data through the publisher, so row filters and column masks based on the viewer don\'t apply.',
+        'Outside Databricks: **basic embedding** (iframe; viewers sign in; admins allow the embedding surface) or **embedding for external users** (your app authenticates with a service principal; viewers need no Databricks account). **Copy link** shares the URL with people you\'ve granted access.',
+      ]),
       card('share-3', 'Schedules & subscriptions', [
         'Add a **schedule** to refresh a published dashboard, ideally just **after** the data lands. Too-frequent refreshes waste warehouse time.',
-        '**Subscribers** on a schedule get a **snapshot** (for example a PDF or image) by email when it runs.',
-      ], { verify: 'Subscription formats and destinations.' }),
+        '**Subscribers** on a schedule get a **snapshot** when it runs: email gets a **PDF** (optionally CSV/TSV/Excel data); **Slack** and **Microsoft Teams** get a PNG image plus PDF. Admins set up Slack/Teams destinations. Up to 100 subscribers.',
+      ]),
       quiz('c6-q-share-group', 'c6-q-embedded-creds', 'c6-q-embedded-rowfilter', 'c6-q-share-external', 'c6-q-schedule', 'c6-q-subscription'),
     ],
   },
@@ -99,13 +101,13 @@ GROUP BY order_date` }),
     emoji: '🚨',
     blocks: [
       card('alert-1', 'Anatomy of an alert', [
-        'A **SQL alert** runs a query on a **schedule** and checks a **condition**: a column, an operator and a **threshold** (for example `today_revenue < 50000`).',
-        'When the condition is met the alert is **TRIGGERED** and notifies its **destinations**. When it clears, it returns to **OK**, optionally with a "back to normal" message.',
-      ], { verify: 'Alert state names and whether aggregation options exist on the condition.' }),
+        'A **SQL alert** runs a query on a **schedule** and checks a **condition**: the first value of a column, or an **aggregation** over the column (e.g. SUM, AVERAGE), an operator and a **threshold** (for example `today_revenue < 50000`).',
+        'States: **TRIGGERED** (condition met; notifies its **destinations**), **OK**, or **ERROR**. **Notify on OK** sends a "back to normal" message.',
+      ]),
       card('alert-2', 'Destinations', [
-        'Notifications go to **destinations** such as email, Slack, Microsoft Teams, PagerDuty or webhooks. These are usually set up once by a workspace **admin**.',
+        'Notifications go to **destinations** such as email, Slack, Microsoft Teams, PagerDuty or webhooks. Only a workspace **admin** can create destinations; once created they\'re available to all users.',
         'A triggered alert with no destination tells nobody.',
-      ], { verify: 'Supported destination types and who can create them.' }),
+      ]),
       card('alert-3', 'Alert vs dashboard', [
         'Dashboards **wait** for someone to look. Alerts **push** when something happens. Use an alert when "notify me if…" matters more than "show me…".',
       ]),

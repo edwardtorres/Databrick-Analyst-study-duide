@@ -49,8 +49,8 @@ export const OPTIONS = {
     { id: 'none', label: 'No destination' },
   ],
   credentials: [
-    { id: 'embedded', label: "Publisher's (embedded)" },
-    { id: 'individual', label: "Each viewer's own" },
+    { id: 'embedded', label: "Share data permissions (publisher's)" },
+    { id: 'individual', label: "Individual data permissions (viewer's own)" },
   ],
   shareWith: [
     { id: 'managers', label: 'regional-managers (view)' },
@@ -141,9 +141,9 @@ export function simulate(cfg) {
     const wanted = id !== 'priya'
     let text
     if (!canOpen) text = `${v.label.split(' (')[0]} can't open it: the dashboard isn't shared with them.`
-    else if (!seesData) text = `${v.label.split(' (')[0]} can open it, but the charts error: with individual credentials, queries run as the viewer, and they lack SELECT on the table.`
+    else if (!seesData) text = `${v.label.split(' (')[0]} can open it, but the charts can't load data: with Individual data permissions, queries use the viewer's own data permissions, and they lack SELECT on the table.`
     else
-      text = `${v.label.split(' (')[0]} sees the data${cfg.credentials === 'embedded' ? " (queries run with the publisher's credentials)" : ' using their own SELECT access'}.`
+      text = `${v.label.split(' (')[0]} sees the data${cfg.credentials === 'embedded' ? " (Share data permissions: queries use the publisher's data permissions)" : ' using their own SELECT access'}.`
     const ok = wanted ? seesData : !canOpen
     checks.push({ id: `viewer-${id}`, label: wanted ? `${v.label} can see the data` : `${v.label} cannot open the dashboard`, ok, text })
   }

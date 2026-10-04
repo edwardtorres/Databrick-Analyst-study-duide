@@ -97,7 +97,7 @@ export default function DashboardConfig() {
       </Section>
 
       <Section icon={Share2} title="Publish & share">
-        <Select label="When published, queries run with" value={cfg.credentials} options={OPTIONS.credentials} onChange={set('credentials')} />
+        <Select label="Publish with" value={cfg.credentials} options={OPTIONS.credentials} onChange={set('credentials')} />
         <Select label="Share with (dashboard permission)" value={cfg.shareWith} options={OPTIONS.shareWith} onChange={set('shareWith')} />
       </Section>
 
@@ -125,8 +125,8 @@ export default function DashboardConfig() {
             {result.complete ? '🏆 Every requirement met (+25 XP)' : 'Not all requirements are met yet. Adjust and simulate again.'}
           </div>
           <p className="text-[11px] text-slate-500">
-            ⚠ Verify in Databricks docs: publishing options (embedded vs viewer credentials), schedule and subscription settings, and alert condition options change
-            between releases. This lab simplifies them.
+            Simplified: real publishing also offers a service-principal publisher, schedules support cron and multiple subscribers, and alert conditions can aggregate a
+            column (SUM, AVERAGE). The choices here match the current docs.
           </p>
         </div>
       )}

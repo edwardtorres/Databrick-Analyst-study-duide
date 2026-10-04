@@ -34,7 +34,7 @@ test('Dashboard Config: the right setup meets every requirement; wrong choices a
   await pick('Operator', '<')
   await pick('Threshold', '50,000')
   await pick('Notification destination', 'Slack: #sales-alerts')
-  await pick('When published, queries run with', "Publisher's (embedded)")
+  await pick('Publish with', "Share data permissions (publisher's)")
   await pick('Share with (dashboard permission)', 'regional-managers (view)')
   await expect(page.getByText('Every requirement met')).toBeVisible()
   expect((await progress(page)).labs['dash-config']).toBe(true)

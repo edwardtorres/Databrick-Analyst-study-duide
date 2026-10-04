@@ -10,12 +10,11 @@ export const questions = [
     scenario: true,
     stem: 'One AI/BI dashboard needs an executive summary view and a detailed operations view, sharing the same filters where it makes sense. What is the cleanest design?',
     options: [
-      { t: 'One dashboard with multiple pages: a summary page and an operations page', ok: true, why: 'AI/BI dashboards support multiple pages, so related views stay in one governed, shareable object.' },
+      { t: 'One dashboard with multiple pages: a summary page and an operations page', ok: true, why: 'Global filters apply across all pages; page-level filters apply to one page. AI/BI dashboards support multiple pages, so related views stay in one governed, shareable object.' },
       { t: 'Two unrelated dashboards that must be kept in sync by hand', why: 'This works, but it duplicates datasets and filters and drifts over time.' },
       { t: 'One very long page with everything stacked', why: 'Executives must scroll past operational detail. Pages separate the audiences.' },
       { t: 'A notebook with display() cells', why: 'Notebooks are for analysis, not a polished, shared dashboard.' },
     ],
-    verify: 'Multi-page and cross-page filter behaviour.',
   },
   {
     id: 'c6-q-dash-datasets',
@@ -45,12 +44,11 @@ export const questions = [
     sub: 'dashboards',
     stem: 'Which widget types can you place on an AI/BI dashboard canvas?',
     options: [
-      { t: 'Visualizations, text (Markdown, which can include images) and filter widgets', ok: true, why: 'The canvas mixes charts with explanatory text, images and interactive filters.' },
+      { t: 'Visualizations, text (which can include links, tables and images) and filter widgets', ok: true, why: 'Images are inserted in a text widget by URL or path. The canvas mixes charts with explanatory text, images and interactive filters.' },
       { t: 'Only charts', why: 'Text and filter widgets are also available.' },
       { t: 'Only tables', why: 'Many chart types are available, not just tables.' },
       { t: 'Python notebook cells', why: 'Notebook cells are not dashboard widgets.' },
     ],
-    verify: 'Exact widget list and how images are added.',
   },
   {
     id: 'c6-q-dash-draft',
@@ -63,19 +61,17 @@ export const questions = [
       { t: 'Changes only appear after the warehouse restarts', why: 'Compute restarts don\'t publish edits.' },
       { t: 'Each viewer must re-create the dashboard', why: 'Viewers just open the published dashboard.' },
     ],
-    verify: 'Draft vs published behaviour.',
   },
   {
     id: 'c6-q-crossfilter',
     sub: 'dashboards',
     stem: 'A viewer clicks the "EMEA" bar in a chart and the other charts on the page update to EMEA. What feature is this?',
     options: [
-      { t: 'Cross-filtering between widgets that share a dataset or field', ok: true, why: 'Clicking a mark can filter related widgets, so viewers can explore without editing.' },
+      { t: 'Cross-filtering between visualizations that use the same dataset', ok: true, why: 'Clicking a data point or legend item filters all other visualizations based on the same dataset, so viewers can explore without editing.' },
       { t: 'A SQL alert', why: 'Alerts notify on thresholds. They don\'t filter charts.' },
       { t: 'Delta time travel', why: 'Time travel reads old table versions.' },
       { t: 'A Genie trusted asset', why: 'Trusted assets belong to Genie spaces.' },
     ],
-    verify: 'Cross-filtering scope (same dataset vs related fields).',
   },
 
   // ---------------- Visualizations & chart choice ----------------
@@ -84,12 +80,11 @@ export const questions = [
     sub: 'viz',
     stem: 'In a Databricks notebook, how do you quickly turn a query result into a chart?',
     options: [
-      { t: 'Display the result (e.g., a SQL cell or display(df)) and add a visualization from the result panel', ok: true, why: 'Notebook result tables have a built-in way to add visualizations, with no plotting code.' },
+      { t: 'Display the result (e.g., a SQL cell or display(df)), click + above it and choose Visualization', ok: true, why: 'Notebook result tables have a built-in way to add visualizations, with no plotting code.' },
       { t: 'Export to CSV and chart it in a spreadsheet', why: 'That works, but it leaves Databricks and governance behind.' },
       { t: 'Charts are only available in AI/BI dashboards', why: 'Notebooks and the SQL editor both support visualizations.' },
       { t: 'Write a SQL alert', why: 'Alerts notify. They don\'t draw charts.' },
     ],
-    verify: 'Where the "+ Visualization" control sits in the current notebook UI.',
   },
   {
     id: 'c6-q-chart-trend',
@@ -156,12 +151,11 @@ export const questions = [
     sub: 'params',
     stem: 'In the Databricks SQL editor, how do you add a named parameter that the user fills in before running the query?',
     options: [
-      { t: 'Use a parameter marker such as :region in the query (e.g., WHERE region = :region)', ok: true, why: 'Named parameter markers create an input widget. The value is substituted safely when the query runs.' },
+      { t: 'Use a parameter marker such as :region in the query (e.g., WHERE region = :region)', ok: true, why: 'Named :param markers are current; {{ param }} is the legacy mustache syntax. Named parameter markers create an input widget. The value is substituted safely when the query runs.' },
       { t: 'Concatenate user input into the SQL string', why: 'That is error-prone and unsafe. Parameters exist to avoid it.' },
       { t: 'Create a temporary table for each possible value', why: 'Far too much work for something a parameter does.' },
       { t: 'Parameters are only possible in notebooks', why: 'The SQL editor and dashboards support parameters.' },
     ],
-    verify: 'Current parameter syntax (named :param markers vs legacy {{ param }}).',
   },
   {
     id: 'c6-q-param-vs-filter',
@@ -180,12 +174,11 @@ export const questions = [
     sub: 'params',
     stem: 'You want the region parameter to offer only valid region names in a dropdown, kept current as new regions appear. What do you configure?',
     options: [
-      { t: 'A dropdown whose values come from a query (e.g., SELECT DISTINCT region FROM …)', ok: true, why: 'Query-based dropdowns stay in sync with the data and prevent typos.' },
+      { t: 'A query-based parameter: a filter widget whose values come from a dataset (e.g., SELECT DISTINCT region FROM …)', ok: true, why: 'A query-based parameter combines a field (the list of values) and a parameter in one filter widget, so new regions appear automatically. Use a dedicated dataset for the list.' },
       { t: 'A free-text parameter and trust users to type exact names', why: 'Typos return empty results.' },
       { t: 'A hard-coded list you edit every quarter', why: 'This works, but it goes stale as regions change.' },
       { t: 'A SQL alert', why: 'Alerts don\'t populate dropdowns.' },
     ],
-    verify: 'How query-based dropdowns are configured for dashboard parameters.',
   },
   {
     id: 'c6-q-param-test',
@@ -216,12 +209,11 @@ export const questions = [
     sub: 'sharing',
     stem: 'Regional managers should be able to view a dashboard but not edit it. What is the best way to grant access?',
     options: [
-      { t: 'Share the published dashboard with the regional-managers group at a view-only permission level', ok: true, why: 'Least privilege, managed through group membership.' },
+      { t: 'Share the published dashboard with the regional-managers group at CAN VIEW or CAN RUN', ok: true, why: 'Least privilege, managed through group membership. CAN RUN also lets them refresh; neither allows editing.' },
       { t: 'Give each manager Can Manage', why: 'They could change settings and permissions.' },
       { t: 'Share it with all workspace users', why: 'Broader than needed.' },
       { t: 'Email screenshots daily', why: 'Static, manual and ungoverned.' },
     ],
-    verify: 'Dashboard permission level names.',
   },
   {
     id: 'c6-q-embedded-creds',
@@ -229,25 +221,23 @@ export const questions = [
     scenario: true,
     stem: "Some managers who should see a dashboard don't have SELECT on the underlying table, and you don't want to grant them table access. What publishing option lets them see the dashboard's data?",
     options: [
-      { t: "Publish with embedded credentials, so dashboard queries run with the publisher's permissions", ok: true, why: 'Viewers see the results the dashboard shows without needing their own table access. Use it deliberately: viewers see what the publisher can see through those queries.' },
-      { t: "Publish with viewers' individual credentials", why: 'Then each viewer needs their own data access, and those managers would see errors.' },
+      { t: "Publish with Share data permissions (embedded credentials, the default), so dashboard queries run with the publisher's data permissions", ok: true, why: 'Viewers see the results the dashboard shows without needing their own table access. Use it deliberately: viewers see what the publisher can see through those queries.' },
+      { t: 'Publish with Individual data permissions', why: 'Then each viewer needs their own data access, and those managers would see errors.' },
       { t: 'Grant them ALL PRIVILEGES on the catalog', why: 'Far more access than needed.' },
       { t: 'Share the publisher\'s password', why: 'Never share credentials.' },
     ],
-    verify: 'Embedded credentials options and their current naming.',
   },
   {
     id: 'c6-q-embedded-rowfilter',
     sub: 'sharing',
     scenario: true,
-    stem: 'The sales table has a Unity Catalog row filter so each regional manager sees only their own region. You publish a dashboard on it with embedded credentials (yours: you can see every region). What happens, and what should you do?',
+    stem: 'The sales table has a Unity Catalog row filter so each regional manager sees only their own region. You publish a dashboard on it with Share data permissions (yours: you can see every region). What happens, and what should you do?',
     options: [
-      { t: "Every viewer sees all regions, because queries run as you and the row filter is evaluated for you. Publish with each viewer's own credentials so the filter applies per viewer.", ok: true, why: "Embedded credentials replace the viewer's identity with the publisher's, so per-user row filters and column masks stop protecting anything. Viewer credentials keep them working." },
-      { t: "Each viewer still sees only their region. Row filters always use the viewer's identity.", why: 'With embedded credentials the query runs as the publisher, so the filter sees the publisher, not the viewer.' },
-      { t: 'Nobody sees any data, because row filters block embedded credentials', why: 'The queries succeed and return whatever the publisher can see, which is the problem.' },
+      { t: "Every viewer sees all regions, because queries run as you and the row filter is evaluated for you. Publish with Individual data permissions so the filter applies per viewer.", ok: true, why: "Docs: with Share data permissions all viewers see data through the publisher's permissions, so row-level security based on viewer identity does not apply. Individual data permissions enforce row filters and masks per user." },
+      { t: "Each viewer still sees only their region. Row filters always use the viewer's identity.", why: 'With Share data permissions the query runs as the publisher, so the filter sees the publisher, not the viewer.' },
+      { t: 'Nobody sees any data, because row filters block shared data permissions', why: 'The queries succeed and return whatever the publisher can see, which is the problem.' },
       { t: 'Fine either way: add a dashboard filter on region instead', why: 'A dashboard filter is a convenience, not security. Viewers can change it.' },
     ],
-    verify: 'Confirm how row filters and column masks are evaluated for dashboards published with embedded credentials.',
   },
   {
     id: 'c6-q-share-external',
@@ -255,12 +245,11 @@ export const questions = [
     scenario: true,
     stem: 'A partner company needs to view a dashboard inside their own web portal. Which direction should you look into?',
     options: [
-      { t: 'The supported embedding options for AI/BI dashboards (iframe embedding and, where available, embedding for external users), with access still controlled by Databricks', ok: true, why: 'Embedding puts the dashboard in another site while keeping governance.' },
+      { t: 'Embedding for external users: the portal authenticates with a service principal, so partner users don\'t need Databricks accounts', ok: true, why: 'Basic (iframe) embedding requires viewers to sign in to Databricks; embedding for external users is designed for people outside your account. An admin must allow the embedding surface.' },
       { t: "Give the partner a Databricks admin's login", why: 'Never share credentials.' },
       { t: 'Export the underlying tables to the partner\'s database daily', why: 'This loses governance and freshness. Consider Delta Sharing if they need data, not a dashboard.' },
       { t: 'Take screenshots and email them', why: 'Static and manual.' },
     ],
-    verify: 'Embedding options for external users and the admin settings (e.g., allowed domains) they need.',
   },
   {
     id: 'c6-q-schedule',
@@ -268,24 +257,22 @@ export const questions = [
     scenario: true,
     stem: 'Data lands nightly by 02:00 and managers open the dashboard at 08:00. They complain the first load is slow and sometimes shows yesterday. Best fix?',
     options: [
-      { t: 'Add a refresh schedule for the published dashboard after the load (e.g., 06:00)', ok: true, why: 'A scheduled refresh after the data lands keeps results fresh and warm for the morning.' },
+      { t: 'Add a refresh schedule for the published dashboard after the load (e.g., 06:00)', ok: true, why: 'Scheduled runs also refresh the shared result cache, so the first load is fast. A scheduled refresh after the data lands keeps results fresh and warm for the morning.' },
       { t: 'Schedule a refresh every 5 minutes, all day', why: 'Wasteful for data that changes once a night.' },
       { t: 'Ask managers to open it after lunch', why: 'That avoids the problem instead of fixing it.' },
       { t: 'Convert every chart to a table', why: 'Chart type has nothing to do with freshness.' },
     ],
-    verify: 'Schedule options for published dashboards.',
   },
   {
     id: 'c6-q-subscription',
     sub: 'sharing',
     stem: 'Executives want a PDF snapshot of the dashboard in their inbox every Monday at 07:00. What do you use?',
     options: [
-      { t: 'A dashboard schedule with subscribers, which emails a snapshot when it runs', ok: true, why: 'Scheduled runs can notify subscribers with a snapshot of the published dashboard.' },
+      { t: 'A dashboard schedule with subscribers, which emails a PDF snapshot when it runs', ok: true, why: 'Email subscribers get a PDF (optionally CSV/TSV/Excel data); Slack and Teams destinations get a PNG plus PDF. Subscribers can be users or notification destinations.' },
       { t: 'A SQL alert with a threshold of 0', why: 'Alerts are for conditions, not routine report delivery.' },
       { t: 'A Lakeflow Job that screenshots the browser', why: 'Overengineered. Subscriptions do this.' },
       { t: 'A Genie sample question', why: 'Genie has nothing to do with emailing dashboards.' },
     ],
-    verify: 'Subscription formats (PDF/image) and who can be a subscriber.',
   },
 
   // ---------------- SQL alerts ----------------
@@ -306,12 +293,11 @@ export const questions = [
     sub: 'alerts',
     stem: 'An alert keeps showing TRIGGERED in the UI, but the team never hears about it. What is the most likely gap?',
     options: [
-      { t: 'No notification destination (or subscriber) is configured for the alert', ok: true, why: 'Triggering and notifying are separate. Without a destination such as email, Slack or a webhook, nobody is told.' },
+      { t: 'No notification destination (or subscriber) is configured for the alert', ok: true, why: 'Destinations (email, Slack, Teams, PagerDuty, webhook) are created by workspace admins. Triggering and notifying are separate. Without a destination such as email, Slack or a webhook, nobody is told.' },
       { t: 'The threshold is too low', why: 'The alert is already triggering. The problem is delivery.' },
       { t: 'The query needs more columns', why: 'The condition is already evaluating.' },
       { t: 'Alerts only work on weekends', why: 'Not a thing.' },
     ],
-    verify: 'Who configures destinations (often workspace admins) and the supported types.',
   },
   {
     id: 'c6-q-alert-schedule',
@@ -323,19 +309,17 @@ export const questions = [
       { t: 'Alerts evaluate continuously in real time', why: 'Alerts run their query on a schedule.' },
       { t: 'Only when someone opens the alert page', why: 'Alerts run unattended on their schedule.' },
     ],
-    verify: 'Alert scheduling options in the current alerts experience.',
   },
   {
     id: 'c6-q-alert-states',
     sub: 'alerts',
     stem: 'An alert is TRIGGERED today. Tomorrow revenue recovers above the threshold. What happens to the alert\'s state, and what option controls whether people hear about it?',
     options: [
-      { t: 'It returns to OK, and you can choose to notify destinations when the alert goes back to normal', ok: true, why: 'Alerts move between states as the condition changes. A "back to normal" notification is optional.' },
+      { t: 'It returns to OK, and the "Notify on OK" setting controls whether destinations hear about it', ok: true, why: 'Alerts move between OK, TRIGGERED and ERROR as they re-evaluate. Notify on OK is optional.' },
       { t: 'It stays TRIGGERED forever until deleted', why: 'Alerts re-evaluate on every run.' },
       { t: 'It deletes itself', why: 'Alerts persist until you remove them.' },
       { t: 'It switches to monitoring a different column', why: 'The column is fixed in the alert definition.' },
     ],
-    verify: 'Alert state names and notification options.',
   },
   {
     id: 'c6-q-alert-vs-dashboard',
