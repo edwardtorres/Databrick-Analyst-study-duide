@@ -2,8 +2,9 @@ import { ArrowRight } from 'lucide-react'
 import { allChallenges, challengeById, allChaptersLoaded } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import SqlChallenge from '../components/SqlChallenge.jsx'
-import { PageHeader, Loading } from '../components/ui.jsx'
+import { PageHeader } from '../components/ui.jsx'
 import { go } from '../lib/router.js'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 function ChallengePageInner({ cid }) {
   const challenge = challengeById(cid)
@@ -29,6 +30,6 @@ function ChallengePageInner({ cid }) {
 }
 
 export default function ChallengePage(props) {
-  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  if (!allChaptersLoaded()) return <ContentStatus label="Loading questions…" />
   return <ChallengePageInner {...props} />
 }

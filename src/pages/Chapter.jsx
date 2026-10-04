@@ -2,9 +2,10 @@ import { Check, Trophy, Crosshair, Lock, Terminal, FlaskConical } from 'lucide-r
 import { chapterById, subsectionSteps } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import { chapterMastery, subsectionMastery } from '../lib/mastery.js'
-import { Bar, PageHeader, Ring, Loading } from '../components/ui.jsx'
+import { Bar, PageHeader, Ring } from '../components/ui.jsx'
 import { go } from '../lib/router.js'
 import { LABS } from '../components/widgets.js'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 export default function Chapter({ id }) {
   const ch = chapterById(id)
@@ -34,7 +35,7 @@ export default function Chapter({ id }) {
       </div>
     )
 
-  if (!ch.content) return <Loading label="Loading chapter…" />
+  if (!ch.content) return <ContentStatus ids={[ch.id]} />
   const c = ch.content
   const mastery = chapterMastery(ch, state)
   const done = c.subsections.filter((s) => state.subsections[`${ch.id}:${s.id}`]).length

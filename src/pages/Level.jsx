@@ -9,6 +9,7 @@ import QuestionCard from '../components/QuestionCard.jsx'
 import SqlChallenge from '../components/SqlChallenge.jsx'
 import { labById } from '../components/widgets.js'
 import { Bar, Loading } from '../components/ui.jsx'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 const STEP_LABEL = { card: '📖 Learn', question: '❓ Quiz', challenge: '💻 SQL', widget: '🧪 Lab' }
 
@@ -22,7 +23,7 @@ export default function Level({ id, sub: subId }) {
   const [solved, setSolved] = useState({})
   const [finished, setFinished] = useState(false)
 
-  if (ch?.built && !ch.content) return <Loading label="Loading chapter…" />
+  if (ch?.built && !ch.content) return <ContentStatus ids={[ch.id]} />
   if (!sub) return <div className="text-slate-400">Level not found.</div>
   const steps = subsectionSteps(sub)
   const step = steps[i]

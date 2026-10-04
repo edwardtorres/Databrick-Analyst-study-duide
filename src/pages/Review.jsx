@@ -4,7 +4,8 @@ import { allQuestions, chapterById, allChaptersLoaded } from '../data/chapters.j
 import { useProgress } from '../lib/store.jsx'
 import { dueQuestions, pickQuestions, MAX_BOX } from '../lib/srs.js'
 import QuestionCard from '../components/QuestionCard.jsx'
-import { Bar, PageHeader, Loading } from '../components/ui.jsx'
+import { Bar, PageHeader } from '../components/ui.jsx'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 const SESSION = 10
 
@@ -131,6 +132,6 @@ function ReviewInner({ ch }) {
 }
 
 export default function Review(props) {
-  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  if (!allChaptersLoaded()) return <ContentStatus label="Loading questions…" />
   return <ReviewInner {...props} />
 }

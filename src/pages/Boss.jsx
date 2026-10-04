@@ -8,8 +8,9 @@ import { EXAM, SECTION_WEIGHTS } from '../data/examInfo.js'
 import { bossAllocation, rescaledWeights } from '../lib/bossWeights.js'
 import { bossCompletionBonus, BONUS_MIN_ANSWERED, payableCorrect } from '../lib/bossRewards.js'
 import { dayKey } from '../lib/dates.js'
-import { PageHeader, Loading } from '../components/ui.jsx'
+import { PageHeader } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 const TARGET = 0.8
 const MINUTES_PER_Q = EXAM.minutes / EXAM.scoredQuestions // 2 min
@@ -214,6 +215,6 @@ function WeightTable() {
 }
 
 export default function Boss(props) {
-  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  if (!allChaptersLoaded()) return <ContentStatus label="Loading questions…" />
   return <BossInner {...props} />
 }

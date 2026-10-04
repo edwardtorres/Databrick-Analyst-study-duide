@@ -136,27 +136,67 @@ export const CHAPTERS = [
 // let React re-render when a chapter arrives.
 const loaded = {}
 const pending = {}
+const failed = {} // chapterId -> Error from the last failed load
 const listeners = new Set()
 let version = 0
+
+const notify = () => {
+  version++
+  listeners.forEach((l) => l())
+}
 
 for (const c of CHAPTERS)
   Object.defineProperty(c, 'content', { get: () => loaded[c.id] || null, enumerable: true })
 
+const failedUrl = {} // chapterId -> chunk URL from the last failed import
+let attempt = 0
+
+// Browsers cache a failed dynamic import for its URL, so retrying the same
+// import() fails instantly. A retry re-imports the chunk URL (taken from the
+// error message) with a cache-busting query instead.
+function importChapter(c) {
+  const url = failedUrl[c.id]
+  if (!url) return c.load()
+  attempt++
+  return import(/* @vite-ignore */ `${url}${url.includes('?') ? '&' : '?'}retry=${attempt}`)
+}
+
+// Never rejects: a failed download (offline, or a redeploy replaced the
+// hashed chunk) is recorded in `failed` and the pending promise is cleared,
+// so calling loadChapter again retries instead of reusing the failure.
 export function loadChapter(id) {
   const c = chapterById(id)
   if (!c?.built) return Promise.resolve(null)
   if (loaded[c.id]) return Promise.resolve(loaded[c.id])
-  pending[c.id] ||= c.load().then((m) => {
-    loaded[c.id] = m.default
-    version++
-    listeners.forEach((l) => l())
-    return m.default
-  })
+  pending[c.id] ||= importChapter(c)
+    .then((m) => {
+      loaded[c.id] = m.default
+      delete failed[c.id]
+      notify()
+      return m.default
+    })
+    .catch((err) => {
+      const url = String(err?.message || '').match(/https?:\/\/\S+?\.js/)?.[0]
+      if (url) failedUrl[c.id] = url
+      failed[c.id] = err
+      notify()
+      return null
+    })
+    .finally(() => {
+      delete pending[c.id]
+    })
   return pending[c.id]
+}
+
+export function retryChapters(ids = CHAPTERS.filter((c) => c.built).map((c) => c.id)) {
+  for (const id of ids) delete failed[id]
+  notify()
+  return Promise.all(ids.map(loadChapter))
 }
 
 export const loadAllChapters = () => Promise.all(CHAPTERS.filter((c) => c.built).map((c) => loadChapter(c.id)))
 export const allChaptersLoaded = () => CHAPTERS.every((c) => !c.built || loaded[c.id])
+export const failedChapters = (ids = CHAPTERS.map((c) => c.id)) => ids.filter((id) => failed[id])
 export const contentVersion = () => version
 export const subscribeContent = (fn) => {
   listeners.add(fn)

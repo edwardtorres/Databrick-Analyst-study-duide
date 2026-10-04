@@ -6,8 +6,9 @@ import { allChallenges, chapterById, allChaptersLoaded } from '../data/chapters.
 import { useProgress } from '../lib/store.jsx'
 import SqlEditor from '../components/SqlEditor.jsx'
 import ResultTable from '../components/ResultTable.jsx'
-import { PageHeader, difficultyLabel, Loading } from '../components/ui.jsx'
+import { PageHeader, difficultyLabel } from '../components/ui.jsx'
 import { go } from '../lib/router.js'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 const SAMPLES = [
   ['Peek', 'SELECT * FROM customers LIMIT 5'],
@@ -42,7 +43,7 @@ export default function Sandbox() {
 }
 
 function ChallengeList() {
-  if (!allChaptersLoaded()) return <Loading label="Loading challenges…" />
+  if (!allChaptersLoaded()) return <ContentStatus label="Loading challenges…" />
   return <ChallengeListInner />
 }
 

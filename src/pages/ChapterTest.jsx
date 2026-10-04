@@ -6,9 +6,10 @@ import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
 import { payableCorrect } from '../lib/bossRewards.js'
 import { dayKey } from '../lib/dates.js'
-import { PageHeader, Loading } from '../components/ui.jsx'
+import { PageHeader } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
 import { go } from '../lib/router.js'
+import ContentStatus from '../components/ContentStatus.jsx'
 
 const TEST_SIZE = 12
 const PASS = 0.8
@@ -35,7 +36,7 @@ export default function ChapterTest({ id }) {
   const [done, setDone] = useState(false)
   const [xpNote, setXpNote] = useState(null)
 
-  if (ch?.built && !ch.content) return <Loading label="Loading chapter…" />
+  if (ch?.built && !ch.content) return <ContentStatus ids={[ch.id]} />
   if (!ch?.content) return <PageHeader title="No test yet" back={`/chapter/${id}`} />
   const prev = state.tests[ch.id]
 
