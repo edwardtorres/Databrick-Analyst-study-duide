@@ -29,7 +29,7 @@ test('Boss starts a 45-question exam with the exam-weighted mix', async ({ page 
   expect(actual).toEqual(Object.fromEntries(Object.entries(mix).filter(([, n]) => n > 0)))
   // all nine exam sections are in the draw
   expect(Object.keys(actual).map(Number).sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
-  expect(actual).toEqual({ 1: 5, 2: 4, 3: 2, 4: 7, 5: 7, 6: 7, 7: 7, 8: 2, 9: 4 })
+  expect(actual).toEqual({ 1: 5, 2: 4, 3: 2, 4: 9, 5: 7, 6: 7, 7: 5, 8: 2, 9: 4 })
 })
 
 test('submitting an empty Boss gives no bonus and shows the readiness estimate', async ({ page }) => {

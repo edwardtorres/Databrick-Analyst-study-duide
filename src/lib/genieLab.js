@@ -147,7 +147,7 @@ export function scoreGenie(cfg) {
       trNotes.push({ ok: false, text: a.why })
     } else if (a.needs.every((n) => has(cfg, n))) {
       tr += 10
-      trNotes.push({ ok: true, text: `${a.name} is parameterized and reviewed, so answers that use it are marked Trusted.` })
+      trNotes.push({ ok: true, text: `${a.name} is parameterized and reviewed, so answers that use it are shown as verified answers.` })
     } else trNotes.push({ ok: false, text: `${a.name} needs tables you didn't include (${a.needs.filter((n) => !has(cfg, n)).join(', ')}).` })
   }
   if (!cfg.trusted.length) trNotes.push({ ok: false, text: 'No trusted assets. Key metrics have no verified answer path.' })
@@ -197,10 +197,10 @@ export function simulate(cfg, qid) {
   if (rawNoise) problems.push('the raw POS table competed with sales_daily for the answer')
 
   if (qid === 'q-region' && trusted('ta-region') && !rawNoise)
-    return { outcome: 'trusted', text: 'Answered with the trusted asset revenue_by_region(start, end), so the response is marked Trusted.' }
+    return { outcome: 'trusted', text: 'Answered with the trusted asset revenue_by_region(start, end), so the response is a verified answer.' }
   if (qid === 'q-returns' && trusted('ta-returns') && !rawNoise)
-    return { outcome: 'trusted', text: 'Answered with the trusted asset return_rate_by_store(...), marked Trusted.' }
+    return { outcome: 'trusted', text: 'Answered with the trusted asset return_rate_by_store(...), shown as a verified answer.' }
   if (problems.length) return { outcome: 'partial', text: `Answered, but wrong or shaky: ${problems.join('; ')}.` }
-  const hint = qid === 'q-region' || qid === 'q-returns' ? ' Not marked Trusted. A trusted asset for this metric would add that.' : ''
+  const hint = qid === 'q-region' || qid === 'q-returns' ? ' Not a verified answer. A trusted asset for this metric would make it one.' : ''
   return { outcome: 'success', text: `Correct answer from generated SQL.${hint}` }
 }

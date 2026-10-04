@@ -15,7 +15,7 @@ import {
 } from '../lib/genieLab.js'
 
 const OUTCOME = {
-  trusted: { label: '✅ Trusted', cls: 'border-emerald-400/60 bg-emerald-500/15 text-emerald-200' },
+  trusted: { label: '✅ Verified answer', cls: 'border-emerald-400/60 bg-emerald-500/15 text-emerald-200' },
   success: { label: '✅ Correct', cls: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-200' },
   partial: { label: '⚠️ Shaky', cls: 'border-amber-500/50 bg-amber-500/10 text-amber-100' },
   fail: { label: '❌ Failed', cls: 'border-rose-500/50 bg-rose-500/10 text-rose-200' },
@@ -136,7 +136,7 @@ export default function GenieBuilder() {
         </div>
       </Section>
 
-      <Section icon={ShieldCheck} title="Trusted assets" hint="Reviewed, parameterized SQL (or UC functions). Answers that use them are marked Trusted.">
+      <Section icon={ShieldCheck} title="Trusted assets" hint="Parameterized example queries or Unity Catalog SQL functions. Answers that use them are shown as verified answers.">
         <div className="grid gap-1.5">
           {TRUSTED_CANDIDATES.map((a) => (
             <label key={a.id} className={`flex items-start gap-2 rounded-lg border px-2.5 py-2 ${cfg.trusted.includes(a.id) ? 'border-brand bg-brand/10' : 'border-line'}`}>
@@ -203,7 +203,7 @@ export default function GenieBuilder() {
           {!chat.length && <p className="text-xs text-slate-500">Answers reflect your current setup. Change the setup and ask again to see the difference.</p>}
         </div>
         <p className="mt-2 text-[11px] text-slate-500">
-          Simulated answers for learning. Real Genie behaviour depends on your data, metadata and the current product. Verify in Databricks docs.
+          Simulated answers for learning. Real Genie (now called Genie Agents in the product) depends on your data and metadata. Settings here match the docs: Pro or Serverless warehouse, focused tables (five or fewer recommended, max 50), trusted assets = parameterized queries or UC functions.
         </p>
       </div>
     </div>

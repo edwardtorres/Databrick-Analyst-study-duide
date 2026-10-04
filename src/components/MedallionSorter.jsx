@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { LAYERS, CARDS, sanitizeMedallion, medallionScore } from '../lib/medallionSorter.js'
-import { VerifyFlag } from './ui.jsx'
 
 const LAYER_STYLE = {
   bronze: 'border-amber-700/60 bg-amber-900/20',
@@ -93,7 +92,7 @@ export default function MedallionSorter() {
       })}
 
       {score.allRight && <div className="rounded-xl bg-emerald-500/15 p-2.5 text-sm font-bold text-emerald-200">🎉 All {score.total} placed correctly.</div>}
-      <VerifyFlag text="Medallion layers are a convention, not a rule. Teams draw the silver/gold line differently (for example, where data vault or ML features live)." />
+      <p className="text-[11px] text-slate-500">Placements follow Databricks guidance: silver often uses 3NF or Data Vault; gold holds dimensional models, aggregates and features for analytics and ML.</p>
     </div>
   )
 }

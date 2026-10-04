@@ -8,13 +8,9 @@ export const EXAM = {
   guideVersionLabel: 'Oct 30, 2025',
 }
 
-// Section weights (% of the exam). Sections 1, 2, 3, 8, 9 are known; the
-// remainder is split evenly across sections 4-7. Verify against the
-// current exam guide.
-const KNOWN_WEIGHTS = { 1: 11, 2: 8, 3: 5, 8: 5, 9: 8 }
-const SPLIT = [4, 5, 6, 7]
-const rest = 100 - Object.values(KNOWN_WEIGHTS).reduce((a, b) => a + b, 0)
-export const SECTION_WEIGHTS = {
-  ...KNOWN_WEIGHTS,
-  ...Object.fromEntries(SPLIT.map((s) => [s, rest / SPLIT.length])),
-}
+// Section weights (% of the exam), as published on the official exam page
+// (https://www.databricks.com/learn/certification/data-analyst-associate,
+// checked Oct 2026). The exam guide PDF linked there is still the
+// Oct 30, 2025 version.
+export const WEIGHTS_SOURCE = 'Official exam page, checked Oct 2026'
+export const SECTION_WEIGHTS = { 1: 11, 2: 8, 3: 5, 4: 20, 5: 15, 6: 16, 7: 12, 8: 5, 9: 8 }

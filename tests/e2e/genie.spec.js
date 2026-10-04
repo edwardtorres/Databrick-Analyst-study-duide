@@ -14,7 +14,7 @@ test('a full Genie setup scores 100 and gets trusted answers', async ({ page }) 
 
   await page.getByRole('button', { name: 'Show revenue by region for the last 90 days' }).click()
   await page.getByRole('button', { name: 'How much does Maria in HR earn?' }).click()
-  await expect(page.getByText('✅ Trusted')).toBeVisible()
+  await expect(page.getByText('✅ Verified answer')).toBeVisible()
   await expect(page.getByText('🛡️ Declined')).toBeVisible()
   expect((await progress(page)).labs['genie-90']).toBe(true)
 

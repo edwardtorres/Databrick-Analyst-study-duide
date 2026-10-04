@@ -91,12 +91,11 @@ export const questions = [
     scenario: true,
     stem: 'A customer moves from the West region to the East. Finance wants past sales to stay in West and new sales to count in East. What dimension design does that?',
     options: [
-      { t: 'SCD Type 2: add a new row for the customer with valid-from/valid-to dates, and new facts point to the new row', ok: true, why: 'Type 2 keeps history, so each fact links to the customer version that was true at the time.' },
+      { t: 'SCD Type 2: add a new row for the customer with valid-from/valid-to dates, and new facts point to the new row', ok: true, why: 'In Lakeflow pipelines, AUTO CDC (formerly APPLY CHANGES) can build SCD Type 2 tables for you. Type 2 keeps history, so each fact links to the customer version that was true at the time.' },
       { t: 'SCD Type 1: overwrite the region', why: 'Type 1 rewrites history: all past sales would move to East.' },
       { t: 'Delete the customer and recreate them', why: 'That breaks the link to past facts.' },
       { t: 'Store region in the fact only', why: 'Possible, but it isn\'t a dimension design and duplicates customer data on every row.' },
     ],
-    verify: 'Databricks features for SCD (APPLY CHANGES / AUTO CDC in declarative pipelines).',
   },
 
   // ---------------- Snowflake & data vault ----------------
@@ -192,7 +191,6 @@ export const questions = [
       { t: 'The table is dropped', why: 'Constraints never drop tables.' },
       { t: 'The duplicate is silently merged', why: 'No merging happens. Both rows are stored.' },
     ],
-    verify: 'PK/FK constraint behavior and RELY optimization in Databricks.',
   },
 
   // ---------------- Medallion mapping ----------------
@@ -213,12 +211,11 @@ export const questions = [
     scenario: true,
     stem: 'An architect asks where each model usually fits in a medallion lakehouse. What is the common mapping?',
     options: [
-      { t: 'Data vault or normalized models in silver; star schemas and aggregates in gold', ok: true, why: 'Silver integrates and conforms; gold shapes the data for consumption.' },
+      { t: 'Data vault or normalized models in silver; star schemas and aggregates in gold', ok: true, why: 'Databricks docs: the silver layer "often follows a Third Normal Form (3NF) or Data Vault model", and gold holds data marts, often dimensional models. Silver integrates and conforms; gold shapes the data for consumption.' },
       { t: 'Star schemas in bronze', why: 'Bronze is raw. No modeling happens there.' },
       { t: 'Data vault in gold, star schemas in silver', why: 'Usually the reverse: stars are built for consumption on top of integrated silver data.' },
       { t: 'Models don\'t apply to a lakehouse', why: 'Classic modeling is used in lakehouses as in warehouses.' },
     ],
-    verify: 'Databricks guidance varies; some teams model silver as cleaned source-aligned tables rather than data vault.',
   },
   {
     id: 'c8-q-bronze-keep',
@@ -262,12 +259,11 @@ export const questions = [
     scenario: true,
     stem: 'Which Databricks tool is designed to declare bronze → silver → gold tables with data-quality expectations and managed dependencies?',
     options: [
-      { t: 'Lakeflow Declarative Pipelines (formerly Delta Live Tables)', ok: true, why: 'You declare each table\'s query and expectations. The pipeline handles order, incremental refresh and quality metrics.' },
+      { t: 'Lakeflow pipelines (formerly Delta Live Tables)', ok: true, why: 'You declare each table\'s query and expectations. The pipeline handles order, incremental refresh and quality metrics.' },
       { t: 'Databricks Marketplace', why: 'Marketplace distributes data products. It doesn\'t build layers.' },
       { t: 'Delta Sharing', why: 'Sharing gives data to others.' },
       { t: 'Catalog Explorer', why: 'Explorer browses and governs data. It doesn\'t transform it.' },
     ],
-    verify: 'Product name: Lakeflow Declarative Pipelines vs Delta Live Tables.',
   },
 
   // ---------------- Modeling in SQL ----------------

@@ -28,7 +28,6 @@ const subsections = [
           'Naming: the exam guide says **Databricks Assistant**; the product is now called **Genie Code** (old Assistant docs redirect there). Same commands.',
           'Natural-language prompts work too, for example: "top 5 customers by revenue last quarter".',
         ],
-        
       ),
       card('assist-3', 'Exam lens', [
         'Match the command to the goal: **understand** code → /explain. **Error** to resolve → /fix. **Add docs/comments** → /doc.',
@@ -54,7 +53,6 @@ const subsections = [
           '**Pro** and **Classic**: compute runs in your cloud account and starts more slowly. Serverless has Photon, Predictive IO and Intelligent Workload Management; Pro has Photon and Predictive IO; Classic has Photon only.',
           'Choose **Pro** when serverless isn\'t available in your region or you need custom networking (e.g. federation to databases in your private network). Genie needs Pro or Serverless.',
         ],
-        
       ),
       card('wh-3', 'Size vs scaling: the #1 exam trap', [
         '**Cluster size** (2X-Small … 4X-Large) makes each query faster. Pick a larger size when **one heavy query** is slow.',
@@ -212,7 +210,6 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY amount DESC) = 1;` 
           'In Databricks, `LIKE` is case-sensitive. Use `ILIKE` or `lower(col) LIKE ...` for case-insensitive matching.',
           'Without `ORDER BY`, result order is not guaranteed. For top-N queries, add a tie-breaker column.',
         ],
-        
       ),
       challenge('c4-sql-filter-sort'),
       challenge('c4-fix-having'),
@@ -273,7 +270,6 @@ RESTORE TABLE inventory TO VERSION AS OF 2;` }),
           '`VACUUM t RETAIN 0 HOURS` requires disabling a safety check. It wipes out all time travel except the current version.',
           'With **predictive optimization** (on by default for newer accounts, Unity Catalog managed tables), Databricks runs VACUUM for you.',
         ],
-        
       ),
       widget('time-travel'),
       quiz('c4-q-tt-syntax', 'c4-q-tt-vacuum', 'c4-q-tt-restore', 'c4-q-tt-retention', 'c4-q-tt-restore-version'),

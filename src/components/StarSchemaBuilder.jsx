@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { PROCESS, GRAINS, TABLES, FIXED_FACT_KEYS, COLUMNS, SNOWFLAKE, sanitizeStar, starStatus } from '../lib/starSchema.js'
-import { VerifyFlag } from './ui.jsx'
 
 function Choice({ options, value, onPick, label }) {
   const picked = options.find((o) => o.id === value)
@@ -118,7 +117,7 @@ export default function StarSchemaBuilder() {
       </section>
 
       {st.grain && st.columns && st.snowflake && <div className="rounded-xl bg-emerald-500/15 p-2.5 text-sm font-bold text-emerald-200">🎉 Model complete: grain, star and snowflake.</div>}
-      <VerifyFlag text="Simplified: real designs also add surrogate keys, SCD handling and an 'Unknown' member in each dimension. Databricks supports informational PRIMARY KEY / FOREIGN KEY constraints (not enforced)." />
+      <p className="text-[11px] text-slate-500">Simplified: real designs also add surrogate keys (identity columns), SCD handling (AUTO CDC) and an 'Unknown' member in each dimension. Databricks PRIMARY KEY / FOREIGN KEY constraints are informational, not enforced.</p>
     </div>
   )
 }
