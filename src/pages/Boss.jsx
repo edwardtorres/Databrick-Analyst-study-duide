@@ -208,7 +208,9 @@ function WeightTable() {
         )
       })}
       <div className="mt-1 text-[10px] text-slate-500">
-        Weights from the exam guide where known (verify in the current guide), rescaled to the {ids.length} built chapter(s). Unbuilt sections are not tested yet.
+        {ids.length === 9
+          ? 'Weights from the exam guide where known (verify in the current guide). Every exam section is included.'
+          : `Weights from the exam guide where known (verify in the current guide), rescaled to the ${ids.length} built chapter(s). Unbuilt sections are not tested yet.`}
       </div>
     </div>
   )

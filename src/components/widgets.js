@@ -17,8 +17,10 @@ const PlatformMatch = lazy(() => import('./PlatformMatch.jsx'))
 const CatalogExplorer = lazy(() => import('./CatalogExplorer.jsx'))
 const IngestionPicker = lazy(() => import('./IngestionPicker.jsx'))
 const UploadWizard = lazy(() => import('./UploadWizard.jsx'))
+const MedallionSorter = lazy(() => import('./MedallionSorter.jsx'))
+const StarSchemaBuilder = lazy(() => import('./StarSchemaBuilder.jsx'))
 
-// Interactive labs. `chapter: null` + `component: null` = coming in a later chapter.
+// Interactive labs.
 export const LABS = [
   { id: 'platform-match', title: 'Platform Match', emoji: '🧩', chapter: 1, desc: 'Match real needs to the Databricks component that solves them, and see why the others don\'t fit.', component: PlatformMatch },
   { id: 'catalog-explorer', title: 'Catalog Explorer', emoji: '🧭', chapter: 2, desc: 'Browse a mock Unity Catalog: find the certified table, check managed vs external, tag PII and follow lineage.', component: CatalogExplorer },
@@ -32,7 +34,8 @@ export const LABS = [
   { id: 'chart-picker', title: 'Chart Picker', emoji: '📊', chapter: 6, desc: 'Match a business question to the right chart, then compare your pick with the best one.', component: ChartPicker },
   { id: 'dashboard-config', title: 'Dashboard Config', emoji: '🛠️', chapter: 6, desc: 'Wire a parameter, schedule a refresh, set an alert and sharing, then simulate the morning.', component: DashboardConfig },
   { id: 'namespace-builder', title: 'Namespace Builder', emoji: '🔐', chapter: 9, desc: 'Drag catalog → schema → table/volume, grant privileges, then test who can run what.', component: NamespaceBuilder },
-  { id: 'medallion-sorter', title: 'Medallion Sorter', emoji: '🥇', chapter: 8, desc: 'Sort datasets into bronze/silver/gold and build a star schema.', component: null },
+  { id: 'medallion-sorter', title: 'Medallion Sorter', emoji: '🥇', chapter: 8, desc: 'Tap each dataset or transformation into bronze, silver or gold, and see why it belongs there.', component: MedallionSorter },
+  { id: 'star-schema-builder', title: 'Star Schema Builder', emoji: '⭐', chapter: 8, desc: 'Declare the grain, tap columns into the fact or dimensions, and spot the snowflake.', component: StarSchemaBuilder },
   { id: 'genie-builder', title: 'Genie Space Builder', emoji: '🧞', chapter: 7, desc: 'Configure a mock Genie space, get scored, then see which user questions succeed and why.', component: GenieBuilder },
 ]
 

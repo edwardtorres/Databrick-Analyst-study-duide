@@ -34,3 +34,14 @@ test('never asks for more questions than exist', () => {
   assert.equal(Object.values(a).reduce((x, y) => x + y, 0), 45)
   assert.ok(a[1] > a[3]) // 11% vs 5%
 })
+
+test('with all 9 chapters built, the Boss draws exactly 45 in the exam mix', async () => {
+  const pool = {}
+  for (let n = 1; n <= 9; n++) pool[n] = (await import(`../src/data/ch${n}/questions.js`)).questions.length
+  const a = bossAllocation(pool, 45)
+  assert.equal(Object.values(a).reduce((x, y) => x + y, 0), 45)
+  // 11% · 8% · 5% · 4 × 15.75% · 5% · 8% of 45, largest remainder
+  assert.deepEqual(a, { 1: 5, 2: 4, 3: 2, 4: 7, 5: 7, 6: 7, 7: 7, 8: 2, 9: 4 })
+  const w = rescaledWeights([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  for (const [id, pct] of Object.entries(SECTION_WEIGHTS)) assert.ok(Math.abs(w[id] - pct / 100) < 1e-9, id)
+})

@@ -139,18 +139,18 @@ export default function UploadWizard() {
             First row contains the header
           </label>
           <div className="overflow-x-auto rounded-lg border border-line" data-testid="upload-preview">
-            <table className="w-full text-left font-mono text-[11px]">
+            <table className="w-full table-fixed text-left font-mono text-[10px]">
               <thead className="bg-panel2">
                 <tr>
                   {grid.columns.map((c) => (
-                    <th key={c.name} className="px-2 py-1 align-top">
-                      <div>{c.name}</div>
+                    <th key={c.name} className="px-1 py-1 align-top">
+                      <div className="break-all">{c.name}</div>
                       {w.header ? (
                         <select
                           aria-label={`Type of ${c.name}`}
                           value={c.type}
                           onChange={(e) => set({ types: { ...w.types, [c.name]: e.target.value }, issues: [] })}
-                          className="mt-0.5 rounded bg-ink px-1 py-0.5 text-[10px] text-brand2"
+                          className="mt-0.5 w-full rounded bg-ink py-0.5 text-[9px] text-brand2"
                         >
                           {TYPES.map((t) => (
                             <option key={t}>{t}</option>
@@ -167,7 +167,7 @@ export default function UploadWizard() {
                 {grid.rows.map((r, i) => (
                   <tr key={i} className="border-t border-line">
                     {r.map((v, j) => (
-                      <td key={j} className="px-2 py-1">
+                      <td key={j} className="break-all px-1 py-1">
                         {v}
                       </td>
                     ))}

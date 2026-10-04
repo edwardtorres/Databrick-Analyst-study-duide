@@ -5,8 +5,9 @@ import { checkChallenge, createDb, runSql } from '../src/lib/sqlCore.js'
 import { challenges as ch4 } from '../src/data/ch4/challenges.js'
 import { challenges as ch5 } from '../src/data/ch5/challenges.js'
 import { challenges as ch2 } from '../src/data/ch2/challenges.js'
+import { challenges as ch8 } from '../src/data/ch8/challenges.js'
 
-const challenges = [...ch2, ...ch4, ...ch5]
+const challenges = [...ch2, ...ch4, ...ch5, ...ch8]
 
 const SQL = await initSqlJs()
 
@@ -78,8 +79,8 @@ test('Chapter 5 fix challenges: the broken query runs (wrong result, not an erro
   }
 })
 
-test('Chapter 2 fix challenges: the broken query runs and explains the trap', () => {
-  for (const ch of ch2.filter((c) => c.kind === 'fix')) {
+test('Chapter 2 and 8 fix challenges: the broken query runs and explains the trap', () => {
+  for (const ch of [...ch2, ...ch8].filter((c) => c.kind === 'fix')) {
     const r = checkChallenge(SQL, ch, ch.starter)
     assert.ok(!r.error, `${ch.id}: ${r.error}`)
     assert.equal(r.reason, ch.brokenNote, ch.id)
@@ -113,4 +114,16 @@ test('try_cast returns NULL for junk, works nested, and leaves literals alone', 
   )
   assert.deepEqual(r.rows[0], [12.5, null, 7, null, '2025-02-03', null, 1.25, '3', 'try_cast(a AS INT)'])
   assert.deepEqual(runSql(db, 'SELECT try_cast(NULL AS INT), try_cast(customer_id AS STRING) FROM customers WHERE customer_id = 1').rows[0], [null, '1'])
+})
+
+test('Chapter 8: alternative fixes and the inner-join trap', () => {
+  const by = (id) => ch8.find((c) => c.id === id)
+  const maxFix = `SELECT p.category, SUM(o.amount), MAX(t.target) FROM orders o JOIN products p ON o.product_id = p.product_id
+JOIN category_targets t ON t.category = p.category WHERE o.status = 'completed' GROUP BY p.category`
+  assert.equal(checkChallenge(SQL, by('c8-fix-fanout'), maxFix).ok, true)
+  // inner joins drop the orphan orders, so the totals don't reconcile
+  const inner = `SELECT r.region_name, SUM(o.amount) FROM orders o JOIN customers c ON o.customer_id = c.customer_id
+JOIN regions r ON c.region_id = r.region_id WHERE o.status = 'completed' GROUP BY r.region_name`
+  assert.equal(checkChallenge(SQL, by('c8-unknown-member'), inner).ok, false)
+  assert.equal(checkChallenge(SQL, by('c8-snowflake-region'), inner).ok, true)
 })

@@ -114,6 +114,8 @@ export const CHAPTERS = [
     title: 'Data Modeling',
     emoji: '🧱',
     color: 'from-yellow-500 to-amber-600',
+    built: true,
+    load: () => import('./ch8/index.js'),
     topics: [
       'Star schema',
       'Snowflake schema',
