@@ -14,7 +14,6 @@ export const questions = [
       { t: 'A Delta Sharing recipient', why: 'Recipients receive shares. They have nothing to do with storage paths.' },
       { t: 'A workspace in another region', why: 'Workspaces and regions aren\'t storage objects in Unity Catalog.' },
     ],
-    verify: 'Privilege names on external locations.',
   },
   {
     id: 'c3-q-volume',
@@ -45,12 +44,11 @@ export const questions = [
     sub: 'cloud-storage',
     stem: 'Which statement loads CSV files with a header row from a volume into an existing table sales_raw?',
     options: [
-      { t: "COPY INTO sales_raw FROM '/Volumes/raw/sales/drop/' FILEFORMAT = CSV FORMAT_OPTIONS ('header' = 'true')", ok: true, why: 'COPY INTO target FROM path FILEFORMAT = … with FORMAT_OPTIONS for reader options such as header and inferSchema.' },
+      { t: "COPY INTO sales_raw FROM '/Volumes/raw/sales/drop/' FILEFORMAT = CSV FORMAT_OPTIONS ('header' = 'true')", ok: true, why: 'Without the header option, COPY INTO treats CSV as headerless. COPY INTO target FROM path FILEFORMAT = … with FORMAT_OPTIONS for reader options such as header and inferSchema.' },
       { t: "INSERT INTO sales_raw FROM '/Volumes/raw/sales/drop/' AS CSV", why: 'Not valid syntax. INSERT takes a query or VALUES, not a path.' },
       { t: "LOAD DATA INFILE '/Volumes/raw/sales/drop/' INTO sales_raw", why: 'That is MySQL syntax, not Databricks.' },
       { t: "CREATE TABLE sales_raw COPY '/Volumes/raw/sales/drop/'", why: 'Not a valid statement.' },
     ],
-    verify: 'COPY INTO options (mergeSchema in COPY_OPTIONS, inferSchema in FORMAT_OPTIONS).',
   },
   {
     id: 'c3-q-ctas-files',
@@ -63,7 +61,6 @@ export const questions = [
       { t: 'Upload each Parquet file through the UI', why: 'Tedious and limited in size, and the files are already in storage.' },
       { t: 'Create a Delta Sharing recipient', why: 'Sharing gives data to others. It doesn\'t load files.' },
     ],
-    verify: 'read_files options and the older format.`path` syntax.',
   },
   {
     id: 'c3-q-ctas-rerun',
@@ -108,12 +105,11 @@ export const questions = [
     scenario: true,
     stem: 'A source drops tens of thousands of files per hour, continuously, and the folder will reach millions of files. COPY INTO or Auto Loader?',
     options: [
-      { t: 'Auto Loader: it is recommended for millions of files and continuous ingestion', ok: true, why: 'Auto Loader scales file discovery (including file-notification mode) and processes incrementally. COPY INTO is aimed at thousands of files in batches.' },
+      { t: 'Auto Loader: it is recommended for millions of files and continuous ingestion', ok: true, why: 'Docs: COPY INTO "works well for data sources that contain thousands of files"; use Auto Loader for millions. Auto Loader scales file discovery (including file-notification mode) and processes incrementally. COPY INTO is aimed at thousands of files in batches.' },
       { t: 'COPY INTO: it is always faster', why: 'COPY INTO is simpler, not always faster, and gets slow at millions of files.' },
       { t: 'Neither; use CTAS', why: 'CTAS rereads everything each time.' },
       { t: 'The UI upload', why: 'Not for automated, high-volume ingestion.' },
     ],
-    verify: 'Current guidance on COPY INTO vs Auto Loader file counts.',
   },
   {
     id: 'c3-q-schema-evolution',
@@ -126,13 +122,12 @@ export const questions = [
       { t: 'All previous rows are deleted', why: 'Schema evolution never deletes data.' },
       { t: 'The file is skipped', why: 'Files aren\'t skipped because of a new column.' },
     ],
-    verify: 'Default schemaEvolutionMode and restart behavior.',
   },
   {
     id: 'c3-q-rescued-data',
     sub: 'auto-loader',
     scenario: true,
-    stem: 'Some events have "price": "N/A" while the inferred schema says price is a number. With Auto Loader, where does that value end up?',
+    stem: 'Some events have "price": "N/A" while your schema hint says price is a DOUBLE. With Auto Loader, where does that value end up?',
     options: [
       { t: 'In the _rescued_data column, so it isn\'t lost', ok: true, why: 'Values that don\'t fit the schema (wrong type, unexpected columns) are captured in _rescued_data as JSON.' },
       { t: 'It replaces the whole row with NULLs', why: 'Only the mismatched value is rescued. The rest of the row loads.' },
@@ -145,12 +140,11 @@ export const questions = [
     sub: 'auto-loader',
     stem: 'How does Auto Loader decide the schema of new CSV or JSON files?',
     options: [
-      { t: 'It samples files to infer a schema and stores it at the schema location, so later runs reuse and evolve it', ok: true, why: 'Inference happens on a sample, and the schema is persisted so it stays stable between runs.' },
+      { t: 'It samples files to infer a schema and stores it at the schema location, so later runs reuse and evolve it', ok: true, why: 'It samples the first 50 GB or 1,000 files; for JSON and CSV every column is inferred as STRING unless you set cloudFiles.inferColumnTypes. Inference happens on a sample, and the schema is persisted so it stays stable between runs.' },
       { t: 'It reads every file in full on every run', why: 'That would be slow. It samples and saves the schema.' },
       { t: 'You must always type the schema by hand', why: 'You can provide hints or a schema, but inference is built in.' },
       { t: 'It uses the schema of whatever table you queried last', why: 'Not how it works.' },
     ],
-    verify: 'Whether CSV/JSON columns are inferred as strings by default (cloudFiles.inferColumnTypes).',
   },
   {
     id: 'c3-q-streaming-table-sql',
@@ -163,7 +157,6 @@ export const questions = [
       { t: 'A materialized view over the folder', why: 'Materialized views recompute results from tables. Incremental file ingestion is the streaming table.' },
       { t: 'An alert', why: 'Alerts notify on query results. They don\'t load files.' },
     ],
-    verify: 'Streaming table syntax and availability in Databricks SQL.',
   },
 
   // ---------------- Delta Sharing ----------------
@@ -184,12 +177,11 @@ export const questions = [
     scenario: true,
     stem: 'One recipient uses Databricks with Unity Catalog. Another uses only Power BI and pandas. Which sharing modes fit?',
     options: [
-      { t: 'Databricks-to-Databricks sharing for the first; open sharing (a credential/token) for the second', ok: true, why: 'D2D uses the recipient metastore\'s sharing identifier with no tokens. Open sharing gives non-Databricks clients a credential to read the share.' },
+      { t: 'Databricks-to-Databricks sharing for the first; open sharing (a credential/token) for the second', ok: true, why: 'Docs call these Databricks-to-Databricks and Databricks-to-Open sharing (OpenSharing). D2D uses the recipient metastore\'s sharing identifier with no tokens. Open sharing gives non-Databricks clients a credential to read the share.' },
       { t: 'Open sharing only works between Databricks accounts', why: 'Open sharing is what works with non-Databricks platforms.' },
       { t: 'The Power BI user must first buy a Databricks workspace', why: 'Open sharing exists so they don\'t have to.' },
       { t: 'Both must use the Marketplace', why: 'Marketplace is optional. You can share directly.' },
     ],
-    verify: 'Open sharing authentication options (bearer token, OIDC federation).',
   },
   {
     id: 'c3-q-sharing-readonly',
@@ -263,7 +255,6 @@ export const questions = [
       { t: 'The UI upload', why: 'Manual and not incremental.' },
       { t: 'COPY INTO on the Salesforce website', why: 'COPY INTO reads files in cloud storage, not SaaS APIs.' },
     ],
-    verify: 'Which sources Lakeflow Connect currently supports.',
   },
   {
     id: 'c3-q-market-source',
@@ -285,12 +276,11 @@ export const questions = [
     scenario: true,
     stem: 'Which situation is the best fit for "create table from file upload" in the Workspace UI?',
     options: [
-      { t: 'A one-off 15 MB CSV of budget targets from finance', ok: true, why: 'Small, local, one-off files are exactly what the UI upload is for.' },
+      { t: 'A one-off 15 MB CSV of budget targets from finance', ok: true, why: 'The upload takes up to 10 files under 2 GB in total. Small, local, one-off files are exactly what the UI upload is for.' },
       { t: 'Hourly JSON files landing in S3', why: 'Recurring files in cloud storage call for Auto Loader or COPY INTO.' },
       { t: 'A 40 GB Parquet export', why: 'Too large for the UI upload. Land it in storage and load it there.' },
       { t: 'A partner\'s live table on another cloud', why: 'That is Delta Sharing.' },
     ],
-    verify: 'Current upload size limit and file count.',
   },
   {
     id: 'c3-q-upload-privileges',
@@ -310,7 +300,7 @@ export const questions = [
     scenario: true,
     stem: 'In the upload preview, columns are named _c0, _c1, _c2 and the first row contains "order_id, region, amount". What went wrong?',
     options: [
-      { t: 'The header row is being read as data; turn on "first row contains the header"', ok: true, why: 'With the header read as data, names are generic and every column becomes STRING because of the text row.' },
+      { t: 'The header row is being read as data; turn on "first row contains the header"', ok: true, why: 'The option is on by default, so this happens when it has been switched off (or the file has a title line). With the header read as data, names are generic and every column becomes STRING because of the text row.' },
       { t: 'The file is corrupted', why: 'The data is there. Only the header setting is wrong.' },
       { t: 'You must rename every column by hand', why: 'Fixing the header option names them from the file.' },
       { t: 'CSV files can\'t have headers', why: 'They usually do, and the upload supports them.' },

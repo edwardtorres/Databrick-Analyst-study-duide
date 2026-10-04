@@ -14,9 +14,9 @@ export const FILES = [
 
 export function checkFile(id) {
   if (id === 'video')
-    return { ok: false, code: 'format', msg: 'A video isn\'t tabular, so it can\'t become a table. Supported formats for table upload include CSV, TSV, JSON, XML, Avro, Parquet and text. To keep the file itself, upload it to a volume.' }
+    return { ok: false, code: 'format', msg: 'A video isn\'t tabular, so it can\'t become a table. Table upload supports CSV, TSV, JSON, Avro, Parquet and text files. To keep the file itself, upload it to a volume.' }
   if (id === 'clicks')
-    return { ok: false, code: 'size', msg: 'Too big for the UI upload, which is meant for small files (about 2 GB in total at the time of writing). Put large files in cloud storage or a volume and load them with COPY INTO or Auto Loader.' }
+    return { ok: false, code: 'size', msg: 'Too big for the UI upload: up to 10 files, under 2 GB in total. Put large files in cloud storage or a volume and load them with COPY INTO or Auto Loader.' }
   return { ok: id === 'targets', code: null, msg: null }
 }
 

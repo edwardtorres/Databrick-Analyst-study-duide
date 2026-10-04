@@ -1,8 +1,7 @@
 // Ingestion Picker lab (Chapter 3): a tap-based Scenario Picker set. Each
 // scenario describes data that needs to get into the lakehouse; the learner
 // taps the ingestion method, then sees why every option fits or doesn't.
-// Feature names and limits change often, so the lab and lessons carry verify
-// flags.
+// Checked against docs.databricks.com (Sep 2026).
 
 export const METHODS = {
   autoloader: { name: 'Auto Loader', emoji: '🔄', blurb: 'Incrementally discovers and loads new files from cloud storage (cloudFiles / streaming tables with read_files). Tracks what it has loaded in a checkpoint, infers and evolves the schema, scales to millions of files.' },
@@ -10,7 +9,7 @@ export const METHODS = {
   ctas: { name: 'CTAS from files (read_files)', emoji: '🧾', blurb: 'CREATE TABLE … AS SELECT * FROM read_files(\'path\', …): a one-time snapshot of the files as a Delta table. Re-running reads everything again.' },
   upload: { name: 'Upload in the Workspace UI', emoji: '⬆️', blurb: 'Create or modify a table from a small local file (CSV, TSV, JSON, Parquet and more) with a preview, header and type detection. Creates a managed Delta table.' },
   volume: { name: 'Upload to a volume', emoji: '📦', blurb: 'Store files of any type (PDFs, images, raw CSVs) in a Unity Catalog volume, governed like tables, at /Volumes/catalog/schema/volume/.' },
-  sharing: { name: 'Delta Sharing', emoji: '🤝', blurb: 'Open protocol for sharing live, read-only data across organizations, clouds and platforms without copying it.' },
+  sharing: { name: 'Delta Sharing', emoji: '🤝', blurb: 'Open protocol for sharing live, read-only data across organizations, clouds and platforms without copying it (docs now call it OpenSharing).' },
   market: { name: 'Databricks Marketplace', emoji: '🛒', blurb: 'Find and get third-party datasets, notebooks and models. Data arrives through Delta Sharing as a read-only catalog.' },
   api: { name: 'Custom API intake', emoji: '🌐', blurb: 'Code (a notebook or script, scheduled by a job) calls an API, lands the responses in a volume or table, and an ingestion step loads them.' },
   connect: { name: 'Lakeflow Connect connector', emoji: '🔌', blurb: 'Managed connectors that ingest incrementally from SaaS apps and databases (for example Salesforce, Workday, SQL Server) with little or no code.' },
@@ -113,7 +112,6 @@ export const SCENARIOS = [
       federation: 'Federation queries databases in place. It doesn\'t ingest from SaaS APIs.',
       upload: 'Exporting reports by hand isn\'t incremental or automated.',
     },
-    verify: 'The current list of Lakeflow Connect managed connectors.',
   },
   {
     id: 'pdfs',
@@ -138,7 +136,6 @@ export const SCENARIOS = [
       copyinto: 'COPY INTO loads files from cloud storage, not tables in a database.',
       sharing: 'Delta Sharing shares Delta data. PostgreSQL isn\'t a sharing provider.',
     },
-    verify: 'Lakehouse Federation supported sources.',
   },
   {
     id: 'other-bu-d2d',
@@ -163,6 +160,5 @@ export const SCENARIOS = [
       upload: 'The UI upload is for small one-off files, not a continuous event stream.',
       api: 'The files already land in storage. Writing custom intake code adds work with no benefit.',
     },
-    verify: 'Auto Loader schema evolution modes (addNewColumns, rescue, failOnNewColumns, none).',
   },
 ]

@@ -9,7 +9,7 @@ export default function IngestionPicker() {
       scenarios={SCENARIOS}
       prefix="ip"
       question="Which ingestion method fits best?"
-      verify="Ingestion features change often (Lakeflow Connect connectors, read_files options, upload limits). Check the current docs."
+      note="Methods and limits checked against the Databricks docs (Sep 2026). Delta Sharing is now called OpenSharing in the docs."
     />
   )
 }

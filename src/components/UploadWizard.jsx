@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { FileText, FileVideo, FileJson, ChevronRight, RotateCcw, Upload } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { TASK, FILES, checkFile, CATALOGS, NAMES, checkDestination, TYPES, INFERRED, preview, createIssues, MISTAKES } from '../lib/uploadWizard.js'
-import { VerifyFlag } from './ui.jsx'
 
 const FILE_ICON = { CSV: FileText, Video: FileVideo, JSON: FileJson }
 const STEPS = ['File', 'Destination', 'Preview', 'Done']
@@ -138,6 +137,7 @@ export default function UploadWizard() {
             <input type="checkbox" checked={w.header} onChange={(e) => set({ header: e.target.checked, issues: [] })} className="h-4 w-4 accent-orange-400" />
             First row contains the header
           </label>
+          <p className="text-[11px] text-slate-500">On by default in the real upload page. It starts off here so you can see what goes wrong.</p>
           <div className="overflow-x-auto rounded-lg border border-line" data-testid="upload-preview">
             <table className="w-full table-fixed text-left font-mono text-[10px]">
               <thead className="bg-panel2">
@@ -208,7 +208,7 @@ FROM main.marketing.store_targets`}</pre>
         </div>
         <p className="mt-1 text-[11px] text-slate-500">Try the wrong paths too: each one explains what would happen in Databricks.</p>
       </div>
-      <VerifyFlag text="Upload limits, supported formats (Excel support is newer) and the exact screens change. This mock keeps the decisions the exam asks about." />
+      <p className="text-[11px] text-slate-500">Simplified mock of Create or modify a table using file upload: CSV, TSV, JSON, Avro, Parquet or text; up to 10 files under 2 GB; needs a running compute resource and permission to create tables in the schema.</p>
     </div>
   )
 }

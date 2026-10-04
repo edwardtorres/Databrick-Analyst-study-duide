@@ -12,14 +12,14 @@ const subsections = [
     blocks: [
       card('cs-1', 'Governed paths: external locations and volumes', [
         'An **external location** pairs a cloud path (S3, ADLS, GCS) with a **storage credential**. Admins grant `READ FILES`, `WRITE FILES` or `CREATE EXTERNAL TABLE` on it, so nobody needs raw cloud keys.',
-        'A **volume** is a Unity Catalog object for **files** (CSV drops, PDFs, images) at `/Volumes/catalog/schema/volume/…`, governed with `READ VOLUME` / `WRITE VOLUME`. Managed volumes live in Unity Catalog storage, external ones on a path you choose.',
-      ], { verify: 'Privilege names for external locations and volumes.' }),
+        'A **volume** is a Unity Catalog object for **files** (CSV drops, PDFs, images) at `/Volumes/catalog/schema/volume/…`, governed with `READ VOLUME` / `WRITE VOLUME`. Managed volumes live in Unity Catalog storage (dropped files are kept 7 days), external ones on an existing cloud path you register.',
+      ]),
       card('cs-2', 'Loading files with SQL', [
-        '**COPY INTO** loads files into a Delta table and **skips files already loaded**, so re-runs and retries are safe. Best for scheduled batches of up to thousands of files:',
+        '**COPY INTO** loads files into a Delta table and **skips files already loaded**, so re-runs and retries are safe. Docs: it "works well for data sources that contain thousands of files"; use Auto Loader for millions:',
         "`COPY INTO sales_raw FROM '/Volumes/raw/sales/drop/' FILEFORMAT = CSV FORMAT_OPTIONS ('header' = 'true', 'inferSchema' = 'true') COPY_OPTIONS ('mergeSchema' = 'true')`",
         "**CTAS from files** makes a one-time snapshot: `CREATE TABLE t AS SELECT * FROM read_files('/Volumes/…', format => 'csv', header => true)`. Re-running it re-reads **everything**.",
         'After loading, the data lives in the table. The landing files can be archived.',
-      ], { verify: 'COPY INTO and read_files option names.' }),
+      ]),
       quiz('c3-q-external-location', 'c3-q-volume', 'c3-q-copy-into-idempotent', 'c3-q-copy-into-syntax', 'c3-q-ctas-files', 'c3-q-ctas-rerun', 'c3-q-external-vs-managed-load'),
     ],
   },
@@ -30,14 +30,14 @@ const subsections = [
     blocks: [
       card('al-1', 'Incremental file ingestion', [
         '**Auto Loader** (the `cloudFiles` source) watches a path and loads **only new files**, exactly once, tracking progress in a **checkpoint**.',
-        'It scales to **millions of files**: directory listing, or **file-notification** mode using cloud events.',
+        'It scales to **millions of files** per hour, tracking progress in a RocksDB checkpoint: **directory listing** is the default, and **file-notification** mode (file events) is recommended for most workloads.',
         'SQL users get it through **streaming tables**: `CREATE OR REFRESH STREAMING TABLE bronze AS SELECT * FROM STREAM read_files(\'/Volumes/…\', format => \'json\')`.',
-      ], { verify: 'Streaming table syntax in Databricks SQL.' }),
+      ]),
       card('al-2', 'Schema inference and evolution', [
-        'Auto Loader **samples** files to infer a schema and saves it, so runs are consistent.',
-        'When a **new column** appears, the default mode stops the stream, adds the column and continues after a restart (jobs retry automatically).',
+        'Auto Loader **samples** the first 50 GB or 1,000 files to infer a schema and saves it, so runs are consistent. For **JSON, CSV and XML, columns are inferred as STRING** by default (set `cloudFiles.inferColumnTypes` to infer real types, or use **schema hints**).',
+        'When a **new column** appears, the default mode (`addNewColumns`) stops the stream, adds the column and continues after a restart (jobs retry automatically). Other modes: `rescue`, `failOnNewColumns`, `none`.',
         'Values that don\'t fit the schema land in **`_rescued_data`** instead of being lost.',
-      ], { verify: 'Schema evolution modes and whether CSV/JSON columns default to STRING.' }),
+      ]),
       card('al-3', 'COPY INTO vs Auto Loader', [
         '**COPY INTO**: SQL, batch, thousands of files, simple and idempotent.',
         '**Auto Loader**: continuous or frequent, millions of files, schema evolution and rescued data.',
@@ -53,15 +53,15 @@ const subsections = [
     emoji: '🤝',
     blocks: [
       card('ds-1', 'Live, read-only, no copies', [
-        '**Delta Sharing** is an open protocol: recipients read the provider\'s **live** data, **read-only**, without copies. The provider controls and audits access.',
-        '**Provider**: create a **share**, add tables (or views, volumes, notebooks, models), create a **recipient**, then `GRANT SELECT ON SHARE … TO RECIPIENT …`.',
+        '**Delta Sharing** (docs now call it **OpenSharing**; `/delta-sharing` redirects there) is an open protocol: recipients read the provider\'s **live** data, **read-only**, without copies. The provider controls and audits access.',
+        '**Provider**: create a **share**, add tables (or streaming tables, views, materialized views, volumes, notebooks, models; non-table assets need a Databricks recipient), create a **recipient**, then `GRANT SELECT ON SHARE … TO RECIPIENT …`.',
         '**Recipient**: creates a **catalog from the share** and grants their own users access with normal Unity Catalog grants.',
-      ], { verify: 'Which asset types can be shared.' }),
+      ]),
       card('ds-2', 'Two modes', [
         '**Databricks-to-Databricks**: the recipient has Unity Catalog; you share to their metastore\'s **sharing identifier**. No tokens.',
-        '**Open sharing**: the recipient uses **any platform** (pandas, Spark, Power BI, Tableau…) with a credential file or token, or federated sign-in.',
-        'Works across clouds and regions. Cross-region reads can add egress costs.',
-      ], { verify: 'Open sharing authentication options and cross-cloud costs.' }),
+        '**Open sharing** (now "Databricks-to-Open"): the recipient uses **any platform** (pandas, Spark, Power BI…) with a long-lived **bearer token** (credential file) or **OIDC federation** with their own identity provider.',
+        'Works across clouds and regions. **Egress** (network transfer) is charged by the storage vendor, so cross-region and cross-cloud reads can cost more.',
+      ]),
       quiz('c3-q-sharing-what', 'c3-q-sharing-open-vs-d2d', 'c3-q-sharing-readonly', 'c3-q-sharing-provider', 'c3-q-sharing-recipient', 'c3-q-sharing-freshness'),
     ],
   },
@@ -71,10 +71,10 @@ const subsections = [
     emoji: '🌐',
     blocks: [
       card('api-1', 'When the data lives behind an API', [
-        '**Managed connector first**: **Lakeflow Connect** ingests from SaaS apps and databases (for example Salesforce, Workday, SQL Server) incrementally with little or no code.',
+        '**Managed connector first**: **Lakeflow Connect** ingests from SaaS apps and databases (for example Salesforce, Workday, HubSpot, Google Analytics, and MySQL/PostgreSQL/SQL Server via CDC) incrementally with little or no code.',
         '**No connector?** Write the intake: a **scheduled job** calls the API, lands raw JSON in a **volume**, then COPY INTO or Auto Loader loads bronze. Keeping raw responses lets you replay them.',
-        'To query an operational database **in place** without copying, **Lakehouse Federation** adds it as a foreign catalog.',
-      ], { verify: 'Lakeflow Connect connector list; Lakehouse Federation sources.' }),
+        'To query an operational database **in place** without copying, **Lakehouse Federation** adds it as a read-only foreign catalog (MySQL, PostgreSQL, SQL Server, Oracle, Snowflake, BigQuery and more).',
+      ]),
       card('api-2', 'Marketplace as a data source', [
         'Get a listing and the provider\'s data appears as a **read-only catalog** (delivered through Delta Sharing). The provider keeps it fresh, so there is no pipeline to build.',
         'Listings can be free, commercial, or **private** to specific consumers.',
@@ -88,10 +88,10 @@ const subsections = [
     emoji: '⬆️',
     blocks: [
       card('up-1', 'Create a table from a file', [
-        'For **small, one-off** files: CSV, TSV, JSON, XML, Avro, Parquet or text (Excel support is newer). There is a size limit (about 2 GB in total) and a few files at a time.',
-        'Choose the **catalog, schema and table name**. You need `USE CATALOG`, `USE SCHEMA` and **`CREATE TABLE`** on the schema, plus running compute.',
+        'For **small, one-off** files: **CSV, TSV, JSON, Avro, Parquet or text** (no zip/tar). Up to **10 files** at a time, **under 2 GB** in total. Preview shows 50 rows.',
+        'Choose the **catalog, schema and table name**. You need permission to create tables in the schema (`USE CATALOG`, `USE SCHEMA`, **`CREATE TABLE`**) and a **running compute resource** (SQL warehouse, serverless or dedicated compute).',
         'The result is a **managed Delta table**.',
-      ], { verify: 'Upload size limit, file count and supported formats.' }),
+      ]),
       card('up-2', 'Check the preview', [
         'Confirm **"first row contains the header"**. Otherwise columns become `_c0, _c1…` and the header is a data row.',
         'Review **detected types**: IDs with leading zeros (ZIP, phone) must be STRING; money should be DECIMAL or DOUBLE; dates should be DATE.',
