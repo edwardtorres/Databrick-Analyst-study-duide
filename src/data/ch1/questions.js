@@ -89,7 +89,8 @@ export const questions = [
   {
     id: 'c1-q-delta-format',
     sub: 'components',
-    stem: 'When you create a table in Databricks without specifying a format, what format is it?',
+    scenario: true,
+    stem: 'You run CREATE TABLE sales_2025 AS SELECT * FROM staging with no USING clause. A colleague asks what format the new table is in. What do you tell them?',
     options: [
       { t: 'Delta', ok: true, why: 'Delta is the default table format on Databricks.' },
       { t: 'CSV', why: 'CSV is a file format you might ingest, not the default table format.' },
@@ -100,7 +101,8 @@ export const questions = [
   {
     id: 'c1-q-pipeline-vs-job',
     sub: 'components',
-    stem: 'What is the difference between Lakeflow Declarative Pipelines and Lakeflow Jobs?',
+    scenario: true,
+    stem: 'Your team built a pipeline that keeps silver and gold tables up to date, and now wants it to run at 2 a.m. and then refresh a dashboard. A new hire asks why you need both Lakeflow Declarative Pipelines and Lakeflow Jobs. What is the difference?',
     options: [
       { t: 'Pipelines define how tables are built and kept up to date. Jobs orchestrate when and in what order tasks (including pipelines) run.', ok: true, why: 'Pipelines are the "what". Jobs are the "when and in which order".' },
       { t: 'They are the same product with two names', why: 'They work together but solve different problems.' },
@@ -152,6 +154,7 @@ export const questions = [
   {
     id: 'c1-q-comments',
     sub: 'ai',
+    scenario: true,
     stem: 'Catalog Explorer suggests a description for a table you just created. Where does that suggestion come from?',
     options: [
       { t: 'AI-generated comments powered by the Data Intelligence Engine. Review them before accepting.', ok: true, why: 'The platform drafts descriptions from metadata. A human should check them.' },
@@ -225,7 +228,8 @@ export const questions = [
   {
     id: 'c1-q-ce-view',
     sub: 'explorer',
-    stem: 'In Catalog Explorer, what is the main difference between a view and a table?',
+    scenario: true,
+    stem: 'In Catalog Explorer, v_revenue_by_region shows no storage location on its Details tab, but revenue_daily does. A teammate thinks something is broken. What explains the difference between the view and the table?',
     options: [
       { t: 'A view stores a query, not data. It is computed when read, so it has no storage location.', ok: true, why: 'Views are saved logic. Tables hold data.' },
       { t: 'Views are always faster than tables', why: 'Views run their query on each read.' },
@@ -247,6 +251,7 @@ export const questions = [
   {
     id: 'c1-q-ce-sample',
     sub: 'explorer',
+    scenario: true,
     stem: 'Before writing a query, you want to see a table\'s columns, their types and comments, and a few example rows. What do you open?',
     options: [
       { t: 'The table in Catalog Explorer: Overview (columns, types, comments) and Sample Data', ok: true, why: 'Catalog Explorer is the quickest way to understand a table before querying it.' },
@@ -286,7 +291,8 @@ export const questions = [
   {
     id: 'c1-q-market-providers',
     sub: 'marketplace',
-    stem: 'Who can publish listings on Databricks Marketplace?',
+    scenario: true,
+    stem: 'A weather-data company wants to offer its forecasts to Databricks customers, some publicly and some only to one partner. Who can publish listings like that on Databricks Marketplace?',
     options: [
       { t: 'Approved data providers (companies and Databricks) who list public or private offerings', ok: true, why: 'Providers publish listings, either publicly or privately to specific consumers.' },
       { t: 'Any anonymous user, with no approval', why: 'Providers go through a provider program.' },
