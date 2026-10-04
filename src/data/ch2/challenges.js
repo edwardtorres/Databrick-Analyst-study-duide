@@ -155,7 +155,7 @@ FROM raw_payments`,
     broken: 'SELECT SUM(CAST(amount_text AS DOUBLE)) AS total FROM raw_payments',
     brokenNote:
       "Still too low. '$12.50' can't be cast as is. This sandbox quietly turns it into 0; Databricks with ANSI mode raises a cast error instead. Strip the '$' and spaces first, and skip values that aren't numbers.",
-    hints: ["CAST(REPLACE(TRIM(amount_text), '$', '') AS DOUBLE)", "Exclude 'n/a' and '' in WHERE. In Databricks, try_cast(...) returns NULL for junk instead of failing."],
+    hints: ["CAST(REPLACE(TRIM(amount_text), '$', '') AS DOUBLE), and exclude 'n/a' and '' in WHERE.", "Or let try_cast(REPLACE(amount_text, '$', '') AS DOUBLE) turn the junk into NULL, which SUM ignores. It works here and in Databricks."],
     solution: `SELECT SUM(CAST(REPLACE(TRIM(amount_text), '$', '') AS DOUBLE)) AS total
 FROM raw_payments
 WHERE TRIM(amount_text) NOT IN ('', 'n/a')`,

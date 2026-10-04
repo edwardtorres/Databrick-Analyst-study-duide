@@ -12,10 +12,13 @@ test('Catalog Explorer: all five missions by browsing, tagging and following lin
   await expect(page.getByTestId('object-page').getByText('Deprecated', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Query this table' }).click()
   await expect(missions.getByText(/That one is deprecated/)).toBeVisible()
+  // the same feedback shows next to the action, so phone users don't have to scroll up
+  await expect(page.getByTestId('object-page').getByRole('status')).toContainText('That one is deprecated')
   await page.getByTestId('breadcrumb').getByRole('button', { name: 'sales' }).click()
   await page.getByRole('button', { name: /^orders\s*Certified/ }).click()
   await page.getByRole('button', { name: 'Query this table' }).click()
   await expect(page.getByText('Missions 1/5')).toBeVisible()
+  await expect(page.getByTestId('object-page').getByRole('status')).toContainText('Mission done')
 
   // 2. external: open revenue_daily, read Details, answer
   await missions.getByRole('button', { name: /Managed or external/ }).click()

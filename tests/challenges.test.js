@@ -92,6 +92,7 @@ test('Chapter 2 cleaning: common alternative answers are accepted', () => {
     'c2-clean-email': "SELECT name, COALESCE(NULLIF(NULLIF(TRIM(email), ''), 'N/A'), 'unknown') FROM customers",
     'c2-fix-usable-email': "SELECT COUNT(NULLIF(NULLIF(TRIM(email), ''), 'N/A')) FROM customers",
     'c2-clean-distinct': 'SELECT customer_id, name FROM customers_load GROUP BY customer_id, name',
+    'c2-fix-cast': "SELECT SUM(try_cast(REPLACE(amount_text, '$', '') AS DOUBLE)) FROM raw_payments",
     'c2-clean-region': "SELECT COALESCE(r.region_name, 'Unassigned'), COUNT(c.customer_id) FROM customers c LEFT JOIN regions r USING (region_id) GROUP BY 1",
   }
   for (const [id, sql] of Object.entries(alts)) {
@@ -102,4 +103,14 @@ test('Chapter 2 cleaning: common alternative answers are accepted', () => {
   assert.equal(checkChallenge(SQL, by('c2-clean-distinct'), 'SELECT customer_id, name FROM customers_load').ok, false)
   assert.equal(checkChallenge(SQL, by('c2-clean-latest'), 'SELECT DISTINCT LOWER(TRIM(email)), LOWER(TRIM(tier)) FROM raw_signups').ok, false)
   assert.equal(checkChallenge(SQL, by('c2-clean-region'), 'SELECT r.region_name, COUNT(*) FROM customers c JOIN regions r ON c.region_id = r.region_id GROUP BY 1').ok, false)
+})
+
+test('try_cast returns NULL for junk, works nested, and leaves literals alone', () => {
+  const db = createDb(SQL)
+  const r = runSql(
+    db,
+    "SELECT try_cast('12.5' AS DOUBLE), try_cast('n/a' AS DOUBLE), TRY_CAST(' 7 ' AS INT), try_cast('x' AS INT), try_cast('2025-02-03' AS DATE), try_cast('2025-13-45' AS DATE), try_cast(REPLACE('$1.255', '$', '') AS DECIMAL(10,2)), try_cast(try_cast('3' AS INT) AS STRING), 'try_cast(a AS INT)'",
+  )
+  assert.deepEqual(r.rows[0], [12.5, null, 7, null, '2025-02-03', null, 1.25, '3', 'try_cast(a AS INT)'])
+  assert.deepEqual(runSql(db, 'SELECT try_cast(NULL AS INT), try_cast(customer_id AS STRING) FROM customers WHERE customer_id = 1').rows[0], [null, '1'])
 })

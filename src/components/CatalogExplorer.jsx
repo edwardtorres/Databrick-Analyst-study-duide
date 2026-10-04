@@ -288,6 +288,11 @@ export default function CatalogExplorer() {
               </div>
             )}
 
+            {status[active] && (status[active].feedback || status[active].done) && (
+              <div className={`rounded-lg p-1.5 text-[12px] ${status[active].done ? 'bg-emerald-500/10 text-emerald-200' : 'bg-amber-500/10 text-amber-200'}`} role="status">
+                {status[active].done ? `✅ Mission done: ${MISSIONS.find((m) => m.id === active).title}` : `⚠ ${status[active].feedback}`}
+              </div>
+            )}
             {active === 'upstream' && isData && (
               <button onClick={() => save({ origin: nav.object })} className="w-full rounded-lg border border-brand/60 py-1.5 text-xs font-bold text-brand2">
                 Pick as the answer (origin of prod.sales.orders)

@@ -76,10 +76,72 @@ function rewriteCtasColumnList(stmt) {
   return `${m[1]} AS WITH __ctas(${names.join(', ')}) AS (${m[3].trim()}) SELECT * FROM __ctas`
 }
 
+// try_cast(expr AS type) -> __try_cast(expr, 'type'). SQLite has no try_cast,
+// and its CAST turns junk like 'n/a' into 0 instead of NULL. Literal-aware,
+// handles nesting; the AS that counts is the last one at the call's top level.
+function rewriteTryCast(sql) {
+  let out = ''
+  let i = 0
+  while (i < sql.length) {
+    if (sql[i] === "'") {
+      let j = i + 1
+      while (j < sql.length && !(sql[j] === "'" && sql[j + 1] !== "'")) j += sql[j] === "'" ? 2 : 1
+      out += sql.slice(i, j + 1)
+      i = j + 1
+      continue
+    }
+    const m = /^try_cast\s*\(/i.exec(sql.slice(i))
+    if (m && !/\w/.test(sql[i - 1] || '')) {
+      const start = i + m[0].length
+      let depth = 1
+      let asAt = -1
+      let j = start
+      while (j < sql.length && depth > 0) {
+        const ch = sql[j]
+        if (ch === "'") {
+          j++
+          while (j < sql.length && !(sql[j] === "'" && sql[j + 1] !== "'")) j += sql[j] === "'" ? 2 : 1
+        } else if (ch === '(') depth++
+        else if (ch === ')') depth--
+        else if (depth === 1 && /^\sAS\s/i.test(sql.slice(j, j + 4))) asAt = j
+        j++
+      }
+      if (depth === 0 && asAt > 0) {
+        const type = sql.slice(asAt + 4, j - 1).trim().toUpperCase()
+        out += `__try_cast(${rewriteTryCast(sql.slice(start, asAt))}, '${type}')`
+        i = j
+        continue
+      }
+    }
+    out += sql[i]
+    i++
+  }
+  return out
+}
+
+// Databricks try_cast semantics for the common types: NULL when the value
+// can't be converted (instead of an error, or SQLite's silent 0). Simplified:
+// integer types accept whole numbers only.
+function tryCast(v, type) {
+  if (v === null || v === undefined) return null
+  const t = String(type).replace(/\(.*$/, '').trim()
+  const str = String(v).trim()
+  if (/^(TINYINT|SMALLINT|INT|INTEGER|BIGINT|LONG)$/.test(t)) return /^[+-]?\d+$/.test(str) ? Number(str) : null
+  if (/^(DOUBLE|FLOAT|REAL|DECIMAL|DEC|NUMERIC)$/.test(t)) {
+    if (!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(str)) return null
+    const scale = String(type).match(/,\s*(\d+)\s*\)/)
+    return scale ? Number(Number(str).toFixed(Number(scale[1]))) : Number(str)
+  }
+  if (t === 'DATE') return /^\d{4}-\d{2}-\d{2}$/.test(str) && !Number.isNaN(Date.parse(str)) ? str : null
+  if (t === 'BOOLEAN') return /^(true|false)$/i.test(str) ? (/^true$/i.test(str) ? 1 : 0) : null
+  if (t === 'STRING' || t === 'TEXT') return String(v)
+  return v
+}
+
 export function rewriteDatabricksSql(sql, extraTables = []) {
   const tables = [...SAMPLE_TABLES, ...extraTables].join('|')
   const threePart = new RegExp(`\\b[A-Za-z_]\\w*\\.[A-Za-z_]\\w*\\.(${tables}|[A-Za-z_]\\w*)\\b`, 'g')
-  const withCtas = splitStatements(sql).map(rewriteCtasColumnList).join(';')
+  const withCtas = splitStatements(rewriteTryCast(sql)).map(rewriteCtasColumnList).join(';')
   return splitLiterals(withCtas)
     .map(([text, isLit]) => {
       if (isLit) return text
@@ -156,6 +218,7 @@ function registerFunctions(db) {
   pctAgg('percentile', false)
   pctAgg('percentile_approx', true)
 
+  db.create_function('__try_cast', tryCast)
   db.create_function('nvl', (a, b) => (a === null ? b : a))
   db.create_function('year', (d) => (d ? Number(String(d).slice(0, 4)) : null))
   db.create_function('month', (d) => (d ? Number(String(d).slice(5, 7)) : null))
