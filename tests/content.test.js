@@ -5,8 +5,9 @@ import ch9 from '../src/data/ch9/index.js'
 import ch7 from '../src/data/ch7/index.js'
 import ch6 from '../src/data/ch6/index.js'
 import ch5 from '../src/data/ch5/index.js'
+import ch1 from '../src/data/ch1/index.js'
 
-const chapters = { 4: ch4, 5: ch5, 6: ch6, 7: ch7, 9: ch9 }
+const chapters = { 1: ch1, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 9: ch9 }
 
 for (const [num, ch] of Object.entries(chapters)) {
   const qIds = new Set(ch.questions.map((q) => q.id))
@@ -50,4 +51,8 @@ test('Chapter 6 has at least 25 questions', () => {
 test('Chapter 5 has at least 25 questions and 6 fix challenges', () => {
   assert.ok(ch5.questions.length >= 25, `only ${ch5.questions.length}`)
   assert.ok(ch5.challenges.filter((c) => c.kind === 'fix').length >= 6)
+})
+
+test('Chapter 1 has at least 25 questions', () => {
+  assert.ok(ch1.questions.length >= 25, `only ${ch1.questions.length}`)
 })

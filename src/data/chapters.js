@@ -8,6 +8,8 @@ export const CHAPTERS = [
     title: 'Databricks Data Intelligence Platform',
     emoji: '🏛️',
     color: 'from-sky-500 to-indigo-500',
+    built: true,
+    load: () => import('./ch1/index.js'),
     topics: [
       'Core components: Delta Lake, Unity Catalog, Databricks SQL, Lakeflow Jobs, Mosaic AI, Data Intelligence Engine',
       'Catalog Explorer: catalogs, schemas, managed vs external tables, views, certified tables, lineage',

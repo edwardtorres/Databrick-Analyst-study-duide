@@ -13,9 +13,11 @@ const ChartPicker = lazy(() => import('./ChartPicker.jsx'))
 const DashboardConfig = lazy(() => import('./DashboardConfig.jsx'))
 const QueryProfileDetective = lazy(() => import('./QueryProfileDetective.jsx'))
 const CacheLab = lazy(() => import('./CacheLab.jsx'))
+const PlatformMatch = lazy(() => import('./PlatformMatch.jsx'))
 
 // Interactive labs. `chapter: null` + `component: null` = coming in a later chapter.
 export const LABS = [
+  { id: 'platform-match', title: 'Platform Match', emoji: '🧩', chapter: 1, desc: 'Match real needs to the Databricks component that solves them, and see why the others don\'t fit.', component: PlatformMatch },
   { id: 'join-visualizer', title: 'Join Visualizer', emoji: '🔗', chapter: 4, desc: 'Pick a join type, predict the row count, and see which rows survive.', component: JoinVisualizer },
   { id: 'set-ops', title: 'Set Operations', emoji: '🧬', chapter: 4, desc: 'UNION vs UNION ALL vs INTERSECT vs EXCEPT.', component: SetOps },
   { id: 'time-travel', title: 'Time Travel Timeline', emoji: '⏳', chapter: 4, desc: 'Query old Delta versions, RESTORE, then watch VACUUM break time travel.', component: TimeTravel },
