@@ -1,25 +1,22 @@
-# Lakehouse Quest: Build Audit (v3)
+# Lakehouse Quest: Build Audit (v4)
 
-**Audit date:** 2026-10-03
-**Scope:** branch `claude/databricks-exam-study-game-ck55dn` at `ba1bdae`, plus this audit commit
+**Audit date:** 2026-10-04
+**Scope:** branch `claude/databricks-exam-study-game-ck55dn` at `de8f7dd`, plus this audit commit
 **Exam guide version targeted:** Oct 30, 2025
-**Overall:** 3 of 9 chapters are complete (4, 7, 9) and 5 of 6 labs are built. The Boss Battle is now weighted by exam section. All quick fixes from v2 (N1, N2, N3, N7) are done, and N6 is resolved by the weighting. One regression appeared during this round; it was caught by the browser checks and fixed (`ba1bdae`). 63 automated tests pass. No open bugs above Low.
+**Overall:** 4 of 9 chapters are complete (4, 6, 7, 9) and 7 of 8 labs are built. R2, R3 and R4 from v3 are fixed. Browser (e2e) tests are now in the repo and run before every push via `npm run verify`. The main bundle is down from 524 kB to 353 kB. 75 unit tests and 13 e2e tests pass. One new **Medium** finding: a failed chapter download leaves a loading spinner forever (S1).
 
 ---
 
-## 0. Changes since audit v2
+## 0. Changes since audit v3
 
 | Commit | Change |
 |---|---|
-| `8ed17c4` | **N7 fixed:** error boundaries. An outer one catches app-level crashes; an inner one around each page keeps the nav bar and resets on navigation. The recovery screen has Back to Home, Reload, and a progress-backup download. |
-| `3580d48` | **N1 fixed:** if saved progress fails validation on startup, a one-time dialog explains it and offers **Download damaged copy**. The raw copy is also kept under a backup key. |
-| `c7a5772` | **N3 fixed:** the Namespace Builder tree, grants and tab are saved in progress (`labState`), sanitized on read, with a **Reset** button that keeps earned XP |
-| `796cde5` | **N2 fixed:** per-correct XP in chapter tests and the Boss is paid only the first time a question is answered correctly each day. Both share one daily ledger, and repeats are explained on the results screen. |
-| `adc07a5` | **Chapter 7 (AI/BI Genie Spaces)** plus the **Genie Space Builder** lab |
-| `9b0aef8` | **Boss weighted by exam section** (N6 resolved); readiness estimate on the results screen |
-| `ba1bdae` | **Regression fix:** Namespace Builder predictions reset right after you made them (caused by N3; see R1) |
+| `541ef25` | **R2 fixed:** Playwright e2e suite in `tests/e2e/` with `npm run test:e2e`, plus `npm run verify` (unit + e2e + build). A shared fixture fails any test that logs a console error. The Namespace Builder now also saves its current access check, so a prediction survives a reload. |
+| `1708afc` | **R4 fixed:** every lab is a lazy chunk (`React.lazy` + `Suspense`) and every chapter's content is a lazy chunk (`import()`), with a small loading state. Main bundle 524 kB → **353 kB** (167 → 112 kB gzip). No Vite size warning. |
+| `4219054` | **R3 fixed:** Chapter 7 grew from 18 to **31** questions (13 new, scenario-heavy). The Boss draws 13 of the 31, so no single Boss shows every Genie question. A content test enforces at least 30. |
+| `de8f7dd` | **Chapter 6 (Dashboards & Visualizations)** with the **Chart Picker** and **Dashboard Config** labs, both covered by e2e tests |
 
-**Step 2 (touch drag) was not done:** the phone result in your instructions was still the placeholder text, so I didn't change the drag code. Nothing new depends on dragging: the Genie lab uses taps, checkboxes and typing. See N5.
+**`npm run verify` was run before this push:** 75 unit tests passed, 13 e2e tests passed, and the build succeeded.
 
 ---
 
@@ -35,127 +32,123 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 3 | Importing Data | ⬜ topic list only |
 | 4 | Executing Queries with Databricks SQL & SQL Warehouses | ✅ |
 | 5 | Analyzing Queries | ⬜ topic list only |
-| 6 | Dashboards & Visualizations | ⬜ topic list only |
-| 7 | AI/BI Genie Spaces | ✅ new |
+| 6 | Dashboards & Visualizations | ✅ new |
+| 7 | AI/BI Genie Spaces | ✅ (grown to 31 questions) |
 | 8 | Data Modeling | ⬜ topic list only |
 | 9 | Securing Data | ✅ |
 
+### Chapter 6 requirements
+| Requirement | Status | Where |
+|---|---|---|
+| AI/BI dashboards: multi-page layouts, multiple datasets, widgets (visualizations, text, images) | ✅ | Level "AI/BI Dashboards" (3 cards, 6 questions) |
+| Visualizations in notebooks and the SQL editor | ✅ | Level "Visualizations & Chart Choice" |
+| Query and dashboard parameters (define, configure, test) | ✅ | Level "Parameters" (3 cards incl. parameter vs field filter, 5 questions) |
+| Sharing: users and groups, links/external users, embedding | ✅ | Level "Sharing & Schedules" (embedded vs viewer credentials, embedding) |
+| Scheduled refresh | ✅ | Same level (schedules + subscriptions) |
+| SQL alerts: threshold, condition, destination | ✅ | Level "SQL Alerts" (3 cards, 5 questions) |
+| Picking the right chart type | ✅ | Lessons, 5 questions, and the Chart Picker lab |
+| **Chart Picker lab** | ✅ | 8 scenarios × 8 chart types. Your pick is drawn from the same data next to the best one, with an explanation for every type. |
+| **Dashboard Config lab** | ✅ | Parameter wiring, schedule, alert (operator, threshold, destination), credentials and sharing. A "simulate the morning" run gives 6 explained outcomes (APAC loads? fresh at 08:00? Slack notified? Maya / Omar / Priya access). |
+| Taps, selects and checkboxes only (no drag) | ✅ | Both labs |
+| 25+ questions, every option explained, verify flags | ✅ | 27 questions (12 scenario), 25 verify flags |
+| Both labs in e2e tests | ✅ | `tests/e2e/ch6.spec.js` |
+
 ### Interactive elements
-| Element | Status | Notes |
-|---|---|---|
-| SQL Sandbox + graded challenges | ✅ | 19 challenges (Ch 4) |
-| Join Visualizer / Set Ops | ✅ | Ch 4 |
-| Time Travel Timeline | ✅ | Ch 4 |
-| Namespace Builder | ✅ | Ch 9. Now saves progress, with Reset. |
-| Genie Space Builder | ✅ new | Ch 7. Warehouse, tables, instructions (typed or snippets), sample questions, trusted assets. 100-point score with per-section explanations, plus 5 simulated user questions (Trusted / Correct / Shaky / Failed / Declined) that depend on your setup. Saves progress, with Reset. |
-| Scenario Picker | 🟡 | 33 scenario questions across 3 chapters. Chart-type and ingestion sets will come with Ch 6 and 3. |
-| Medallion Sorter | ⬜ | Chapter 8 |
+| Element | Status |
+|---|---|
+| SQL Sandbox + 19 graded challenges | ✅ |
+| Join Visualizer, Set Ops, Time Travel | ✅ |
+| Chart Picker | ✅ new |
+| Dashboard Config | ✅ new |
+| Genie Space Builder | ✅ |
+| Namespace Builder | ✅ (saves the current check too) |
+| Scenario Picker | 🟡 51 scenario questions across 4 chapters, plus the Chart Picker. An ingestion set comes with Ch 3. |
+| Medallion Sorter | ⬜ Chapter 8 |
 
-### Game mechanics
-| Requirement | Status | Notes |
-|---|---|---|
-| XP, levels, streak, daily goal | ✅ | |
-| Mastery meter per chapter | ✅ | |
-| Spaced repetition | ✅ | Leitner boxes 0–5 |
-| Boss Battle: 45 Q / 90 min / per-section breakdown | ✅ | **Weighted by exam section** (see §2b), with a "Readiness estimate: X of 9 chapters built" line |
-| Anti-farming | ✅ | Completion bonus: ≥ 80% answered, once a day. Per-correct XP: once per question per day. |
-| Every option explained | ✅ | Enforced by tests for all 3 chapters |
-
-### Robustness
+### Engineering
 | Item | Status |
 |---|---|
-| Error boundary with recovery screen | ✅ |
-| Damaged-progress notice + download | ✅ |
-| Import validation (deep merge + shape checks) | ✅ (now also covers `testXp` and `labState`) |
+| E2E tests in the repo + `npm run test:e2e` | ✅ 13 tests |
+| Run e2e before every push | ✅ `npm run verify`, documented in the README |
+| Main bundle under Vite's 500 kB warning | ✅ 353 kB |
 
 ---
 
 ## 2. Content inventory
 
-| Ch | Level | Cards | Questions (scenario) | SQL | Labs |
-|---|---|---|---|---|---|
-| 4 | Databricks Assistant | 3 | 3 (0) | 0 | none |
-| 4 | SQL Warehouses | 3 | 5 (3) | 0 | none |
-| 4 | Federated Queries | 2 | 3 (2) | 0 | none |
-| 4 | Views, MVs & Streaming Tables | 3 | 5 (3) | 1 | none |
-| 4 | Aggregations | 3 | 5 (1) | 6 | none |
-| 4 | Joins & Set Operations | 3 | 6 (3) | 6 | Join Visualizer, Set Ops |
-| 4 | Filtering & Sorting | 2 | 4 (0) | 4 | none |
-| 4 | Creating Tables | 3 | 6 (2) | 2 | none |
-| 4 | Delta Time Travel | 2 | 5 (1) | 0 | Time Travel |
-| 7 | Purpose & Components | 3 | 4 (1) | 0 | none |
-| 7 | Creating a Space | 3 | 6 (4) | 0 | Genie Space Builder |
-| 7 | Permissions & Sharing | 2 | 4 (2) | 0 | none |
-| 7 | Improving a Space | 3 | 4 (2) | 0 | none |
-| 9 | The 3-Level Namespace | 3 | 4 (1) | 0 | Namespace Builder |
-| 9 | Privileges & Roles | 3 | 8 (4) | 0 | none |
-| 9 | Table Ownership | 2 | 4 (1) | 0 | none |
-| 9 | Protecting PII | 3 | 5 (3) | 0 | none |
-| | **Total** | **46** | **81 (33)** | **19** | **5** |
+| Ch | Levels | Cards | Questions (scenario) | SQL | Verify flags | Labs |
+|---|---|---|---|---|---|---|
+| 4 | 9 | 24 | 42 (15) | 19 | 19 | Join Visualizer, Set Ops, Time Travel |
+| 6 | 5 | 15 | 27 (12) | 0 | 25 | Chart Picker, Dashboard Config |
+| 7 | 4 | 11 | 31 (15) | 0 | 27 | Genie Space Builder |
+| 9 | 4 | 11 | 21 (9) | 0 | 15 | Namespace Builder |
+| **Total** | **22** | **61** | **121 (51)** | **19** | **86** + 3 in-lab notes | **7** |
 
-### 2b. Boss weighting (with chapters 4, 7, 9 built)
-| Section | Exam weight | Source | Rescaled share | Questions (of 45) |
+### Boss weighting with chapters 4, 6, 7, 9 built
+| Section | Exam weight | Rescaled share | Questions (of 45) | Pool |
 |---|---|---|---|---|
-| 4. Querying | 15.75% | even split of the remaining 63% | 39.9% | 18 |
-| 7. Genie | 15.75% | even split of the remaining 63% | 39.9% | 18 |
-| 9. Securing | 8% | given | 20.3% | 9 |
+| 4. Querying | 15.75% (assumed) | 28.5% | 13 | 42 |
+| 6. Dashboards | 15.75% (assumed) | 28.5% | 13 | 27 |
+| 7. Genie | 15.75% (assumed) | 28.5% | 13 | 31 |
+| 9. Securing | 8% (given) | 14.5% | 6 | 21 |
 
-The weights for sections 4–7 are an **assumption** (an even split of what's left after the known weights), not figures from the guide. Verify them against the current guide.
+Every chapter's pool is now at least twice its Boss share.
 
 ---
 
 ## 3. Facts to re-verify before the exam
 
-"Verify in Databricks docs" flags in content: **55** (Ch 4: 19 · Ch 7: 21 · Ch 9: 15), plus 2 in-lab notes (Namespace Builder INSERT/MODIFY; Genie simulation disclaimer).
+Content flags: **86** (Ch 4: 19 · Ch 6: 25 · Ch 7: 27 · Ch 9: 15), plus in-lab notes (Namespace Builder INSERT/MODIFY, Genie simulation, Dashboard Config simplifications).
 
-### Chapter 7 (new). Genie changes fastest, so this is the highest-priority list.
+### Chapter 6 (new)
 | Item | What to check |
 |---|---|
-| Configuration options | SQL expressions, join definitions, knowledge store, value sampling: which exist and what they are called now |
-| Tables per space | Current maximum and the recommended starting size |
-| Warehouse types | The lab assumes **Pro or Serverless only** (Classic fails). Confirm. |
-| Trusted assets | Supported types (parameterized SQL, UC functions) and how the "Trusted" label appears |
-| Read-only behaviour | Confirm Genie never runs DML |
-| Permissions | Space permission level names (CAN RUN / CAN EDIT / CAN MANAGE); confirm queries run as the asking user |
-| Sharing beyond the UI | Conversation API status, embedding options, chat-tool integrations |
-| Monitoring & benchmarks | Names and locations of the monitoring view and benchmark features |
-| Metadata refresh | How and when a space picks up changed UC metadata |
+| Widgets | Exact widget list; how images are added (Markdown text widget?) |
+| Pages & filters | Multi-page support; cross-page and cross-filter scope |
+| Draft vs published | Workflow and naming |
+| Parameter syntax | Named `:param` markers vs legacy `{{ param }}`; type names; query-based dropdowns |
+| Publishing credentials | "Embed credentials" naming and behaviour (queries run as the publisher) vs viewer credentials |
+| Sharing beyond the workspace | Link sharing, iframe embedding, embedding for external users, allowed-domain admin settings |
+| Schedules & subscriptions | Options, snapshot formats (PDF/image), who can subscribe |
+| Alerts | State names (OK / TRIGGERED), condition and aggregation options, schedule options, destination types and who creates them |
+| Visualization types | Current list in the notebook and SQL editor UIs |
+
+### Chapter 7 (6 new flags)
+Inspecting generated SQL, trusted-asset parameters, instruction length limits, row filters with Genie, Genie on dashboards, the review-request workflow. The v3 list still applies.
 
 ### Chapters 4 and 9
-Unchanged from v2: Assistant commands, warehouse types, Federation, MV syntax, `GROUP BY ALL`, NULL ordering, managed tables and VACUUM defaults, `BROWSE`/`MANAGE`, admin roles, ownership rules, `OWNER TO` syntax, no DENY, view and base-table access, row filters and column masks, `is_account_group_member`, tags/ABAC, INSERT vs UPDATE privileges.
+Unchanged from v3.
 
 ---
 
 ## 4. Findings
 
-### New in v3
+### New in v4
 | ID | Severity | Finding | Suggested fix |
 |---|---|---|---|
-| R1 | Medium → ✅ fixed | **Namespace Builder predictions reset immediately.** After N3, the grants list was rebuilt on every render, so the effect that clears a prediction fired after every click. Caught by the browser check and fixed in `ba1bdae`. | Done. See R2 for prevention. |
-| R2 | Low | **No browser (UI) tests in the repo.** R1 was caught only because I re-ran ad-hoc Playwright scripts kept outside the repo. Node tests cover logic, not React behaviour. | Add the Playwright smoke tests to `tests/e2e/` with an `npm run test:e2e` script. |
-| R3 | Low | **Every Boss includes all of Chapter 7.** Ch 7 has exactly 18 questions and its share is 18, so you'll see every Genie question in every Boss and could start memorising them. | Grow Ch 7 to 30+ questions. |
-| R4 | Low | **The JS bundle is over Vite's 500 kB warning** (524 kB, 167 kB gzip). It still builds and loads, but first load on a slow phone connection gets heavier with each chapter. | Lazy-load labs and chapter content with `React.lazy` / dynamic `import()`. |
-| R5 | Low (content) | **The Genie lab scores instructions by keyword.** Correct instructions in other words ("turnover" instead of "revenue", "FY" instead of "fiscal") may not be recognised. | Widen the keyword lists, or add "this counts as…" tags to typed lines. |
-| R6 | Info | **Weights for sections 4–7 are assumed.** 15.75% each (see §2b). | Replace with figures from the guide if published. |
-| R7 | Info | **"Readiness estimate" shows coverage only** ("X of 9 chapters built"). It doesn't combine your score and coverage into one readiness number. This matches the request. | Optional: score × coverage indicator. |
+| S1 | **Medium** | **A failed chapter download leaves a spinner forever.** `loadChapter()` has no error handling. If a content chunk fails to load (offline, flaky network, or a redeploy that replaced the hashed files while the app was open), the promise rejects. Pages that need content then show "Loading…" indefinitely and an unhandled rejection is logged. Labs are safer: a failed `React.lazy` load reaches the error boundary's recovery screen. | Catch and clear the pending promise so it can retry, show "Couldn't load. Retry / Reload", and add an e2e test that blocks a chunk. |
+| S2 | Low | **E2E tests run against the dev server, not the production build.** Lazy chunk loading under `base: './'` was checked in the production preview by hand once (cold loads of Home, a level lab, Time Travel, Boss and a chapter test, with 0 errors), not by the suite. | Add a second Playwright project against `vite preview` (skipping the dev-only crash test). |
+| S3 | Low | **Chart values can't be read on a phone.** Chart Picker values show on hover via SVG `<title>`, which touch devices don't show. On a phone the only way to read values is the "View the data" table. | Add a tap-to-show value label, or a table toggle under each chart. |
+| S4 | Low (content) | **Embedded credentials may look like the universal answer.** The Dashboard Config lab treats them as the correct way to let Omar (no SELECT) see data. That's the standard pattern, but it's a security trade-off: viewers see whatever the publisher's queries return. The lesson card and question explain the trade-off. | Optional: add a scenario where embedded credentials are the wrong choice. |
+| S5 | Info | **Brief loading states.** Home and the Chapters list briefly show 0% mastery (and gated pages a spinner) while content chunks arrive after first paint. Barely visible on a normal connection. | Optional skeleton bars. |
+| S6 | Info | **Noisy e2e output.** The crash test's expected errors are printed by Vite's console forwarding. The test opts out of the console-error check, so this is cosmetic. | Filter the webServer output, or accept it. |
 
 ### Carried over
 | ID | Severity | Finding | Status |
 |---|---|---|---|
-| N1 | Low | Silent reset of damaged progress | ✅ Fixed in `3580d48` |
-| N2 | Low | Repeatable per-correct XP | ✅ Fixed in `796cde5` |
-| N3 | Low | Namespace Builder state not saved | ✅ Fixed in `c7a5772` (+ `ba1bdae`) |
-| N4 | Low (content) | Simplified Unity Catalog access model in the lab | Open; flagged in the app |
-| N5 | Low | Touch drag not tested on a real phone | **Open.** No result was supplied this round. Tap-to-place still works as a fallback. |
-| N6 | Info | Boss mix didn't follow exam weights | ✅ Resolved in `9b0aef8` |
-| N7 | Info | No error boundary | ✅ Fixed in `8ed17c4` |
-| F3 | Low | Sandbox is SQLite, not Databricks SQL | Open; documented in the app |
-| F4 | Low | Missing-GROUP-BY challenge detects the error instead of raising it | Open; acceptable |
+| R1 | Medium | Namespace prediction reset | ✅ Fixed in v3; now covered by e2e |
+| R2 | Low | No UI tests in the repo | ✅ Fixed in `541ef25` |
+| R3 | Low | Every Boss showed all of Ch 7 | ✅ Fixed in `4219054` |
+| R4 | Low | Bundle over 500 kB | ✅ Fixed in `1708afc` |
+| R5 | Low (content) | Genie lab scores instructions by keyword | Open |
+| R6 | Info | Weights for sections 4–7 are assumed (15.75% each) | Open; now affects 3 built chapters |
+| R7 | Info | Readiness estimate shows coverage only | Open (as requested) |
+| N4 | Low (content) | Simplified Unity Catalog access model | Open; flagged in the app |
+| N5 | Low | Touch drag untested on a real phone | **Open.** Still waiting on your phone test. Ch 6 labs avoid drag as requested. |
+| F3 | Low | Sandbox is SQLite, not Databricks SQL | Open; documented |
+| F4 | Low | Missing-GROUP-BY challenge detects the error instead of raising it | Open |
 | F6 | Low | Boss timer only auto-submits on the Boss page | Open |
-| F7 | Info | Boss options reshuffle on reload | Open |
-| F8 | Info | XP toasts can merge across screens | Open |
-| F9 | Info | Reducer reads the clock | Open |
-| F10 | Info | Time Travel DML rewrites all rows | Open |
+| F7–F10 | Info | Option reshuffle on reload, toast merging, reducer reads the clock, Time Travel DML rewrites all rows | Open |
 
 ---
 
@@ -163,25 +156,25 @@ Unchanged from v2: Assistant commands, warehouse types, Federation, MV syntax, `
 
 | Check | Result |
 |---|---|
-| `npm test` | **63 / 63 pass.** New: Genie scoring and simulation (perfect = 100 with all good outcomes; empty = 0; missing instructions → shaky; noise and HR tables penalised; Classic warehouse or a cluster fails; a hard-coded "trusted" query is penalised; sanitizer); Boss weights (known values, even split, sum to 100, rescaling, 18/18/9 allocation, shortfall redistribution, never over-draws); daily per-correct ledger; Namespace lab sanitizer and `labState` validation; Ch 7 content integrity |
-| `npm run build` | Succeeds with a chunk-size **warning** (R4). JS 524 kB (167 kB gzip), CSS 56 kB (9 kB gzip), `.wasm` 658 kB (326 kB gzip). |
+| `npm test` | **75 / 75 pass.** New: Chart Picker (every scenario explains all 8 chart types; every dataset converts to every chart spec; the best choice always renders; histogram bins count every value); Dashboard Config (the right setup meets all requirements; a field filter can't drive `:region`; a missing parameter errors; alert operator, threshold and destination; individual credentials block Omar; sharing with everyone lets Priya in; hourly isn't the complete answer; sanitizer); Ch 6 and Ch 7 minimum question counts |
+| `npm run test:e2e` | **13 / 13 pass:** all main pages load with 0 console errors; SQL challenge solve; fix-challenge hint; Time Travel VACUUM → FAILED_READ_FILE; Namespace prediction persists 500 ms after clicking and after reload; invalid drop rejected; Genie full setup = 100 with Trusted and Declined answers; Boss draws 45 unique questions matching the weighted mix (computed from the same weights); empty Boss → no bonus and readiness line; crash → recovery screen → Home; Chart Picker poor pick shows two charts then the best pick; Dashboard Config wrong setup explained, right setup completes and persists; Ch 6 page and an in-level lab load |
+| `npm run build` | Succeeds, **no size warning**. Main JS 353 kB (112 kB gzip). Lazy chunks: ch4 58 kB, ch6 25 kB, ch7 30 kB, ch9 22 kB, labs 3–22 kB each. `.wasm` 658 kB (326 kB gzip). |
 | `npm audit` | 0 vulnerabilities |
-| Browser checks (Chromium, 390×844, dev server) | **Error boundary:** the dev-only `#/__crash` route shows the recovery screen; nav stays visible; Back to Home works; the crash route is absent from the production bundle. **Damaged progress:** dialog shown, download works, backup key kept, not shown again after reload. **Namespace Builder:** state survives leaving and reloading; Reset clears it; predictions show results (after the R1 fix). **Genie lab:** empty space scores 0; a missing-instruction answer is "Shaky"; the full setup scores 100; 2 Trusted + 1 Declined answers; state survives reload; both lab XP awards granted. **Boss:** lobby shows the weighted mix; a 45-question exam drew 18/18/9 with no duplicates; the results screen shows "Readiness estimate: 3 of 9 chapters built". **Regression runs** of the Chapter 4 and Chapter 9 checks from v1 and v2: 0 errors. |
-| Not tested | Real iOS/Android devices (N5), screen readers and keyboard-only use, a full Boss run to timer expiry, very old browsers |
+| Visual check (dataviz step 7) | All 8 Chart Picker scenarios rendered at 390 px and inspected. Fixed label collisions at the last x-tick, text that shrank to ~5 px in the two-column layout (charts now stack on phones), and coarse histogram bins. The palette (3 categorical slots) passes every validator check against the card surface `#121a33`. |
+| Not tested | Real iOS/Android devices (N5, S3), screen readers and keyboard-only use, production build in the automated suite (S2), a failed chunk load (S1) |
 
 ---
 
 ## 6. Security and privacy
 
-No changes to the model: no backend, no network calls after load, no analytics, localStorage only. New stored fields (`testXp`, `labState`) are validated on import and sanitized on read. Free-text Genie instructions are stored only in this browser.
+No changes to the model: no backend, no network calls after load except the app's own lazy chunks from the same origin, no analytics, localStorage only. New saved state (`labState.dashboardConfig`, the Namespace check) is sanitized on read and validated on import.
 
 ---
 
 ## 7. Recommended next steps
 
-1. **Tell me how touch drag behaves on your phone** (N5). If it fails, I'll extract a shared drag component before building the Medallion Sorter.
-2. Add Playwright UI tests to the repo (R2). That would have caught R1 automatically.
-3. Build **Chapter 8 (Data Modeling)** with the Medallion Sorter.
-4. Grow Chapter 7 to 30+ questions (R3), and lazy-load labs to shrink first load (R4).
-5. Then Chapters 1, 2, 3, 5 and 6.
-6. Two weeks before the exam: work through §3, Genie first.
+1. **Fix S1** (retry and message on a failed chunk load) and add an e2e test that blocks a chunk. It's small and worth doing before you rely on the deployed site.
+2. **Test touch drag on your phone (N5)** before Chapter 8's Medallion Sorter, or build that lab with taps like Chapter 6.
+3. Build **Chapter 8 (Data Modeling)**, then Chapters 1, 2, 3 and 5.
+4. Add a production-preview e2e project (S2).
+5. Two weeks before the exam: work through §3. Chapters 6 and 7 move fastest.

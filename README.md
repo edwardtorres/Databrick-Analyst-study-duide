@@ -7,11 +7,11 @@ React + Vite + Tailwind, fully client-side. Progress is saved in `localStorage`.
 
 - **9 chapters**, one per exam-guide section. Each chapter has levels (lesson cards → labs → SQL challenges → quiz) and a 12-question chapter test.
 - **SQL Arena**: real SQL in the browser (sql.js / SQLite with Databricks-style shims) on a deliberately dirty retail dataset. Write-the-query, fix-the-broken-query, and DDL challenges are graded by comparing your result set with a reference solution.
-- **Labs**: Join Visualizer, Set Operations, Time Travel Timeline (VERSION/TIMESTAMP AS OF, RESTORE, VACUUM), Namespace Builder (Unity Catalog grants), Genie Space Builder.
+- **Labs**: Join Visualizer, Set Operations, Time Travel Timeline (VERSION/TIMESTAMP AS OF, RESTORE, VACUUM), Chart Picker, Dashboard Config, Namespace Builder (Unity Catalog grants), Genie Space Builder.
 - **Game mechanics**: XP, levels, daily streak, daily XP goal, per-chapter mastery, Leitner spaced repetition (missed questions come back more often), and the timed **Boss Battle** mock exam (45 Q / 90 min, weighted by exam section, per-section breakdown).
 - Every question explains why the right answer is right and why each wrong answer is wrong. Facts that may have drifted since the guide are flagged **"Verify in Databricks docs"**.
 
-**Status:** app shell, progress system, and Chapters **4** (Executing Queries), **7** (AI/BI Genie Spaces) and **9** (Securing Data) are complete, with the Namespace Builder and Genie Space Builder labs. The other chapters show their topic lists and are marked "coming soon". See `AUDIT.md` for details.
+**Status:** app shell, progress system, and Chapters **4** (Executing Queries), **6** (Dashboards & Visualizations), **7** (AI/BI Genie Spaces) and **9** (Securing Data) are complete. The other chapters show their topic lists and are marked "coming soon". See `AUDIT.md` for details.
 
 ## Develop
 
