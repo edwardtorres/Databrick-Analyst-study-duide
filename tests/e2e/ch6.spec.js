@@ -46,7 +46,7 @@ test('Dashboard Config: the right setup meets every requirement; wrong choices a
 test('Chapter 6 page and a level with a lab load', async ({ page }) => {
   await page.goto('#/chapter/6')
   await expect(page.getByText('Dashboards & Visualizations')).toBeVisible()
-  await expect(page.getByText('27 questions')).toBeVisible()
+  await expect(page.getByText('28 questions')).toBeVisible()
   await page.goto('#/chapter/6/s/viz')
   for (let i = 0; i < 3; i++) await page.getByRole('button', { name: /Continue/ }).click()
   await expect(page.getByRole('heading', { name: /Chart Picker/ })).toBeVisible()

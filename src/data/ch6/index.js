@@ -83,13 +83,14 @@ GROUP BY order_date` }),
       card('share-2', 'Whose credentials run the queries', [
         '**Embedded credentials**: queries run with the **publisher\'s** permissions, so viewers see the results without their own table access. Powerful; use it deliberately.',
         '**Viewer (individual) credentials**: each viewer needs their own Unity Catalog access to the data.',
+        '**Don\'t embed credentials when per-viewer security matters.** Row filters and column masks are evaluated for whoever runs the query. With embedded credentials that is the publisher, so every viewer would see what the publisher sees.',
         'For people outside the workspace, look at **embedding** options (iframe, or embedding for external users where available). Admins may need to allow embedding domains.',
       ], { verify: 'Embedded credentials naming, link sharing, and external embedding options. These change often.' }),
       card('share-3', 'Schedules & subscriptions', [
         'Add a **schedule** to refresh a published dashboard, ideally just **after** the data lands. Too-frequent refreshes waste warehouse time.',
         '**Subscribers** on a schedule get a **snapshot** (for example a PDF or image) by email when it runs.',
       ], { verify: 'Subscription formats and destinations.' }),
-      quiz('c6-q-share-group', 'c6-q-embedded-creds', 'c6-q-share-external', 'c6-q-schedule', 'c6-q-subscription'),
+      quiz('c6-q-share-group', 'c6-q-embedded-creds', 'c6-q-embedded-rowfilter', 'c6-q-share-external', 'c6-q-schedule', 'c6-q-subscription'),
     ],
   },
   {

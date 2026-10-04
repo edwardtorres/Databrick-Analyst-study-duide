@@ -237,6 +237,19 @@ export const questions = [
     verify: 'Embedded credentials options and their current naming.',
   },
   {
+    id: 'c6-q-embedded-rowfilter',
+    sub: 'sharing',
+    scenario: true,
+    stem: 'The sales table has a Unity Catalog row filter so each regional manager sees only their own region. You publish a dashboard on it with embedded credentials (yours: you can see every region). What happens, and what should you do?',
+    options: [
+      { t: "Every viewer sees all regions, because queries run as you and the row filter is evaluated for you. Publish with each viewer's own credentials so the filter applies per viewer.", ok: true, why: "Embedded credentials replace the viewer's identity with the publisher's, so per-user row filters and column masks stop protecting anything. Viewer credentials keep them working." },
+      { t: "Each viewer still sees only their region. Row filters always use the viewer's identity.", why: 'With embedded credentials the query runs as the publisher, so the filter sees the publisher, not the viewer.' },
+      { t: 'Nobody sees any data, because row filters block embedded credentials', why: 'The queries succeed and return whatever the publisher can see, which is the problem.' },
+      { t: 'Fine either way: add a dashboard filter on region instead', why: 'A dashboard filter is a convenience, not security. Viewers can change it.' },
+    ],
+    verify: 'Confirm how row filters and column masks are evaluated for dashboards published with embedded credentials.',
+  },
+  {
     id: 'c6-q-share-external',
     sub: 'sharing',
     scenario: true,
