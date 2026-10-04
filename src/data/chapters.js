@@ -1,6 +1,6 @@
 // One chapter per exam-guide section. Built chapters have `built: true` and a
 // `load()` that imports their content chunk; unbuilt ones show their topic
-// list as "coming soon".
+// list as "coming soon" (all nine are built now).
 export const CHAPTERS = [
   {
     id: 1,
