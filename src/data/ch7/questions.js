@@ -228,4 +228,166 @@ export const questions = [
     ],
     verify: 'How and when Genie refreshes UC metadata.',
   },
+  // ---------------- More: purpose & components ----------------
+  {
+    id: 'c7-q-vs-dashboard',
+    sub: 'purpose',
+    scenario: true,
+    stem: 'The CFO wants the same six KPIs every Monday, laid out identically for every executive. Analysts also want to explore ad-hoc follow-up questions. Which pairing fits best?',
+    options: [
+      { t: 'An AI/BI dashboard for the fixed KPIs, and a Genie space (or Genie on the dashboard) for ad-hoc follow-ups', ok: true, why: 'Dashboards give consistent, curated views. Genie handles open-ended questions. They complement each other.' },
+      { t: 'Genie only: let executives ask for the KPIs each week', why: 'Free-text questions can be phrased differently each week. Fixed KPIs belong on a curated dashboard.' },
+      { t: 'A dashboard only. Follow-up questions can wait for the next sprint.', why: 'That leaves the ad-hoc need unmet, and that need is exactly what Genie is for.' },
+      { t: 'A SQL alert for each KPI', why: 'Alerts notify on thresholds. They are not a KPI overview or an exploration tool.' },
+    ],
+  },
+  {
+    id: 'c7-q-show-sql',
+    sub: 'purpose',
+    stem: 'A finance user wants to check how Genie calculated an answer before putting it in a board deck. What can they do?',
+    options: [
+      { t: 'Inspect the SQL Genie generated (and its explanation) for that answer', ok: true, why: 'Genie answers are backed by real SQL that users can open and review. That is a key trust feature.' },
+      { t: 'Nothing. Genie answers are a black box.', why: 'Generated SQL can be viewed. Genie is not an opaque guess.' },
+      { t: 'Ask a Databricks admin to read the model weights', why: 'Answers come from SQL over your data, and you verify them by reading that SQL.' },
+      { t: 'Re-run the question until the number stops changing', why: 'Repeating a question is not verification. Reading the SQL is.' },
+    ],
+    verify: 'How generated SQL and explanations are shown in the current UI.',
+  },
+  {
+    id: 'c7-q-owner',
+    sub: 'purpose',
+    stem: 'Who is best placed to own and curate a Genie space for the supply-chain team?',
+    options: [
+      { t: 'A data analyst or domain expert who knows both the data and the business terms, working with the team', ok: true, why: 'Curation needs data knowledge (tables, joins) and business context (definitions, vocabulary).' },
+      { t: 'Every member of the team with edit rights, so anyone can change instructions', why: 'Uncoordinated edits make answers inconsistent. Give a few owners edit rights and everyone else run access.' },
+      { t: 'Only the Databricks account admin', why: 'Admins manage the platform. They rarely know the domain definitions.' },
+      { t: 'Nobody. Genie configures itself.', why: 'Genie relies on human curation: data selection, instructions and trusted assets.' },
+    ],
+  },
+
+  // ---------------- More: creating a space ----------------
+  {
+    id: 'c7-q-ambiguous-cols',
+    sub: 'create',
+    scenario: true,
+    stem: 'Two tables in a space both have a column named amount. In one it is the order value; in the other it is the refund. Genie mixes them up. What is the best first fix?',
+    options: [
+      { t: 'Clarify the metadata: give the columns descriptive comments (or expose views with names like order_value and refund_amount), and document the difference in instructions', ok: true, why: 'Ambiguous names are a top cause of wrong answers. Clear metadata and naming remove the ambiguity at the source.' },
+      { t: 'Add a third table that also has an amount column', why: 'More ambiguity, not less.' },
+      { t: 'Tell users to always type the table name in their question', why: 'That pushes curation work onto every user.' },
+      { t: 'Switch the warehouse to a larger size', why: 'This is a semantics problem, not a compute problem.' },
+    ],
+  },
+  {
+    id: 'c7-q-sample-quality',
+    sub: 'create',
+    stem: 'Which set of sample questions is best for a sales Genie space built on orders, products and stores?',
+    options: [
+      { t: '"Revenue by store last month", "Top 10 products this quarter", "Which region grew fastest year over year?"', ok: true, why: 'Real, high-value questions the curated data can answer. They teach users what works.' },
+      { t: '"Hello", "What can you do?", "Tell me something interesting"', why: 'Vague prompts don\'t show users which data questions the space answers well.' },
+      { t: '"What is our employee turnover?", "Show web traffic by browser"', why: 'Those questions need data that isn\'t in this space.' },
+      { t: 'No sample questions, so users aren\'t biased', why: 'Without samples, users don\'t know where to start, and adoption suffers.' },
+    ],
+  },
+  {
+    id: 'c7-q-parameterized',
+    sub: 'create',
+    stem: 'Why should a trusted asset for "revenue by region" be parameterized (for example with :start_date and :end_date) instead of hard-coding dates?',
+    options: [
+      { t: 'So Genie can reuse the same verified logic for any date range a user asks about', ok: true, why: 'Parameters make one reviewed query answer a whole family of questions.' },
+      { t: 'Parameters make the query run faster', why: 'Speed isn\'t the point. Reuse of vetted logic is.' },
+      { t: 'Hard-coded queries cannot be saved in a space', why: 'They can be saved, but they only answer one stale question.' },
+      { t: 'Parameters are required for the Trusted label to appear', why: 'Trust comes from using a vetted asset. Parameters make that asset broadly useful.' },
+    ],
+    verify: 'Trusted asset parameter syntax and labelling.',
+  },
+  {
+    id: 'c7-q-instructions-length',
+    sub: 'create',
+    scenario: true,
+    stem: "A space's instructions contain four pages of company history and mission statements, but no metric definitions. Answers are vague. What should you change?",
+    options: [
+      { t: 'Replace it with short, specific rules: metric definitions, calendars, vocabulary and join hints. Move reusable logic into example SQL or trusted assets.', ok: true, why: 'Genie benefits from precise, relevant context. Long background text adds noise without guidance.' },
+      { t: 'Add four more pages so Genie has more context', why: 'More irrelevant text dilutes the useful instructions.' },
+      { t: 'Delete all instructions', why: 'Then you lose the context that makes answers correct.' },
+      { t: 'Put the history in the sample questions instead', why: 'Sample questions are user prompts, not a place for background text.' },
+    ],
+    verify: 'Any current limits on instruction length.',
+  },
+
+  // ---------------- More: permissions & sharing ----------------
+  {
+    id: 'c7-q-row-filter',
+    sub: 'share',
+    scenario: true,
+    stem: 'Regional managers share one Genie space, but each may only see their own region\'s rows. What is the cleanest approach?',
+    options: [
+      { t: 'Enforce it in Unity Catalog with a row filter (or dynamic view), since Genie queries run with each user\'s permissions', ok: true, why: 'Governance belongs in Unity Catalog. One space can then safely serve every region.' },
+      { t: 'Write "only show the user their own region" in the instructions', why: 'Instructions guide SQL generation. They are not a security boundary.' },
+      { t: 'Create one copy of the tables per region', why: 'Duplicated data and duplicated spaces are hard to maintain. Row filters solve it in place.' },
+      { t: 'Trust managers not to ask about other regions', why: 'That is not access control.' },
+    ],
+    verify: 'Confirm Genie queries run with the asking user\'s identity and respect row filters and masks.',
+  },
+  {
+    id: 'c7-q-link-no-access',
+    sub: 'share',
+    stem: 'You send a Genie space link to a colleague who has no access to the workspace. What happens when they open it?',
+    options: [
+      { t: 'They can\'t use it until they have workspace access, permission on the space, and access to the underlying data', ok: true, why: 'A link is not a grant. Identity, space permission and Unity Catalog data access are all required.' },
+      { t: 'The link grants them read access automatically', why: 'Links don\'t bypass authentication or permissions.' },
+      { t: 'They see the data but cannot ask questions', why: 'Without access they see neither.' },
+      { t: 'The space owner\'s permissions are used', why: 'Answers run under the viewer\'s identity, not the owner\'s.' },
+    ],
+  },
+  {
+    id: 'c7-q-dashboard-genie',
+    sub: 'share',
+    scenario: true,
+    stem: 'Viewers of an AI/BI sales dashboard keep emailing analysts follow-up questions about the charts. What is the most direct improvement?',
+    options: [
+      { t: 'Enable Genie for the dashboard (or link a curated Genie space) so viewers can ask follow-ups in natural language', ok: true, why: 'This keeps exploration next to the dashboard while governance still applies.' },
+      { t: 'Add 40 more charts to cover every possible question', why: 'Clutter doesn\'t scale and still misses new questions.' },
+      { t: 'Export the dashboard data to a spreadsheet every day', why: 'This loses governance and freshness, and it adds manual work.' },
+      { t: 'Turn off dashboard sharing', why: 'That removes the value instead of answering the questions.' },
+    ],
+    verify: 'How Genie is enabled from AI/BI dashboards in the current UI.',
+  },
+
+  // ---------------- More: improving a space ----------------
+  {
+    id: 'c7-q-benchmark-design',
+    sub: 'improve',
+    stem: 'Which questions make the best benchmark set for a Genie space?',
+    options: [
+      { t: 'Real user questions, including tricky business terms, each paired with a verified correct SQL answer', ok: true, why: 'Realistic questions with ground truth measure the accuracy users will actually experience.' },
+      { t: 'Only easy questions, so the score stays high', why: 'An inflated score hides the failures you need to fix.' },
+      { t: 'Random questions with no expected answers', why: 'Without ground truth there is nothing to score against.' },
+      { t: 'Questions about data not in the space', why: 'Useful as a few "should decline" checks, but not as the core of the set.' },
+    ],
+  },
+  {
+    id: 'c7-q-too-many-tables',
+    sub: 'improve',
+    scenario: true,
+    stem: 'After you added 15 more tables "just in case", benchmark accuracy dropped from 90% to 70%. What is the best response?',
+    options: [
+      { t: 'Remove the tables the space\'s questions don\'t need, then re-run the benchmarks', ok: true, why: 'Extra tables create more ways to pick the wrong source. Focus usually restores accuracy.' },
+      { t: 'Keep adding tables until accuracy recovers', why: 'More tables made it worse. Adding more compounds the problem.' },
+      { t: 'Ignore the benchmarks because users haven\'t complained yet', why: 'Benchmarks exist to catch regressions before users do.' },
+      { t: 'Switch to a Classic warehouse', why: 'Warehouse type doesn\'t affect which table Genie chooses.' },
+    ],
+  },
+  {
+    id: 'c7-q-review-request',
+    sub: 'improve',
+    stem: 'A user flags a Genie answer as wrong and asks for a review. What is the most useful thing for a space editor to do with it?',
+    options: [
+      { t: 'Check the generated SQL, find the root cause (definition, join or table choice), fix it in instructions or example SQL, and add the question to the benchmarks', ok: true, why: 'This turns one complaint into a permanent fix and a regression check.' },
+      { t: 'Reply with the correct number and change nothing', why: 'The next user who asks gets the same wrong answer.' },
+      { t: 'Delete the user\'s conversation', why: 'That throws away the evidence and fixes nothing.' },
+      { t: 'Revoke the user\'s access', why: 'They did the right thing by flagging it.' },
+    ],
+    verify: 'Review-request workflow and where editors see it.',
+  },
 ]

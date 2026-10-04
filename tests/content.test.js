@@ -36,3 +36,7 @@ test('question ids are unique across all chapters', () => {
   const ids = Object.values(chapters).flatMap((c) => c.questions.map((q) => q.id))
   assert.equal(new Set(ids).size, ids.length)
 })
+
+test('Chapter 7 has at least 30 questions so a Boss never shows all of them', () => {
+  assert.ok(ch7.questions.length >= 30, `only ${ch7.questions.length}`)
+})

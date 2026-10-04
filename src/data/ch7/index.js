@@ -28,7 +28,7 @@ const subsections = [
         'Genie reads **Unity Catalog metadata**: table names, column names and **comments**. `net_revenue` with a clear comment beats `amt_n` with none.',
         'Improving comments and descriptions in Catalog Explorer is one of the cheapest accuracy wins.',
       ]),
-      quiz('c7-q-purpose', 'c7-q-components', 'c7-q-readonly', 'c7-q-uc-context'),
+      quiz('c7-q-purpose', 'c7-q-components', 'c7-q-readonly', 'c7-q-uc-context', 'c7-q-vs-dashboard', 'c7-q-show-sql', 'c7-q-owner'),
     ],
   },
   {
@@ -52,7 +52,18 @@ const subsections = [
         'Pick a **SQL warehouse**. Serverless is usually best for chat-style, bursty use.',
       ], { verify: 'Trusted asset types, labels and supported warehouse types.' }),
       widget('genie-builder'),
-      quiz('c7-q-tables-few', 'c7-q-instructions', 'c7-q-samples', 'c7-q-trusted', 'c7-q-warehouse', 'c7-q-views'),
+      quiz(
+        'c7-q-tables-few',
+        'c7-q-instructions',
+        'c7-q-samples',
+        'c7-q-trusted',
+        'c7-q-warehouse',
+        'c7-q-views',
+        'c7-q-ambiguous-cols',
+        'c7-q-sample-quality',
+        'c7-q-parameterized',
+        'c7-q-instructions-length',
+      ),
     ],
   },
   {
@@ -70,7 +81,7 @@ const subsections = [
         'Genie can also appear alongside **AI/BI dashboards**, so viewers can ask follow-up questions.',
         'Authentication and Unity Catalog governance still apply. Never share an owner\'s credentials.',
       ], { verify: 'API status, embedding options and supported integrations (e.g., chat tools) change often.' }),
-      quiz('c7-q-perm-data', 'c7-q-perm-levels', 'c7-q-embed', 'c7-q-share-curate'),
+      quiz('c7-q-perm-data', 'c7-q-perm-levels', 'c7-q-embed', 'c7-q-share-curate', 'c7-q-row-filter', 'c7-q-link-no-access', 'c7-q-dashboard-genie'),
     ],
   },
   {
@@ -90,7 +101,7 @@ const subsections = [
         'When tables change (new columns, renamed fields, better comments), make sure the space has the **current Unity Catalog metadata**, then re-test.',
         'Remove tables nobody needs. Focus beats breadth.',
       ], { verify: 'How Genie refreshes metadata.' }),
-      quiz('c7-q-monitor', 'c7-q-benchmark', 'c7-q-feedback-loop', 'c7-q-metadata'),
+      quiz('c7-q-monitor', 'c7-q-benchmark', 'c7-q-feedback-loop', 'c7-q-metadata', 'c7-q-benchmark-design', 'c7-q-too-many-tables', 'c7-q-review-request'),
     ],
   },
 ]
