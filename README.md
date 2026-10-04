@@ -24,7 +24,7 @@ npm run build    # static site in dist/
 npm run verify   # all three. Run this before every push.
 ```
 
-The e2e tests use Playwright's Chromium. On a new machine, install it once with `npx playwright install chromium`. The `dev` project runs against the Vite dev server; the `prod` project builds the app and runs the same suite against `vite preview` (the dev-only crash test is skipped there). Every e2e test fails on any console error unless it opts out with `test.use({ allowConsoleErrors: true })`.
+The e2e tests use Playwright's Chromium. A third project, `webkit` (Safari's engine on an iPhone 13 profile), runs automatically when WebKit is installed. On a Mac, run `npx playwright install webkit` once to enable it; elsewhere it is skipped. On a new machine, install it once with `npx playwright install chromium`. The `dev` project runs against the Vite dev server; the `prod` project builds the app and runs the same suite against `vite preview` (the dev-only crash test is skipped there). Every e2e test fails on any console error unless it opts out with `test.use({ allowConsoleErrors: true })`.
 
 ## Deploy (static hosting on a subdomain)
 

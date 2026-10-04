@@ -150,16 +150,36 @@ const notify = () => {
 for (const c of CHAPTERS)
   Object.defineProperty(c, 'content', { get: () => loaded[c.id] || null, enumerable: true })
 
-const failedUrl = {} // chapterId -> chunk URL from the last failed import
+const retried = {} // chapterId -> true once a load has failed
 let attempt = 0
+let chunkMap = null
 
-// Browsers cache a failed dynamic import for its URL, so retrying the same
-// import() fails instantly. A retry re-imports the chunk URL (taken from the
-// error message) with a cache-busting query instead.
-function importChapter(c) {
-  const url = failedUrl[c.id]
-  if (!url) return c.load()
+// Where a chapter's content file lives. In dev it is the source module; in a
+// build, chunk-map.json (written by the chapter-chunk-map plugin in
+// vite.config.js) maps chapter ids to hashed chunk files.
+async function chunkUrl(id) {
+  if (import.meta.env?.DEV) {
+    const rel = './ch' + id + '/index.js' // a variable, so Vite leaves it alone
+    return new URL(rel, import.meta.url).href
+  }
+  chunkMap ||= fetch(new URL('chunk-map.json', document.baseURI), { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`chunk-map.json: HTTP ${r.status}`))))
+    .catch((err) => {
+      chunkMap = null // try again next time
+      throw err
+    })
+  const file = (await chunkMap)[id]
+  if (!file) throw new Error(`No chunk for chapter ${id}`)
+  return new URL(file, document.baseURI).href
+}
+
+// Browsers cache a failed dynamic import for its URL, so re-running the same
+// import() fails instantly. After a failure, re-import the chunk's URL with a
+// cache-busting query instead.
+async function importChapter(c) {
+  if (!retried[c.id]) return c.load()
   attempt++
+  const url = await chunkUrl(c.id)
   return import(/* @vite-ignore */ `${url}${url.includes('?') ? '&' : '?'}retry=${attempt}`)
 }
 
@@ -178,8 +198,7 @@ export function loadChapter(id) {
       return m.default
     })
     .catch((err) => {
-      const url = String(err?.message || '').match(/https?:\/\/\S+?\.js/)?.[0]
-      if (url) failedUrl[c.id] = url
+      retried[c.id] = true
       failed[c.id] = err
       notify()
       return null

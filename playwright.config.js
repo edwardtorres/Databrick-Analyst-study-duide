@@ -1,4 +1,5 @@
-import { defineConfig, devices } from '@playwright/test'
+import { existsSync } from 'node:fs'
+import { defineConfig, devices, webkit } from '@playwright/test'
 
 // Two projects run the same suite:
 //   dev  - the Vite dev server (includes the dev-only #/__crash route)
@@ -6,6 +7,18 @@ import { defineConfig, devices } from '@playwright/test'
 //          hashed assets, base './'); the crash test is skipped there
 const DEV_PORT = 4321
 const PROD_PORT = 4322
+
+// A WebKit (Safari engine) project runs only where WebKit is installed, e.g.
+// on a Mac after `npx playwright install webkit`. Elsewhere it's skipped.
+const hasWebKit = (() => {
+  try {
+    return existsSync(webkit.executablePath())
+  } catch {
+    return false
+  }
+})()
+if (!hasWebKit && !process.env.TEST_WORKER_INDEX)
+  console.log('[playwright] WebKit not installed: skipping the webkit project (npx playwright install webkit to enable)')
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -21,6 +34,15 @@ export default defineConfig({
   projects: [
     { name: 'dev', use: { baseURL: `http://localhost:${DEV_PORT}/` } },
     { name: 'prod', use: { baseURL: `http://localhost:${PROD_PORT}/` }, testIgnore: /crash\.spec\.js/ },
+    ...(hasWebKit
+      ? [
+          {
+            name: 'webkit',
+            use: { ...devices['iPhone 13'], browserName: 'webkit', baseURL: `http://localhost:${PROD_PORT}/` },
+            testIgnore: /crash\.spec\.js/,
+          },
+        ]
+      : []),
   ],
   webServer: [
     {
