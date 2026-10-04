@@ -4,8 +4,9 @@
 //     non-deterministic functions (e.g. current_timestamp()) are never cached.
 //   Disk cache: copies of data files on the warehouse's local SSDs. A
 //     result-cache miss still benefits if the files it needs were read before.
-// Timings are illustrative. Verify details (remote result cache on
-// serverless, exact invalidation rules) in Databricks docs.
+// Timings are illustrative. Models one warehouse: its local result cache and
+// disk cache. On serverless, a remote result cache is also shared across the
+// workspace's warehouses. Result cache entries live up to 24 hours.
 
 export const QUERIES = {
   q1: { label: 'Revenue by region', sql: 'SELECT region, SUM(revenue)\nFROM gold.daily_sales\nGROUP BY region', deterministic: true },

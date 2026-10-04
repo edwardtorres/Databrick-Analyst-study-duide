@@ -98,7 +98,7 @@ export const CASES = [
     diagnosis: 'skew',
     distractors: ['spill', 'exploding-join', 'no-pruning'],
     fixes: [
-      { id: 'handle', text: "Handle the hot key separately (e.g., filter or route device_id = 'UNKNOWN' on its own path) and let adaptive skew handling split the rest", ok: true, why: 'One key holds 40% of rows, so one task does 40% of the work. Removing or splitting that key spreads the load.' },
+      { id: 'handle', text: "Deal with the hot key: route device_id = 'UNKNOWN' on its own path (or salt / pre-aggregate it) so no single task gets 40% of the rows", ok: true, why: 'One key holds 40% of rows, so one task does 40% of the work. The DATA_SKEW insight recommends key salting or pre-aggregation; removing or splitting that key spreads the load.' },
       { id: 'clusters', text: 'Add more clusters to the warehouse', why: 'The bottleneck is a single task inside one query. More clusters don\'t split it.' },
       { id: 'cluster-by', text: 'CLUSTER BY (device_id) on events', why: 'Layout doesn\'t change how many rows share one join key.' },
       { id: 'rerun', text: 'Retry until it finishes faster', why: 'Skew is deterministic. The same task straggles every time.' },
@@ -113,7 +113,6 @@ export const CASES = [
       ],
     },
     explain: 'Task times are wildly uneven: 199 tasks finish in seconds, one runs for 21 minutes. That is skew. Fix the hot key and the work evens out.',
-    verify: 'How adaptive query execution reports and splits skewed joins in the current Query Profile.',
   },
   {
     id: 'explode',
@@ -207,7 +206,6 @@ export const CASES = [
       ops: [op('Result (result cache HIT)', '5', 100, { bytes: '0 B scanned' })],
     },
     explain: 'Fast later and slow first, right after a data change: that is a cache invalidation, not a regression. Warm the cache on a schedule after the load.',
-    verify: 'Result cache scope (per warehouse vs remote/serverless) and invalidation rules.',
   },
   {
     id: 'photon',
@@ -219,7 +217,7 @@ export const CASES = [
       ops: [
         op('Result', '48 M', 2),
         op('Aggregate (Photon)', '48 M', 9),
-        op('BatchEvalPython clean_phone_py (not Photon)', '310 M', 82, { note: 'row-at-a-time Python', hot: true }),
+        op('BatchEvalPython clean_phone_py (not Photon)', '310 M', 82, { note: 'Photon does not support UDFs', hot: true }),
         op('Scan crm.contacts (Photon)', '310 M', 7, { bytes: '22 GB' }),
       ],
     },
@@ -241,7 +239,6 @@ export const CASES = [
       ],
     },
     explain: 'One operator outside Photon took 82% of the time. Built-in expressions keep the whole plan vectorized.',
-    verify: 'Which UDF types Photon supports today (e.g., SQL UDFs vs Python UDFs).',
   },
 ]
 

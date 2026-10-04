@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { RotateCcw, Database, HardDrive, Plus } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { QUERIES, initialCacheLab, runQuery, insertRows, predictHit, MISSIONS, missionsDone } from '../lib/cacheLab.js'
-import { VerifyFlag } from './ui.jsx'
 
 const BADGE = {
   hit: { text: 'RESULT CACHE HIT', cls: 'bg-emerald-500/20 text-emerald-200' },
@@ -141,7 +140,7 @@ export default function CacheLab() {
           </div>
         ))}
       </div>
-      <VerifyFlag text="Result cache scope (per warehouse vs a persistent remote cache on serverless), exactly what counts as the same query, and disk cache behaviour. This lab simplifies them." />
+      <p className="text-[11px] text-slate-500">Simplified: this lab models one warehouse's local result cache and disk cache. On serverless, a remote result cache is also shared by all warehouses in the workspace and survives restarts. Cached results live up to 24 hours. Timings are illustrative.</p>
     </div>
   )
 }

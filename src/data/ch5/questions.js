@@ -21,24 +21,22 @@ export const questions = [
     scenario: true,
     stem: "A query's profile shows Photon on every operator except one Python UDF, which takes 80% of the time. What is the best way to speed it up?",
     options: [
-      { t: 'Replace the Python UDF with built-in SQL functions so the whole plan can run in Photon', ok: true, why: 'Row-at-a-time Python UDFs fall outside Photon\'s vectorized execution. Built-in expressions stay vectorized.' },
+      { t: 'Replace the Python UDF with built-in SQL functions so the whole plan can run in Photon', ok: true, why: 'Photon doesn\'t support UDFs, so that step falls back to the standard engine. Row-at-a-time Python UDFs fall outside Photon\'s vectorized execution. Built-in expressions stay vectorized.' },
       { t: 'Turn Photon off so the plan is consistent', why: 'That slows every other operator too.' },
       { t: 'Add Liquid Clustering', why: 'Layout helps scans with filters. It doesn\'t make a UDF faster.' },
       { t: 'Run the query twice', why: 'Caching won\'t help a computation that changes with the data.' },
     ],
-    verify: 'Which UDF types Photon supports today.',
   },
   {
     id: 'c5-q-photon-benefit',
     sub: 'photon',
     stem: 'Which workload benefits LEAST from Photon?',
     options: [
-      { t: 'A very short query on a tiny table, where start-up and planning dominate the run time', ok: true, why: 'Photon speeds up heavy data processing. When there is little data to process, there is little to gain.' },
+      { t: 'A very short query on a tiny table, where start-up and planning dominate the run time', ok: true, why: 'Docs: queries that normally complete in under two seconds don\'t see meaningful improvement. Photon speeds up heavy data processing. When there is little data to process, there is little to gain.' },
       { t: 'Large aggregations over billions of rows', why: 'This is a prime Photon workload.' },
       { t: 'Joins between large Delta tables', why: 'Photon accelerates joins.' },
       { t: 'Writing large results to Delta tables', why: 'Photon accelerates Delta and Parquet writes.' },
     ],
-    verify: 'Photon\'s supported and unsupported operations list.',
   },
   {
     id: 'c5-q-photon-default',
@@ -50,7 +48,6 @@ export const questions = [
       { t: 'Convert tables to a Photon format', why: 'Photon reads ordinary Delta and Parquet.' },
       { t: 'Only notebooks can use Photon', why: 'SQL warehouses are where Photon is on by default.' },
     ],
-    verify: 'Photon defaults on each SQL warehouse type.',
   },
 
   // ---------------- Finding slow queries ----------------
@@ -105,14 +102,13 @@ export const questions = [
   {
     id: 'c5-q-insights',
     sub: 'profiling',
-    stem: 'What do Query Insights (performance insights shown with a query in history and its profile) add on top of the raw metrics?',
+    stem: 'What do Query Insights (shown in the UI as performance insights in query history and the query profile) add on top of the raw metrics?',
     options: [
-      { t: 'Highlighted problems and suggestions, such as spill, skew or poor file pruning, so you know where to look', ok: true, why: 'Insights flag common performance issues so you don\'t have to read every metric yourself.' },
-      { t: 'They automatically rewrite your SQL', why: 'They point out issues. You decide on the fix.' },
+      { t: 'Highlighted problems with recommendations, such as data spill, data skew, exploding joins or small files, so you know where to look', ok: true, why: 'Each insight names the issue and a recommendation, ranked by estimated effect on task time.' },
+      { t: 'They automatically rewrite your SQL', why: 'They point out issues. You can ask Genie Code (Optimize) to propose a rewrite, but you approve it.' },
       { t: 'They are a list of everyone who queried the table', why: 'That is audit and lineage information.' },
       { t: 'They schedule queries', why: 'Scheduling is done with jobs, alerts or dashboard schedules.' },
     ],
-    verify: 'What "Query Insights" contains in the current UI, and where it appears.',
   },
   {
     id: 'c5-q-profile-explode',
@@ -169,12 +165,11 @@ export const questions = [
     scenario: true,
     stem: 'A MERGE ran last night. Where can you see how many rows it inserted, updated and deleted?',
     options: [
-      { t: 'In the operationMetrics column of DESCRIBE HISTORY for that version', ok: true, why: 'Delta records per-operation metrics such as rows inserted, updated, deleted and files added.' },
+      { t: 'In the operationMetrics column of DESCRIBE HISTORY for that version', ok: true, why: 'For MERGE the keys are numTargetRowsInserted, numTargetRowsUpdated and numTargetRowsDeleted. Delta records per-operation metrics such as rows inserted, updated, deleted and files added.' },
       { t: 'Only in the job\'s console logs', why: 'Delta keeps these metrics with the table history.' },
       { t: 'In SHOW TBLPROPERTIES', why: 'Properties are configuration, not per-operation metrics.' },
       { t: 'Nowhere. MERGE doesn\'t record metrics.', why: 'It does, in the transaction log.' },
     ],
-    verify: 'Exact operationMetrics key names.',
   },
 
   // ---------------- Caching ----------------
@@ -183,24 +178,23 @@ export const questions = [
     sub: 'caching',
     stem: 'When can a SQL warehouse return a query from the result cache?',
     options: [
-      { t: 'When the same query runs again and the underlying tables haven\'t changed since the result was cached', ok: true, why: 'Cached results are only valid for unchanged data. Any table change invalidates them.' },
+      { t: 'When the same query runs again and the underlying tables haven\'t changed since the result was cached', ok: true, why: 'Cached results live up to 24 hours and are invalidated when the underlying tables are updated. Cached results are only valid for unchanged data. Any table change invalidates them.' },
       { t: 'Whenever the same table is queried, with any filter', why: 'A different query is a different result.' },
       { t: 'Always, even after new data is written', why: 'That would return stale results. Changes invalidate the cache.' },
       { t: 'Only if you run CACHE TABLE first', why: 'The result cache is automatic.' },
     ],
-    verify: 'What counts as "the same query" and how long cached results live.',
+    verify: "Exactly what makes two queries \"the same\" for the result cache isn't spelled out in the docs.",
   },
   {
     id: 'c5-q-cache-disk',
     sub: 'caching',
     stem: 'How does the disk cache differ from the result cache?',
     options: [
-      { t: 'The disk cache keeps copies of data files on the warehouse\'s local SSDs, so any query reading those files scans faster. The result cache stores final query results.', ok: true, why: 'The disk cache speeds up reading data. The result cache skips execution entirely for repeats.' },
+      { t: 'The disk cache keeps copies of data files on the warehouse\'s local SSDs, so any query reading those files scans faster. The result cache stores final query results.', ok: true, why: 'Formerly called the Delta cache; it is cleared when the warehouse stops. The disk cache speeds up reading data. The result cache skips execution entirely for repeats.' },
       { t: 'They are the same thing with two names', why: 'They cache different things at different layers.' },
       { t: 'The disk cache stores results in the browser', why: 'It lives on the warehouse\'s local disks.' },
       { t: 'The disk cache only works for CSV files', why: 'It is designed for Parquet and Delta data.' },
     ],
-    verify: 'Disk cache naming and defaults on SQL warehouses.',
   },
   {
     id: 'c5-q-cache-nondeterministic',
@@ -234,12 +228,11 @@ export const questions = [
     scenario: true,
     stem: 'A 3 TB events table is almost always filtered by user_id (millions of distinct values) and sometimes by event_date. Which layout fits best?',
     options: [
-      { t: 'Liquid Clustering: CLUSTER BY (user_id, event_date)', ok: true, why: 'Liquid Clustering handles high-cardinality keys and multiple columns, and enables data skipping on the common filters.' },
+      { t: 'Liquid Clustering: CLUSTER BY (user_id, event_date)', ok: true, why: 'Up to four keys are allowed, but one or two filter faster on smaller tables. CLUSTER BY AUTO is the alternative on UC managed tables. Liquid Clustering handles high-cardinality keys and multiple columns, and enables data skipping on the common filters.' },
       { t: 'PARTITIONED BY (user_id)', why: 'Millions of partitions means millions of tiny files.' },
       { t: 'No layout. Rely on a bigger warehouse.', why: 'Compute can\'t make up for scanning everything on every lookup.' },
       { t: 'ZORDER BY (user_id) once, never re-run', why: 'Z-ORDER has to be re-run as data arrives. Liquid Clustering is the recommended successor.' },
     ],
-    verify: 'Current guidance on the number of clustering keys and CLUSTER BY AUTO.',
   },
   {
     id: 'c5-q-liquid-change',
@@ -273,19 +266,17 @@ export const questions = [
       { t: 'Partitioning is always better for high-cardinality columns', why: 'High cardinality is exactly where partitioning breaks down.' },
       { t: 'Z-ORDER is applied automatically on every write', why: 'Z-ORDER runs as part of OPTIMIZE and must be re-run.' },
     ],
-    verify: 'Compatibility rules and recommendations for Liquid Clustering.',
   },
   {
     id: 'c5-q-liquid-optimize',
     sub: 'liquid',
     stem: 'After setting CLUSTER BY on an existing table, how does existing data become clustered?',
     options: [
-      { t: 'OPTIMIZE (run manually, on a schedule, or by predictive optimization) clusters the data incrementally', ok: true, why: 'Clustering is applied by OPTIMIZE, which only rewrites what it needs to.' },
+      { t: 'Run OPTIMIZE FULL once to recluster the existing data; after that, regular OPTIMIZE (manual, scheduled, or by predictive optimization) clusters new data incrementally', ok: true, why: 'Docs: enabling clustering does not apply it to previously written data. OPTIMIZE FULL reclusters everything when you first enable clustering or change keys; plain OPTIMIZE is incremental.' },
       { t: 'Instantly, the moment ALTER TABLE runs', why: 'ALTER sets the keys. OPTIMIZE does the clustering.' },
       { t: 'Only when VACUUM runs', why: 'VACUUM deletes unreferenced files. It doesn\'t cluster.' },
-      { t: 'Never. Only new data is clustered.', why: 'OPTIMIZE also clusters existing data.' },
+      { t: 'Never. Only new data can be clustered.', why: 'OPTIMIZE FULL reclusters existing data.' },
     ],
-    verify: 'Whether predictive optimization runs OPTIMIZE automatically for your tables.',
   },
 
   // ---------------- Fixing queries ----------------
