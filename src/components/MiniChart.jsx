@@ -7,6 +7,8 @@
 // bars <= 24px with 4px rounded data-ends, 2px lines, ringed dots (r 4),
 // hairline gridlines, 2px surface gaps between touching fills.
 
+import { useState } from 'react'
+
 const SURFACE = '#121a33'
 const GRID = '#263257'
 const SERIES = ['#3987e5', '#d95926', '#199e70']
@@ -18,6 +20,47 @@ const IW = W - PAD.l - PAD.r
 const IH = H - PAD.t - PAD.b
 
 const fmt = (n) => (Math.abs(n) >= 1000 ? `${Math.round(n / 100) / 10}k` : String(Math.round(n * 10) / 10))
+
+// Tap (or Enter/Space) a mark to show its value: touch screens never show
+// SVG <title> tooltips. Tapping the same mark or the background hides it.
+function useTapLabel() {
+  const [sel, setSel] = useState(null)
+  const toggle = (id, text, at) => setSel((s) => (s?.id === id ? null : { id, text, ...at }))
+  const props = (key, text, at) => ({
+    role: 'button',
+    tabIndex: 0,
+    'aria-label': text,
+    'data-mark': '',
+    style: { cursor: 'pointer', outline: 'none' },
+    opacity: sel && sel.id !== key ? 0.45 : 1,
+    onClick: (e) => {
+      e.stopPropagation()
+      toggle(key, text, at)
+    },
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        toggle(key, text, at)
+      }
+    },
+  })
+  const label = sel ? <ValueLabel x={sel.x} y={sel.y} text={sel.text} /> : null
+  return { props, label, clear: () => setSel(null), sel }
+}
+
+function ValueLabel({ x, y, text }) {
+  const w = Math.min(W - 4, text.length * 5 + 10)
+  const cx = Math.min(W - w / 2 - 2, Math.max(w / 2 + 2, x))
+  const cy = Math.max(12, y - 10)
+  return (
+    <g pointerEvents="none" data-testid="value-label">
+      <rect x={cx - w / 2} y={cy - 9} width={w} height={14} rx="3" fill="#0b1020" stroke={GRID} />
+      <text x={cx} y={cy + 1} textAnchor="middle" fontSize="9" fontWeight="600" fill="#f1f5f9">
+        {text}
+      </text>
+    </g>
+  )
+}
 
 function niceMax(v) {
   if (v <= 0) return 1
@@ -62,18 +105,25 @@ function Bars({ spec }) {
   const max = niceMax(Math.max(...spec.values))
   const band = IW / spec.values.length
   const bw = Math.min(24, Math.max(2, band - 2))
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} showEvery={Math.ceil(spec.labels.length / 6)} />
       {spec.values.map((v, i) => {
         const h = (v / max) * IH
         const x = PAD.l + i * band + (band - bw) / 2
         return (
-          <path key={i} d={columnPath(x, PAD.t + IH - h, bw, h)} fill={SERIES[0]}>
+          <path
+            key={i}
+            d={columnPath(x, PAD.t + IH - Math.max(h, 2), bw, Math.max(h, 2))}
+            fill={SERIES[0]}
+            {...tap.props(i, `${spec.labels[i]}: ${fmt(v)}${spec.unit ? ` ${spec.unit}` : ''}`, { x: x + bw / 2, y: PAD.t + IH - h })}
+          >
             <title>{`${spec.labels[i]}: ${fmt(v)}${spec.unit ? ` ${spec.unit}` : ''}`}</title>
           </path>
         )
       })}
+      {tap.label}
     </svg>
   )
 }
@@ -84,20 +134,32 @@ function Lines({ spec }) {
   const n = spec.labels.length
   const x = (i) => PAD.l + ((i + 0.5) * IW) / n
   const y = (v) => PAD.t + IH - (v / max) * IH
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} showEvery={Math.ceil(n / 6)} />
       {series.map((s, si) => (
         <g key={s.name}>
           <polyline points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(' ')} fill="none" stroke={SERIES[si]} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
           <circle cx={x(n - 1)} cy={y(s.values[n - 1])} r="4" fill={SERIES[si]} stroke={SURFACE} strokeWidth="2" />
           {s.values.map((v, i) => (
-            <circle key={i} cx={x(i)} cy={y(v)} r="6" fill="transparent">
+            <circle
+              key={i}
+              cx={x(i)}
+              cy={y(v)}
+              r="7"
+              fill={tap.sel?.id === `${si}-${i}` ? SERIES[si] : 'transparent'}
+              stroke={tap.sel?.id === `${si}-${i}` ? SURFACE : 'none'}
+              strokeWidth="2"
+              {...tap.props(`${si}-${i}`, `${spec.labels[i]}: ${fmt(v)}`, { x: x(i), y: y(v) })}
+              opacity={1}
+            >
               <title>{`${s.name}, ${spec.labels[i]}: ${fmt(v)}`}</title>
             </circle>
           ))}
         </g>
       ))}
+      {tap.label}
     </svg>
   )
 }
@@ -115,8 +177,9 @@ function Stacked({ spec }) {
   const max = niceMax(Math.max(...totals))
   const band = IW / spec.labels.length
   const bw = Math.min(24, band - 4)
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.labels} />
       {spec.labels.map((l, i) => {
         let base = PAD.t + IH
@@ -129,12 +192,18 @@ function Stacked({ spec }) {
           const segH = Math.max(0, h - (si > 0 ? 2 : 0))
           const d = top ? columnPath(x, base, bw, segH) : `M${x},${base} h${bw} v${segH} h${-bw} Z`
           return (
-            <path key={`${l}-${si}`} d={d} fill={s.other ? OTHER : SERIES[si]}>
+            <path
+              key={`${l}-${si}`}
+              d={d}
+              fill={s.other ? OTHER : SERIES[si]}
+              {...tap.props(`${i}-${si}`, `${l} · ${s.name}: ${fmt(s.values[i])}`, { x: x + bw / 2, y: base })}
+            >
               <title>{`${l}, ${s.name}: ${fmt(s.values[i])}`}</title>
             </path>
           )
         })
       })}
+      {tap.label}
     </svg>
   )
 }
@@ -146,8 +215,9 @@ function Pie({ spec }) {
   const cy = H / 2
   const r = 58
   let a0 = -Math.PI / 2
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       {spec.values.map((v, i) => {
         const a1 = a0 + (v / total) * Math.PI * 2
         const large = a1 - a0 > Math.PI ? 1 : 0
@@ -156,7 +226,17 @@ function Pie({ spec }) {
         a0 = a1
         return (
           <g key={i}>
-            <path d={d} fill={many ? SERIES[0] : SERIES[i]} fillOpacity={many ? 0.55 + 0.45 * ((i % 3) / 2) : 1} stroke={SURFACE} strokeWidth="2">
+            <path
+              d={d}
+              fill={many ? SERIES[0] : SERIES[i]}
+              fillOpacity={many ? 0.55 + 0.45 * ((i % 3) / 2) : 1}
+              stroke={SURFACE}
+              strokeWidth="2"
+              {...tap.props(i, `${spec.labels[i]}: ${fmt(v)} (${Math.round((v / total) * 100)}%)`, {
+                x: cx + r * 0.6 * Math.cos(mid),
+                y: cy + r * 0.6 * Math.sin(mid),
+              })}
+            >
               <title>{`${spec.labels[i]}: ${fmt(v)} (${Math.round((v / total) * 100)}%)`}</title>
             </path>
             {!many && (
@@ -167,6 +247,7 @@ function Pie({ spec }) {
           </g>
         )
       })}
+      {tap.label}
     </svg>
   )
 }
@@ -176,8 +257,9 @@ function Scatter({ spec }) {
   const ys = spec.points.map((p) => p.y)
   const xMax = niceMax(Math.max(...xs))
   const yMax = niceMax(Math.max(...ys))
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={yMax} labels={[]} />
       <text x={PAD.l} y={H - 6} fontSize="8" fill="#94a3b8">
         0
@@ -186,10 +268,20 @@ function Scatter({ spec }) {
         {fmt(xMax)} {spec.xName ? `· ${spec.xName}` : ''}
       </text>
       {spec.points.map((p, i) => (
-        <circle key={i} cx={PAD.l + (p.x / xMax) * IW} cy={PAD.t + IH - (p.y / yMax) * IH} r="4" fill={SERIES[0]} stroke={SURFACE} strokeWidth="2">
+        <circle
+          key={i}
+          cx={PAD.l + (p.x / xMax) * IW}
+          cy={PAD.t + IH - (p.y / yMax) * IH}
+          r="4"
+          fill={SERIES[0]}
+          stroke={SURFACE}
+          strokeWidth="2"
+          {...tap.props(i, `${p.label}: ${fmt(p.x)} → ${fmt(p.y)}`, { x: PAD.l + (p.x / xMax) * IW, y: PAD.t + IH - (p.y / yMax) * IH })}
+        >
           <title>{`${p.label}: ${fmt(p.x)} → ${fmt(p.y)}`}</title>
         </circle>
       ))}
+      {tap.label}
     </svg>
   )
 }
@@ -197,17 +289,24 @@ function Scatter({ spec }) {
 function Hist({ spec }) {
   const max = niceMax(Math.max(...spec.bins.map((b) => b.count)))
   const band = IW / spec.bins.length
+  const tap = useTapLabel()
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onClick={tap.clear}>
       <Axes max={max} labels={spec.bins.map((b) => b.label.split('–')[0])} />
       {spec.bins.map((b, i) => {
         const h = (b.count / max) * IH
         return (
-          <path key={i} d={columnPath(PAD.l + i * band + 1, PAD.t + IH - h, band - 2, h)} fill={SERIES[0]}>
+          <path
+            key={i}
+            d={columnPath(PAD.l + i * band + 1, PAD.t + IH - Math.max(h, 2), band - 2, Math.max(h, 2))}
+            fill={SERIES[0]}
+            {...tap.props(i, `${b.label}: ${b.count} values`, { x: PAD.l + (i + 0.5) * band, y: PAD.t + IH - h })}
+          >
             <title>{`${b.label}: ${b.count}`}</title>
           </path>
         )
       })}
+      {tap.label}
     </svg>
   )
 }

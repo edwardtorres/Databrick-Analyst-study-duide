@@ -51,3 +51,21 @@ test('Chapter 6 page and a level with a lab load', async ({ page }) => {
   for (let i = 0; i < 3; i++) await page.getByRole('button', { name: /Continue/ }).click()
   await expect(page.getByRole('heading', { name: /Chart Picker/ })).toBeVisible()
 })
+
+test('Chart Picker: tapping a mark shows its value (touch has no hover)', async ({ page }) => {
+  await page.goto('#/lab/chart-picker')
+  await page.getByRole('button', { name: 'Bar', exact: true }).click()
+  const yours = page.locator('figure').first()
+  const firstBar = yours.locator('[data-mark]').first()
+  await firstBar.tap()
+  await expect(yours.getByTestId('value-label')).toHaveText('Jan: 310 $k')
+  await firstBar.tap()
+  await expect(yours.getByTestId('value-label')).toHaveCount(0)
+
+  // a point on the best (line) chart, then tapping the background clears it
+  const best = page.locator('figure').nth(1)
+  await best.locator('[data-mark]').last().tap()
+  await expect(best.getByTestId('value-label')).toHaveText('Dec: 472')
+  await best.locator('svg').tap({ position: { x: 5, y: 5 } })
+  await expect(best.getByTestId('value-label')).toHaveCount(0)
+})
