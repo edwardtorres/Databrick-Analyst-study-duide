@@ -14,8 +14,8 @@ const subsections = [
     blocks: [
       card('disc-1', 'Find the trusted table', [
         '**Search** Catalog Explorer by name, comment or tag. Several tables often look right: a certified one, a **deprecated** legacy one, someone\'s personal copy.',
-        'Prefer the **Certified** asset, then confirm the **owner** and **comment** match your use.',
-      ], { verify: 'Certification and deprecation are applied as system tags; check how the current UI shows them.' }),
+        'Prefer the **Certified** asset (check mark), then confirm the **owner** and **comment** match your use. Certified and deprecated (restricted icon) are values of the governed system tag `system.certification_status`.',
+      ]),
       card('disc-2', 'Then query it', [
         'Use the full **three-level name** `catalog.schema.table` so the query works from any context.',
         'Seeing a table isn\'t the same as reading it: you need **USE CATALOG**, **USE SCHEMA** and **SELECT**. Ask the owner if SELECT fails.',
@@ -32,15 +32,17 @@ const subsections = [
     blocks: [
       card('tag-1', 'Tags', [
         '**Tags** are key/value labels on catalogs, schemas, tables and **columns**, for example `pii = email` or `domain = sales`.',
-        'Add them in Catalog Explorer or with SQL: `ALTER TABLE t ALTER COLUMN email SET TAGS (\'pii\' = \'email\')`.',
+        'Add them in Catalog Explorer or with SQL: `ALTER TABLE t ALTER COLUMN email SET TAGS (\'pii\' = \'email\')`, or the newer `SET TAG ON COLUMN t.email pii = email`. You need **APPLY TAG** on the object (plus USE CATALOG / USE SCHEMA), or ownership.',
+        '**Governed tags** are account-level tags whose allowed keys and values come from a **tag policy**; assigning one also needs the **ASSIGN** permission. Up to 50 tags per object.',
         'Tags drive **search**, reporting (information_schema) and can feed governance policies. Comments are free text for humans and AI; tags are structured.',
-      ], { verify: 'Governed tags and tag policies are newer features; check current syntax and permissions.' }),
+      ]),
       card('tag-2', 'Lineage', [
         'Unity Catalog records **lineage automatically** from queries it runs: tables, views, notebooks, jobs, dashboards, down to **columns**.',
         '**Downstream** = impact analysis ("what breaks if I change this?"). Keep following hops: dashboards often sit behind a view.',
         '**Upstream** = root cause ("where did this number come from?").',
         'Work done outside Unity Catalog leaves no lineage.',
-      ], { verify: 'Lineage retention and the lineage system tables.' }),
+        'Retention: lineage in Catalog Explorer is kept indefinitely (data from Sep 1, 2024 on). The system tables `system.access.table_lineage` and `system.access.column_lineage` keep a rolling **1 year**.',
+      ]),
       quiz('c2-q-tag-why', 'c2-q-tag-sql', 'c2-q-tag-vs-comment', 'c2-q-lineage-what', 'c2-q-lineage-impact', 'c2-q-lineage-root', 'c2-q-lineage-missing', 'c2-q-owner'),
     ],
   },
@@ -56,10 +58,10 @@ const subsections = [
       ]),
       card('clean-2', 'Text, types and duplicates', [
         '**Standardize** text with `LOWER(TRIM(x))` before grouping or joining.',
-        '**Cast** after cleaning: `CAST(REPLACE(x, \'$\', \'\') AS DECIMAL(10,2))`. In Databricks, `try_cast` returns NULL instead of failing.',
+        '**Cast** after cleaning: `CAST(REPLACE(x, \'$\', \'\') AS DECIMAL(10,2))`. Databricks SQL runs in **ANSI mode** by default (accounts since Oct 2022), so a bad cast fails the query; `try_cast` returns NULL instead.',
         '**Dedupe**: `DISTINCT` for identical rows; `ROW_NUMBER() OVER (PARTITION BY key ORDER BY updated DESC)` = 1 to keep the latest of rows that differ. Normalize the key first.',
         '**Orphans**: `LEFT JOIN` + `COALESCE(name, \'Unassigned\')` keeps rows with bad keys visible.',
-      ], { verify: 'ANSI mode defaults on SQL warehouses.', tip: 'Profile first: SELECT col, COUNT(*) GROUP BY col shows the junk values.' }),
+      ], { tip: 'Profile first: SELECT col, COUNT(*) GROUP BY col shows the junk values.' }),
       challenge('c2-clean-email'),
       challenge('c2-fix-usable-email'),
       challenge('c2-clean-valid-orders'),

@@ -22,12 +22,11 @@ export const questions = [
     scenario: true,
     stem: 'A table you have used for months now shows a Deprecated badge. What does that tell you?',
     options: [
-      { t: 'Its owners no longer recommend it; it may stop being updated or be removed, so move to the replacement', ok: true, why: 'Deprecation is a warning, usually with a pointer to the asset to use instead.' },
+      { t: 'Its owners no longer recommend it; it may stop being updated or be removed, so move to the replacement', ok: true, why: 'Deprecated is a value of the system.certification_status tag. Deprecation is a warning, usually with a pointer to the asset to use instead.' },
       { t: 'You no longer have permission to read it', why: 'Deprecation is a label, not a revoke. Permissions are separate.' },
       { t: 'It has been converted to an external table', why: 'Managed vs external is storage. It is unrelated to deprecation.' },
       { t: 'Its data was deleted', why: 'The badge doesn\'t delete anything. It warns you before someone does.' },
     ],
-    verify: 'How certification and deprecation are applied (system tags) in current Unity Catalog.',
   },
   {
     id: 'c2-q-search',
@@ -35,12 +34,11 @@ export const questions = [
     scenario: true,
     stem: 'You don\'t know a table\'s name, only that it holds "customer churn scores". Where do you start?',
     options: [
-      { t: 'Search in Catalog Explorer (or workspace search), which matches names, comments and tags', ok: true, why: 'Search uses the metadata in Unity Catalog, which is why good comments and tags matter.' },
+      { t: 'Search in Catalog Explorer (or workspace search), which matches names, comments and tags, including natural-language (semantic) search', ok: true, why: 'Intelligent search uses Unity Catalog comments, column names and tag keys, which is why good comments and tags matter.' },
       { t: 'Run SHOW TABLES in every schema of every catalog', why: 'That works eventually but ignores comments and tags, and is slow.' },
       { t: 'Ask the warehouse to scan all tables for a column called churn', why: 'There is no such feature, and it would be extremely expensive.' },
       { t: 'Check Query History for someone else\'s query', why: 'You might get lucky, but it doesn\'t tell you whether the table is trusted.' },
     ],
-    verify: 'Search capabilities (semantic search with the Data Intelligence Engine).',
   },
   {
     id: 'c2-q-three-level',
@@ -59,12 +57,11 @@ export const questions = [
     scenario: true,
     stem: 'Before writing a query, you want to see a few real rows of a table and its column comments without spending compute on your own query. Where do you look?',
     options: [
-      { t: 'The table\'s Overview and Sample Data tabs in Catalog Explorer', ok: true, why: 'Overview shows columns, types and comments; Sample Data shows example rows (it needs running compute and SELECT permission).' },
+      { t: 'The table\'s Overview and Sample Data tabs in Catalog Explorer', ok: true, why: 'Overview shows columns, types and comments; Sample Data shows example rows (you need SELECT on the table plus USE CATALOG and USE SCHEMA).' },
       { t: 'The Lineage tab', why: 'Lineage shows what feeds and reads the table, not its rows.' },
       { t: 'The Permissions tab', why: 'Permissions shows grants, not data.' },
       { t: 'Query History', why: 'History lists queries that ran, not the table\'s contents.' },
     ],
-    verify: 'Sample Data requirements (compute, permissions).',
   },
   {
     id: 'c2-q-no-select',
@@ -72,12 +69,11 @@ export const questions = [
     scenario: true,
     stem: 'You can see a certified table in Catalog Explorer, but SELECT fails with a permission error. What is most likely?',
     options: [
-      { t: 'You have browse/metadata access but not SELECT on the table (or USE CATALOG/USE SCHEMA on its parents)', ok: true, why: 'Seeing an object and reading its data are separate privileges. Ask the owner for SELECT plus USE on the catalog and schema.' },
+      { t: 'You have browse/metadata access but not SELECT on the table (or USE CATALOG/USE SCHEMA on its parents)', ok: true, why: 'BROWSE lets users see that an object exists, its name, description and tags, and request access, without any data access. Seeing an object and reading its data are separate privileges. Ask the owner for SELECT plus USE on the catalog and schema.' },
       { t: 'Certified tables can only be read by admins', why: 'Certification is about trust, not about who can read.' },
       { t: 'The warehouse is stopped', why: 'A stopped warehouse starts or reports a compute error, not a permission error.' },
       { t: 'The table is external', why: 'External tables use the same Unity Catalog privileges.' },
     ],
-    verify: 'BROWSE privilege behavior.',
   },
 
   // ---------------- Tags and lineage ----------------
@@ -97,12 +93,11 @@ export const questions = [
     sub: 'tags-lineage',
     stem: 'Which statement tags the email column of prod.sales.customers as PII?',
     options: [
-      { t: "ALTER TABLE prod.sales.customers ALTER COLUMN email SET TAGS ('pii' = 'email')", ok: true, why: 'Column tags are set with ALTER TABLE … ALTER COLUMN … SET TAGS. You can also do it in Catalog Explorer.' },
+      { t: "ALTER TABLE prod.sales.customers ALTER COLUMN email SET TAGS ('pii' = 'email')", ok: true, why: 'SET TAG ON COLUMN prod.sales.customers.email pii = email also works on newer runtimes. Column tags are set with ALTER TABLE … ALTER COLUMN … SET TAGS. You can also do it in Catalog Explorer.' },
       { t: "COMMENT ON COLUMN email 'pii'", why: 'A comment is free text, not a tag, and this syntax is incomplete.' },
       { t: "GRANT TAG pii ON prod.sales.customers.email", why: 'There is no GRANT TAG statement.' },
       { t: "UPDATE prod.sales.customers SET tag = 'pii'", why: 'That would try to change data in a column called tag.' },
     ],
-    verify: 'Exact SET TAGS syntax and governed-tag permissions.',
   },
   {
     id: 'c2-q-tag-vs-comment',
@@ -126,7 +121,6 @@ export const questions = [
       { t: 'Who has SELECT permission', why: 'That is the Permissions tab.' },
       { t: 'The cloud storage path of each file', why: 'Storage details are in Details, and files aren\'t lineage.' },
     ],
-    verify: 'Which asset types appear in lineage and column-level support.',
   },
   {
     id: 'c2-q-lineage-impact',
@@ -163,7 +157,6 @@ export const questions = [
       { t: 'You need to enable Photon', why: 'Photon is an engine and has nothing to do with lineage.' },
       { t: 'The table is managed', why: 'Managed or external doesn\'t decide whether lineage exists.' },
     ],
-    verify: 'Lineage retention period and capture requirements.',
   },
   {
     id: 'c2-q-owner',
@@ -295,7 +288,6 @@ export const questions = [
       { t: 'Turn off the warehouse', why: 'Unrelated to casting.' },
       { t: 'Use SUM(col) without casting', why: 'Implicit casting hits the same bad values, or gives wrong results.' },
     ],
-    verify: 'ANSI mode defaults on SQL warehouses and try_cast behavior.',
   },
   {
     id: 'c2-q-orphans',

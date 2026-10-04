@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { ChevronRight, Database, FolderTree, Table2, Eye, BadgeCheck, AlertTriangle, LayoutDashboard, NotebookText, Workflow, Tag, RotateCcw, ArrowLeft } from 'lucide-react'
 import { useProgress } from '../lib/store.jsx'
 import { OBJECTS, MISSIONS, TAG_PRESETS, tree, upstreamOf, downstreamOf, label, sanitizeCatalogLab, missionStatus } from '../lib/catalogLab.js'
-import { VerifyFlag } from './ui.jsx'
 
 const KIND_ICON = { table: Table2, view: Eye, dashboard: LayoutDashboard, notebook: NotebookText, job: Workflow }
 
@@ -314,7 +313,9 @@ export default function CatalogExplorer() {
           </div>
         )}
       </div>
-      <VerifyFlag text="Real Catalog Explorer has more tabs (Permissions, History, Insights) and shows certification and deprecation through system tags. This mock keeps the parts the exam asks about." />
+      <p className="text-[11px] text-slate-500">
+        Simplified mock: real Catalog Explorer also has Permissions, History and Insights tabs. Certified and Deprecated come from the system tag system.certification_status.
+      </p>
     </div>
   )
 }

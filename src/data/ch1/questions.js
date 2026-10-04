@@ -246,12 +246,11 @@ export const questions = [
     scenario: true,
     stem: 'Before writing a query, you want to see a table\'s columns, their types and comments, and a few example rows. What do you open?',
     options: [
-      { t: 'The table in Catalog Explorer: Overview (columns, types, comments) and Sample Data', ok: true, why: 'Catalog Explorer is the quickest way to understand a table before querying it.' },
+      { t: 'The table in Catalog Explorer: Overview (columns, types, comments) and Sample Data', ok: true, why: 'You need SELECT on the table plus USE CATALOG and USE SCHEMA to see sample rows. Catalog Explorer is the quickest way to understand a table before querying it.' },
       { t: 'DESCRIBE HISTORY', why: 'History shows versions, not the column list and examples.' },
       { t: 'The Marketplace', why: 'The Marketplace lists external products.' },
       { t: 'Lakeflow Jobs', why: 'Jobs run tasks.' },
     ],
-    verify: "Exact compute and permission requirements for the Sample Data tab weren't stated on the pages checked.",
   },
 
   // ---------------- Marketplace ----------------
