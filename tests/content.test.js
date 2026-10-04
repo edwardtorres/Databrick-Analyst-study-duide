@@ -3,8 +3,9 @@ import assert from 'node:assert/strict'
 import ch4 from '../src/data/ch4/index.js'
 import ch9 from '../src/data/ch9/index.js'
 import ch7 from '../src/data/ch7/index.js'
+import ch6 from '../src/data/ch6/index.js'
 
-const chapters = { 4: ch4, 7: ch7, 9: ch9 }
+const chapters = { 4: ch4, 6: ch6, 7: ch7, 9: ch9 }
 
 for (const [num, ch] of Object.entries(chapters)) {
   const qIds = new Set(ch.questions.map((q) => q.id))
@@ -39,4 +40,8 @@ test('question ids are unique across all chapters', () => {
 
 test('Chapter 7 has at least 30 questions so a Boss never shows all of them', () => {
   assert.ok(ch7.questions.length >= 30, `only ${ch7.questions.length}`)
+})
+
+test('Chapter 6 has at least 25 questions', () => {
+  assert.ok(ch6.questions.length >= 25, `only ${ch6.questions.length}`)
 })

@@ -73,6 +73,8 @@ export const CHAPTERS = [
     title: 'Dashboards & Visualizations',
     emoji: '📊',
     color: 'from-amber-500 to-orange-500',
+    built: true,
+    load: () => import('./ch6/index.js'),
     topics: [
       'AI/BI Dashboards: multiple pages, multiple datasets, widgets',
       'Notebook and SQL editor visualizations',
