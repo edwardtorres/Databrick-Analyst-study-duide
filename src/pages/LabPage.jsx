@@ -1,5 +1,6 @@
 import { labById } from '../components/widgets.js'
-import { PageHeader } from '../components/ui.jsx'
+import { Suspense } from 'react'
+import { PageHeader, Loading } from '../components/ui.jsx'
 
 export default function LabPage({ lid }) {
   const lab = labById(lid)
@@ -9,7 +10,9 @@ export default function LabPage({ lid }) {
     <div>
       <PageHeader title="Lab" back="/labs" subtitle={`Chapter ${lab.chapter}`} />
       <div className="card">
-        <Lab />
+        <Suspense fallback={<Loading label="Loading lab…" />}>
+          <Lab />
+        </Suspense>
       </div>
     </div>
   )

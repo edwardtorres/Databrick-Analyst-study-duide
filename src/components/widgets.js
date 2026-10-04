@@ -1,8 +1,11 @@
-import JoinVisualizer from './JoinVisualizer.jsx'
-import SetOps from './SetOps.jsx'
-import TimeTravel from './TimeTravel.jsx'
-import NamespaceBuilder from './NamespaceBuilder.jsx'
-import GenieBuilder from './GenieBuilder.jsx'
+import { lazy } from 'react'
+
+// Each lab is its own chunk, loaded the first time it's opened.
+const JoinVisualizer = lazy(() => import('./JoinVisualizer.jsx'))
+const SetOps = lazy(() => import('./SetOps.jsx'))
+const TimeTravel = lazy(() => import('./TimeTravel.jsx'))
+const NamespaceBuilder = lazy(() => import('./NamespaceBuilder.jsx'))
+const GenieBuilder = lazy(() => import('./GenieBuilder.jsx'))
 
 // Interactive labs. `chapter: null` + `component: null` = coming in a later chapter.
 export const LABS = [

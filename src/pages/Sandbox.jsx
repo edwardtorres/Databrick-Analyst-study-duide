@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { RotateCcw, ChevronDown, CheckCircle2, Circle } from 'lucide-react'
 import { useSql } from '../lib/useSql.js'
 import { createDb, runSql, friendlyError } from '../lib/sqlEngine.js'
-import { allChallenges, chapterById } from '../data/chapters.js'
+import { allChallenges, chapterById, allChaptersLoaded } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import SqlEditor from '../components/SqlEditor.jsx'
 import ResultTable from '../components/ResultTable.jsx'
-import { PageHeader, difficultyLabel } from '../components/ui.jsx'
+import { PageHeader, difficultyLabel, Loading } from '../components/ui.jsx'
 import { go } from '../lib/router.js'
 
 const SAMPLES = [
@@ -42,6 +42,11 @@ export default function Sandbox() {
 }
 
 function ChallengeList() {
+  if (!allChaptersLoaded()) return <Loading label="Loading challenges…" />
+  return <ChallengeListInner />
+}
+
+function ChallengeListInner() {
   const { state } = useProgress()
   const list = allChallenges()
   const solved = list.filter((c) => state.challenges[c.id]?.solved).length

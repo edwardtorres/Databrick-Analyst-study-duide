@@ -3,6 +3,7 @@ import { useRoute, match } from './lib/router.js'
 import { useProgress } from './lib/store.jsx'
 import { allQuestions } from './data/chapters.js'
 import { dueQuestions } from './lib/srs.js'
+import { useContentVersion } from './lib/useContent.js'
 import { Toasts } from './components/ui.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import DamagedNotice from './components/DamagedNotice.jsx'
@@ -63,6 +64,7 @@ const NAV = [
 export default function App() {
   const path = useRoute()
   const { state } = useProgress()
+  useContentVersion() // re-render pages as chapter chunks arrive
   const [Page, params] = resolve(path)
   const due = dueQuestions(allQuestions(), state.questions).length
   const bossLive = !!state.boss.active

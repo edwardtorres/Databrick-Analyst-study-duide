@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Swords, Info } from 'lucide-react'
-import { CHAPTERS, allQuestions, questionById, chapterById } from '../data/chapters.js'
+import { CHAPTERS, allQuestions, questionById, chapterById, allChaptersLoaded } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import { shuffled } from '../lib/shuffle.js'
 import { XP } from '../lib/levels.js'
@@ -8,7 +8,7 @@ import { EXAM, SECTION_WEIGHTS } from '../data/examInfo.js'
 import { bossAllocation, rescaledWeights } from '../lib/bossWeights.js'
 import { bossCompletionBonus, BONUS_MIN_ANSWERED, payableCorrect } from '../lib/bossRewards.js'
 import { dayKey } from '../lib/dates.js'
-import { PageHeader } from '../components/ui.jsx'
+import { PageHeader, Loading } from '../components/ui.jsx'
 import ExamRunner, { ExamResults } from '../components/ExamRunner.jsx'
 
 const TARGET = 0.8
@@ -31,7 +31,7 @@ function buildBoss() {
   return shuffled(out).map((q) => q.id)
 }
 
-export default function Boss() {
+function BossInner() {
   const { state, actions } = useProgress()
   const active = state.boss.active
   const [result, setResult] = useState(null)
@@ -211,4 +211,9 @@ function WeightTable() {
       </div>
     </div>
   )
+}
+
+export default function Boss(props) {
+  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  return <BossInner {...props} />
 }

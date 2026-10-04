@@ -1,11 +1,11 @@
 import { ArrowRight } from 'lucide-react'
-import { allChallenges, challengeById } from '../data/chapters.js'
+import { allChallenges, challengeById, allChaptersLoaded } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import SqlChallenge from '../components/SqlChallenge.jsx'
-import { PageHeader } from '../components/ui.jsx'
+import { PageHeader, Loading } from '../components/ui.jsx'
 import { go } from '../lib/router.js'
 
-export default function ChallengePage({ cid }) {
+function ChallengePageInner({ cid }) {
   const challenge = challengeById(cid)
   const { state } = useProgress()
   if (!challenge) return <PageHeader title="Challenge not found" back="/sql" />
@@ -26,4 +26,9 @@ export default function ChallengePage({ cid }) {
       )}
     </div>
   )
+}
+
+export default function ChallengePage(props) {
+  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  return <ChallengePageInner {...props} />
 }

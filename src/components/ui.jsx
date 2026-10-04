@@ -114,3 +114,12 @@ export function Toasts() {
 }
 
 export const difficultyLabel = (d) => ['', 'Easy', 'Medium', 'Hard'][d] || ''
+
+export function Loading({ label = 'Loading…' }) {
+  return (
+    <div className="flex min-h-40 flex-col items-center justify-center gap-2 text-sm text-slate-400" role="status">
+      <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-600 border-t-brand2" />
+      {label}
+    </div>
+  )
+}

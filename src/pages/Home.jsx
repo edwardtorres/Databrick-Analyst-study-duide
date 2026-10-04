@@ -179,10 +179,10 @@ export default function Home() {
             return (
               <button key={ch.id} onClick={() => go(`/chapter/${ch.id}`)} className="flex w-full items-center gap-2 text-left">
                 <span className="w-6 text-center">{ch.emoji}</span>
-                <span className={`w-28 shrink-0 truncate text-xs ${ch.content ? 'text-slate-200' : 'text-slate-500'}`}>
+                <span className={`w-28 shrink-0 truncate text-xs ${ch.built ? 'text-slate-200' : 'text-slate-500'}`}>
                   {ch.id}. {ch.short}
                 </span>
-                {ch.content ? (
+                {ch.built ? (
                   <>
                     <Bar value={m} color={ch.color} />
                     <span className="w-9 text-right text-xs font-bold">{Math.round(m * 100)}%</span>

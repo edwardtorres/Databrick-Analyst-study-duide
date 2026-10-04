@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { ArrowRight, Repeat } from 'lucide-react'
-import { allQuestions, chapterById } from '../data/chapters.js'
+import { allQuestions, chapterById, allChaptersLoaded } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
 import { dueQuestions, pickQuestions, MAX_BOX } from '../lib/srs.js'
 import QuestionCard from '../components/QuestionCard.jsx'
-import { Bar, PageHeader } from '../components/ui.jsx'
+import { Bar, PageHeader, Loading } from '../components/ui.jsx'
 
 const SESSION = 10
 
-export default function Review({ ch }) {
+function ReviewInner({ ch }) {
   const chapter = ch ? chapterById(ch) : null
   const { state } = useProgress()
   const pool = allQuestions().filter((q) => !chapter || q.chapter === chapter.id)
@@ -128,4 +128,9 @@ export default function Review({ ch }) {
       {!pool.length && <p className="mt-2 text-center text-sm text-slate-400">No questions yet for this chapter.</p>}
     </div>
   )
+}
+
+export default function Review(props) {
+  if (!allChaptersLoaded()) return <Loading label="Loading questions…" />
+  return <ReviewInner {...props} />
 }

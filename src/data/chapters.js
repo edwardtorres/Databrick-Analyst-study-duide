@@ -1,9 +1,6 @@
-import ch4 from './ch4/index.js'
-import ch9 from './ch9/index.js'
-import ch7 from './ch7/index.js'
-
-// One chapter per exam-guide section. `content` is null until a chapter is
-// built; its topic list still shows so you can see what's coming.
+// One chapter per exam-guide section. Built chapters have `built: true` and a
+// `load()` that imports their content chunk; unbuilt ones show their topic
+// list as "coming soon".
 export const CHAPTERS = [
   {
     id: 1,
@@ -16,7 +13,6 @@ export const CHAPTERS = [
       'Catalog Explorer: catalogs, schemas, managed vs external tables, views, certified tables, lineage',
       'Databricks Marketplace',
     ],
-    content: null,
   },
   {
     id: 2,
@@ -30,7 +26,6 @@ export const CHAPTERS = [
       'Viewing lineage',
       'Cleaning data in SQL: invalid values and NULLs',
     ],
-    content: null,
   },
   {
     id: 3,
@@ -46,7 +41,6 @@ export const CHAPTERS = [
       'Marketplace',
       'Uploading a file through the Workspace UI',
     ],
-    content: null,
   },
   {
     id: 4,
@@ -56,7 +50,7 @@ export const CHAPTERS = [
     color: 'from-orange-500 to-rose-500',
     topics: [],
     built: true,
-    content: ch4,
+    load: () => import('./ch4/index.js'),
   },
   {
     id: 5,
@@ -72,7 +66,6 @@ export const CHAPTERS = [
       'Liquid Clustering',
       'Fixing broken queries',
     ],
-    content: null,
   },
   {
     id: 6,
@@ -89,7 +82,6 @@ export const CHAPTERS = [
       'SQL Alerts: thresholds and destinations',
       'Choosing the right chart type',
     ],
-    content: null,
   },
   {
     id: 7,
@@ -104,7 +96,7 @@ export const CHAPTERS = [
       'Improving accuracy: feedback, benchmarks, updating instructions',
     ],
     built: true,
-    content: ch7,
+    load: () => import('./ch7/index.js'),
   },
   {
     id: 8,
@@ -118,7 +110,6 @@ export const CHAPTERS = [
       'Data Vault',
       'Mapping models onto the Medallion Architecture (bronze / silver / gold)',
     ],
-    content: null,
   },
   {
     id: 9,
@@ -133,25 +124,68 @@ export const CHAPTERS = [
       'Protecting PII',
     ],
     built: true,
-    content: ch9,
+    load: () => import('./ch9/index.js'),
   },
 ]
 
+// ---------- Lazy chapter content ----------
+// Each built chapter's lessons and questions live in their own chunk.
+// `chapter.content` reads from this cache (null until loaded); listeners
+// let React re-render when a chapter arrives.
+const loaded = {}
+const pending = {}
+const listeners = new Set()
+let version = 0
+
+for (const c of CHAPTERS)
+  Object.defineProperty(c, 'content', { get: () => loaded[c.id] || null, enumerable: true })
+
+export function loadChapter(id) {
+  const c = chapterById(id)
+  if (!c?.built) return Promise.resolve(null)
+  if (loaded[c.id]) return Promise.resolve(loaded[c.id])
+  pending[c.id] ||= c.load().then((m) => {
+    loaded[c.id] = m.default
+    version++
+    listeners.forEach((l) => l())
+    return m.default
+  })
+  return pending[c.id]
+}
+
+export const loadAllChapters = () => Promise.all(CHAPTERS.filter((c) => c.built).map((c) => loadChapter(c.id)))
+export const allChaptersLoaded = () => CHAPTERS.every((c) => !c.built || loaded[c.id])
+export const contentVersion = () => version
+export const subscribeContent = (fn) => {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+
 export const chapterById = (id) => CHAPTERS.find((c) => c.id === Number(id))
 
-export const allQuestions = () =>
-  CHAPTERS.flatMap((c) => (c.content ? c.content.questions.map((q) => ({ ...q, chapter: c.id })) : []))
-
-export const allChallenges = () =>
-  CHAPTERS.flatMap((c) => (c.content ? c.content.challenges.map((ch) => ({ ...ch, chapter: c.id })) : []))
-
-export const questionById = (() => {
-  let map = null
-  return (id) => {
-    if (!map) map = new Map(allQuestions().map((q) => [q.id, q]))
-    return map.get(id)
+// Derived lists are rebuilt only when new content has loaded.
+const memo = (fn) => {
+  let at = -1
+  let value
+  return () => {
+    if (at !== version) {
+      value = fn()
+      at = version
+    }
+    return value
   }
-})()
+}
+
+export const allQuestions = memo(() =>
+  CHAPTERS.flatMap((c) => (c.content ? c.content.questions.map((q) => ({ ...q, chapter: c.id })) : [])),
+)
+
+export const allChallenges = memo(() =>
+  CHAPTERS.flatMap((c) => (c.content ? c.content.challenges.map((ch) => ({ ...ch, chapter: c.id })) : [])),
+)
+
+const questionMap = memo(() => new Map(allQuestions().map((q) => [q.id, q])))
+export const questionById = (id) => questionMap().get(id)
 
 export const challengeById = (id) => allChallenges().find((c) => c.id === id)
 

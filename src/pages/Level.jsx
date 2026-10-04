@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { X, ArrowRight, SkipForward } from 'lucide-react'
 import { chapterById, subsectionSteps, questionById, challengeById } from '../data/chapters.js'
 import { useProgress } from '../lib/store.jsx'
@@ -8,7 +8,7 @@ import LessonCard from '../components/LessonCard.jsx'
 import QuestionCard from '../components/QuestionCard.jsx'
 import SqlChallenge from '../components/SqlChallenge.jsx'
 import { labById } from '../components/widgets.js'
-import { Bar } from '../components/ui.jsx'
+import { Bar, Loading } from '../components/ui.jsx'
 
 const STEP_LABEL = { card: '📖 Learn', question: '❓ Quiz', challenge: '💻 SQL', widget: '🧪 Lab' }
 
@@ -22,6 +22,7 @@ export default function Level({ id, sub: subId }) {
   const [solved, setSolved] = useState({})
   const [finished, setFinished] = useState(false)
 
+  if (ch?.built && !ch.content) return <Loading label="Loading chapter…" />
   if (!sub) return <div className="text-slate-400">Level not found.</div>
   const steps = subsectionSteps(sub)
   const step = steps[i]
@@ -108,7 +109,11 @@ export default function Level({ id, sub: subId }) {
         {step.type === 'challenge' && (
           <SqlChallenge challenge={challengeById(step.id)} onSolved={() => setSolved((s) => ({ ...s, [i]: true }))} />
         )}
-        {Widget && <Widget />}
+        {Widget && (
+          <Suspense fallback={<Loading label="Loading lab…" />}>
+            <Widget />
+          </Suspense>
+        )}
       </div>
 
       <div className="sticky bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-20 mt-4">
