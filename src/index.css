@@ -59,3 +59,17 @@ body {
 .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 4.5rem); }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+:focus-visible { outline: 3px solid var(--color-brand2); outline-offset: 3px; }
+.skip-link { position: fixed; top: -100px; left: 1rem; z-index: 60; background: var(--color-brand2); color: var(--color-ink); padding: .75rem 1rem; border-radius: .75rem; }
+.skip-link:focus { top: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-pop { animation: none; }
+}

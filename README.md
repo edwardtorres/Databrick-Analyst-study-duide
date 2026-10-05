@@ -32,6 +32,11 @@ The e2e tests use Playwright's Chromium. A third project, `webkit` (Safari's eng
 
 - Asset paths are relative (`base: './'`) and routing is hash-based (`#/chapter/4`), so no server rewrite rules are needed and it works at a subdomain root or in a sub-folder.
 - The SQL engine's `.wasm` file is bundled into `dist/assets/`. If your host sets MIME types manually, serve `.wasm` as `application/wasm`.
+- Use an HTTP server to preview the build; opening `index.html` directly from disk is not supported. The app does not currently provide full offline/PWA support.
+
+## Website preparation (Oct 5, 2026)
+
+See `PREPUBLICATION_REVIEW.md` for the latest review, fixes, verification, and remaining improvements. The `publishing/` folder contains a Works-card snippet using the classes from edwardtorres.dev, screenshots, a standalone card preview, and project-page copy. These are drafts for website integration; this review did not publish the app or edit the live website.
 
 ## Adding a chapter
 

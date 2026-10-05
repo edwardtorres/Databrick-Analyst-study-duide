@@ -38,3 +38,24 @@ test('non-JSON and non-progress files get friendly errors', () => {
   assert.match(parseProgress('[1,2,3]').error, /doesn't look like/)
   assert.match(parseProgress('{"hello": "world"}').error, /doesn't look like/)
 })
+
+test('imported exams reject malformed IDs, answers, flags, indexes and timestamps', () => {
+  const active = { ids: ['c1-q-test'], answers: {}, flagged: {}, index: 0, startedAt: 100, endsAt: 200 }
+  for (const patch of [
+    { ids: [] }, { ids: [1] }, { ids: ['a', 'a'] }, { answers: { a: -1 } }, { answers: { a: 7 } },
+    { index: -1 }, { index: 1 }, { index: 0.5 }, { flagged: null }, { flagged: { a: 'yes' } }, { endsAt: 99 },
+  ]) {
+    const p = emptyProgress()
+    p.boss.active = { ...active, ...patch }
+    assert.equal(parseProgress(p).ok, false, JSON.stringify(patch))
+  }
+})
+
+test('older active exams get default navigation and flags', () => {
+  const p = emptyProgress()
+  p.boss.active = { ids: ['c1-q-test'], answers: {}, startedAt: 100, endsAt: 200 }
+  const parsed = parseProgress(p)
+  assert.equal(parsed.ok, true)
+  assert.equal(parsed.value.boss.active.index, 0)
+  assert.deepEqual(parsed.value.boss.active.flagged, {})
+})

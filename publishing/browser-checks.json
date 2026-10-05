@@ -1,0 +1,2927 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\edwar\\Downloads\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\.review-playwright.config.mjs",
+    "rootDir": "C:/Users/edwar/Downloads/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 2,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/edwar/Downloads/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "dev",
+        "name": "dev",
+        "testDir": "C:/Users/edwar/Downloads/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/edwar/Downloads/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "prod",
+        "name": "prod",
+        "testDir": "C:/Users/edwar/Downloads/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn/tests/e2e",
+        "testIgnore": [
+          "/crash\\.spec\\.js/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "app.spec.js",
+      "file": "app.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "every main page loads without console errors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 846,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:15.684Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-02768b0850b775102fda",
+          "file": "app.spec.js",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "every main page loads without console errors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 500,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:24.571Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-c2a5f78b3e05b7c0666a",
+          "file": "app.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "boss.spec.js",
+      "file": "boss.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Boss starts a 45-question exam with the exam-weighted mix",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 750,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:15.69Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-08377a746e314410bf6b",
+          "file": "boss.spec.js",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "submitting an empty Boss gives no bonus and shows the readiness estimate",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 786,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:15.69Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-b57931a7f0cf93b60cb6",
+          "file": "boss.spec.js",
+          "line": 48,
+          "column": 1
+        },
+        {
+          "title": "with every chapter built, the Boss page offers the full exam, not a mini-boss",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 602,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:15.691Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-db222d6019ccfc47e174",
+          "file": "boss.spec.js",
+          "line": 63,
+          "column": 1
+        },
+        {
+          "title": "answers submitted after the deadline are excluded even before the timer ticks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 544,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:16.547Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-28f6efd99f62d1431b1e",
+          "file": "boss.spec.js",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "Boss starts a 45-question exam with the exam-weighted mix",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 377,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:24.824Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-df6ae8da927ff133638a",
+          "file": "boss.spec.js",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "submitting an empty Boss gives no bonus and shows the readiness estimate",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 468,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:24.974Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-0b873eba04c3f8c796fd",
+          "file": "boss.spec.js",
+          "line": 48,
+          "column": 1
+        },
+        {
+          "title": "with every chapter built, the Boss page offers the full exam, not a mini-boss",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 298,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.545Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-d95a6344c1a2211efb9c",
+          "file": "boss.spec.js",
+          "line": 63,
+          "column": 1
+        },
+        {
+          "title": "answers submitted after the deadline are excluded even before the timer ticks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 314,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.336Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8188ca05259215a3b3fb-7840cfe7f3986edf9fe3",
+          "file": "boss.spec.js",
+          "line": 75,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch1.spec.js",
+      "file": "ch1.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Platform Match: a wrong pick explains every option; the right pick earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 837,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:16.69Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77e308c8f7d610b05256-dcb99c431be9b484db7b",
+          "file": "ch1.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Chapter 1 page lists its levels",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 386,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:16.724Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77e308c8f7d610b05256-c50eaad061517740dbba",
+          "file": "ch1.spec.js",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "Platform Match: a wrong pick explains every option; the right pick earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 310,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.447Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77e308c8f7d610b05256-0666e651c5da95dcc4c7",
+          "file": "ch1.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Chapter 1 page lists its levels",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 171,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.666Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77e308c8f7d610b05256-fdd11e5fcb7cb3d922ac",
+          "file": "ch1.spec.js",
+          "line": 22,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch2.spec.js",
+      "file": "ch2.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Catalog Explorer: all five missions by browsing, tagging and following lineage",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2624,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:16.785Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-a6bee4734458c2e02ce0",
+          "file": "ch2.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Chapter 2 cleaning challenges: a fix challenge explains the trap; write challenges pass",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 936,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:17.114Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-5706851dc496037d8a49",
+          "file": "ch2.spec.js",
+          "line": 192,
+          "column": 1
+        },
+        {
+          "title": "Chapter 2 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 367,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:17.13Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-07e79718228f3ae65c6c",
+          "file": "ch2.spec.js",
+          "line": 223,
+          "column": 1
+        },
+        {
+          "title": "Catalog Explorer also appears in Chapter 1's Catalog Explorer level",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 1125,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:17.504Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-b469e87d7a4fa0147125",
+          "file": "ch2.spec.js",
+          "line": 231,
+          "column": 1
+        },
+        {
+          "title": "Catalog Explorer: all five missions by browsing, tagging and following lineage",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1840,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.714Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-6d378f170f7912b10055",
+          "file": "ch2.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Chapter 2 cleaning challenges: a fix challenge explains the trap; write challenges pass",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 452,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.776Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-22fa5192cfb519024d87",
+          "file": "ch2.spec.js",
+          "line": 192,
+          "column": 1
+        },
+        {
+          "title": "Chapter 2 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 165,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:25.854Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-4ed625d6542652718257",
+          "file": "ch2.spec.js",
+          "line": 223,
+          "column": 1
+        },
+        {
+          "title": "Catalog Explorer also appears in Chapter 1's Catalog Explorer level",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 1435,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.025Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dca2dcd8c6ba8501beab-d22986994d02581f3685",
+          "file": "ch2.spec.js",
+          "line": 231,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch3.spec.js",
+      "file": "ch3.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Ingestion Picker: a wrong pick explains all four options; the right one earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 497,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:17.551Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-dcdbdb79df0585360be0",
+          "file": "ch3.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Upload Wizard: every mistake is explained, then the table is created",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1047,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:18.055Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-e243950018322270dc24",
+          "file": "ch3.spec.js",
+          "line": 24,
+          "column": 1
+        },
+        {
+          "title": "Chapter 3 page lists its levels",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 352,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:18.078Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-8ccd512cc9d74aa2694a",
+          "file": "ch3.spec.js",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "Ingestion Picker: a wrong pick explains all four options; the right one earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 338,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.118Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-84815bc8f36594d13a2e",
+          "file": "ch3.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Upload Wizard: every mistake is explained, then the table is created",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 686,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.242Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-a6043ee89708c48a11ad",
+          "file": "ch3.spec.js",
+          "line": 24,
+          "column": 1
+        },
+        {
+          "title": "Chapter 3 page lists its levels",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 153,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.464Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e6cfe2e2541c3e10fc-032db581f9ebe2d8feef",
+          "file": "ch3.spec.js",
+          "line": 106,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch5.spec.js",
+      "file": "ch5.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Query Profile Detective: diagnose, fix, then see the after profile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 722,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:18.454Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-64f3b0e0979c00c4c180",
+          "file": "ch5.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Cache Lab: miss, hit, invalidation after a write, and a non-cacheable query",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 719,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:18.642Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-a9ca9e7f0923fe534d40",
+          "file": "ch5.spec.js",
+          "line": 33,
+          "column": 1
+        },
+        {
+          "title": "Chapter 5 fix challenges: the broken query runs but is wrong; the fix passes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 960,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.126Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-3ef419fcfff5ea23a086",
+          "file": "ch5.spec.js",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "Chapter 5 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 416,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.19Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-4c489a3a5dd669d3337b",
+          "file": "ch5.spec.js",
+          "line": 95,
+          "column": 1
+        },
+        {
+          "title": "Query Profile Detective: diagnose, fix, then see the after profile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 424,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.632Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-06e73461ec0cc4419169",
+          "file": "ch5.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Cache Lab: miss, hit, invalidation after a write, and a non-cacheable query",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 434,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:26.944Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-7b2b2838fbf291e1c8e0",
+          "file": "ch5.spec.js",
+          "line": 33,
+          "column": 1
+        },
+        {
+          "title": "Chapter 5 fix challenges: the broken query runs but is wrong; the fix passes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 366,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.062Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-39017096020b0dca997e",
+          "file": "ch5.spec.js",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "Chapter 5 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 170,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.391Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68695666ab269e7d9ddf-fb3dd051d3eb0cac2a1f",
+          "file": "ch5.spec.js",
+          "line": 95,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch6.spec.js",
+      "file": "ch6.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Chart Picker: a poor pick shows both charts and explains the best one",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 570,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.379Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-3e930433bcefc658a530",
+          "file": "ch6.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Dashboard Config: the right setup meets every requirement; wrong choices are explained",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 927,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.441Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-f8ffd04eeb1b3d7d99c4",
+          "file": "ch6.spec.js",
+          "line": 30,
+          "column": 1
+        },
+        {
+          "title": "Chapter 6 page and a level with a lab load",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 1224,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.643Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-f308633b3d1c2ad5a3b2",
+          "file": "ch6.spec.js",
+          "line": 59,
+          "column": 1
+        },
+        {
+          "title": "Chart Picker: tapping a mark shows its value (touch has no hover)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 753,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:19.963Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-48006e810560e667c0f3",
+          "file": "ch6.spec.js",
+          "line": 73,
+          "column": 1
+        },
+        {
+          "title": "Chart Picker: tapped values are announced through a polite live region",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 484,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:20.112Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-4193c060e0e01bd9d789",
+          "file": "ch6.spec.js",
+          "line": 100,
+          "column": 1
+        },
+        {
+          "title": "Chart Picker: a poor pick shows both charts and explains the best one",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 284,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.445Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-afa14cebc56a1027e63b",
+          "file": "ch6.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "Dashboard Config: the right setup meets every requirement; wrong choices are explained",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 390,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.476Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-c6eaeef4b2b217e4abad",
+          "file": "ch6.spec.js",
+          "line": 30,
+          "column": 1
+        },
+        {
+          "title": "Chapter 6 page and a level with a lab load",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 992,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.583Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-ff120b1cde1df2bd896b",
+          "file": "ch6.spec.js",
+          "line": 59,
+          "column": 1
+        },
+        {
+          "title": "Chart Picker: tapping a mark shows its value (touch has no hover)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 496,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.583Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-27dae46e3c3c9c78380a",
+          "file": "ch6.spec.js",
+          "line": 73,
+          "column": 1
+        },
+        {
+          "title": "Chart Picker: tapped values are announced through a polite live region",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 242,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.735Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59ed0a5d2db4645285fa-a4169ff56abbc5531560",
+          "file": "ch6.spec.js",
+          "line": 100,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "ch8.spec.js",
+      "file": "ch8.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Medallion Sorter: a wrong placement is explained and can be moved; all correct earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1763,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:20.393Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-190edfdb09526d368e72",
+          "file": "ch8.spec.js",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "Star Schema Builder: grain, columns and snowflake, with explanations for wrong picks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2220,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:20.627Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-44eab055e629c66fbe32",
+          "file": "ch8.spec.js",
+          "line": 44,
+          "column": 1
+        },
+        {
+          "title": "Chapter 8 challenges: the fan-out is explained, the fix passes; snowflake hop passes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 921,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:20.751Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-0c285a7b9b7dcff6bf79",
+          "file": "ch8.spec.js",
+          "line": 101,
+          "column": 1
+        },
+        {
+          "title": "Chapter 8 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 358,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:20.892Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-5f4ae3a11c94a0c7c6ba",
+          "file": "ch8.spec.js",
+          "line": 127,
+          "column": 1
+        },
+        {
+          "title": "Medallion Sorter: a wrong placement is explained and can be moved; all correct earns XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 1208,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:27.896Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-0ac96e42a31cffab35ab",
+          "file": "ch8.spec.js",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "Star Schema Builder: grain, columns and snowflake, with explanations for wrong picks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1539,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.003Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-68fba8d914ab631d508c",
+          "file": "ch8.spec.js",
+          "line": 44,
+          "column": 1
+        },
+        {
+          "title": "Chapter 8 challenges: the fan-out is explained, the fix passes; snowflake hop passes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 412,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.098Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-3a4ba07c0848ff79b7d1",
+          "file": "ch8.spec.js",
+          "line": 101,
+          "column": 1
+        },
+        {
+          "title": "Chapter 8 page lists levels, questions and challenges",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 174,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.523Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5171b13411e375fdcb0-92e003b9ef7aabed2e32",
+          "file": "ch8.spec.js",
+          "line": 127,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "chunk-failure.spec.js",
+      "file": "chunk-failure.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "a failed chapter download shows Retry/Reload, and Retry recovers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 542,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:21.267Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-b95fbdf6368753ae248a",
+          "file": "chunk-failure.spec.js",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "pages that need every chapter also offer Retry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 567,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:21.705Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-3ac6a1bbd05472338bd3",
+          "file": "chunk-failure.spec.js",
+          "line": 33,
+          "column": 1
+        },
+        {
+          "title": "production build ships a chunk map for every built chapter",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "chunk-map.json only exists in a build",
+                  "location": {
+                    "file": "C:\\Users\\edwar\\Downloads\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\tests\\e2e\\chunk-failure.spec.js",
+                    "line": 40,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "skipped",
+                  "duration": 62,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:21.822Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "chunk-map.json only exists in a build",
+                      "location": {
+                        "file": "C:\\Users\\edwar\\Downloads\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\tests\\e2e\\chunk-failure.spec.js",
+                        "line": 40,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-ad895426b43681c67a99",
+          "file": "chunk-failure.spec.js",
+          "line": 48,
+          "column": 1
+        },
+        {
+          "title": "a failed chapter download shows Retry/Reload, and Retry recovers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 260,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.613Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-f334adae5dd429b9a45e",
+          "file": "chunk-failure.spec.js",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "pages that need every chapter also offer Retry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 298,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.721Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-31ee096f91ff277f4805",
+          "file": "chunk-failure.spec.js",
+          "line": 33,
+          "column": 1
+        },
+        {
+          "title": "production build ships a chunk map for every built chapter",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 137,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:28.886Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c04e7954a1adb57fd7d6-345e807fd51c5b1f98d0",
+          "file": "chunk-failure.spec.js",
+          "line": 48,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "crash.spec.js",
+      "file": "crash.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "a crashing screen shows the recovery screen and Back to Home works",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 502,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:21.907Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7c2dc5d575c3ce98de04-edbb5bb01a601da65263",
+          "file": "crash.spec.js",
+          "line": 7,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "genie.spec.js",
+      "file": "genie.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "a full Genie setup scores 100 and gets trusted answers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1662,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:22.186Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbdb259400f9e65659c4-71cd1084e860a90f10c2",
+          "file": "genie.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "a full Genie setup scores 100 and gets trusted answers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 931,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.049Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbdb259400f9e65659c4-3b791014e665006b9635",
+          "file": "genie.spec.js",
+          "line": 2,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "namespace.spec.js",
+      "file": "namespace.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "prediction stays visible after clicking and the lab survives reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 1574,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:22.296Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b58ce40edd6bcfd71db1-411f675b94940909efc5",
+          "file": "namespace.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "dragging a table straight into the metastore is rejected with a reason",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 500,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:22.434Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b58ce40edd6bcfd71db1-4229ce94bd982842a104",
+          "file": "namespace.spec.js",
+          "line": 38,
+          "column": 1
+        },
+        {
+          "title": "prediction stays visible after clicking and the lab survives reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 1031,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.049Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b58ce40edd6bcfd71db1-ad53c5378ef40c085525",
+          "file": "namespace.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "dragging a table straight into the metastore is rejected with a reason",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 280,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.128Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b58ce40edd6bcfd71db1-b16758c8c85f5e7d0577",
+          "file": "namespace.spec.js",
+          "line": 38,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "publishing.spec.js",
+      "file": "publishing.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "blocked storage gives an actionable warning and leaves the app usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 467,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:22.872Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-1dd7121c0c60d4589e62",
+          "file": "publishing.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "keyboard skip link focuses content without changing the app route",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 386,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:22.965Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-050d80749c6d65ce85f7",
+          "file": "publishing.spec.js",
+          "line": 20,
+          "column": 1
+        },
+        {
+          "title": "home page does not download SQL engine code until SQL practice is opened",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "checks production chunking",
+                  "location": {
+                    "file": "C:\\Users\\edwar\\Downloads\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\tests\\e2e\\publishing.spec.js",
+                    "line": 23,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "skipped",
+                  "duration": 64,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:23.355Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "checks production chunking",
+                      "location": {
+                        "file": "C:\\Users\\edwar\\Downloads\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\Databrick-Analyst-study-duide-claude-databricks-exam-study-game-ck55dn\\tests\\e2e\\publishing.spec.js",
+                        "line": 23,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-9c4afef8c4e0eae21115",
+          "file": "publishing.spec.js",
+          "line": 36,
+          "column": 1
+        },
+        {
+          "title": "blocked storage gives an actionable warning and leaves the app usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 332,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.438Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-fe3e850b060a5afa5a7a",
+          "file": "publishing.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "keyboard skip link focuses content without changing the app route",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 172,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.563Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-834bcfbc418224066026",
+          "file": "publishing.spec.js",
+          "line": 20,
+          "column": 1
+        },
+        {
+          "title": "home page does not download SQL engine code until SQL practice is opened",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1113,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.745Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "607bd3cc23c4b1a9aa66-066d72e2966e862adbc9",
+          "file": "publishing.spec.js",
+          "line": 36,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "sql.spec.js",
+      "file": "sql.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "solving a SQL challenge marks it solved and awards XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 774,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:23.372Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e20943e970e601a464-ebf6624dd1f2322d728f",
+          "file": "sql.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "a wrong fix shows the custom hint",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 857,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:23.434Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e20943e970e601a464-a186c6da7884ef8bc681",
+          "file": "sql.spec.js",
+          "line": 15,
+          "column": 1
+        },
+        {
+          "title": "solving a SQL challenge marks it solved and awards XP",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 269,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:29.798Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e20943e970e601a464-cd12475f2410b596ff54",
+          "file": "sql.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "a wrong fix shows the custom hint",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 243,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:30.002Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d1e20943e970e601a464-10da68f927ae47fe2fe1",
+          "file": "sql.spec.js",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "timetravel.spec.js",
+      "file": "timetravel.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "after VACUUM an old version is listed but unreadable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "dev",
+              "projectName": "dev",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 961,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:23.872Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa77e63fefe553d1fa86-6783022fff78f2a83987",
+          "file": "timetravel.spec.js",
+          "line": 2,
+          "column": 1
+        },
+        {
+          "title": "after VACUUM an old version is listed but unreadable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "prod",
+              "projectName": "prod",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 445,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-05T17:54:30.096Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa77e63fefe553d1fa86-92a4c6ba9beb2491edc3",
+          "file": "timetravel.spec.js",
+          "line": 2,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-05T17:54:14.812Z",
+    "duration": 16169.479000000001,
+    "expected": 77,
+    "skipped": 2,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

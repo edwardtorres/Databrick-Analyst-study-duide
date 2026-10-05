@@ -80,7 +80,12 @@ export function validateProgress(p) {
       errors.push('boss.history should be a list of { date, score, total }')
     if (
       b.active !== null &&
-      !(isObj(b.active) && Array.isArray(b.active.ids) && isObj(b.active.answers) && isNum(b.active.endsAt) && isNum(b.active.startedAt))
+      !(isObj(b.active) && Array.isArray(b.active.ids) && b.active.ids.length > 0 &&
+        b.active.ids.every((id) => typeof id === 'string') && new Set(b.active.ids).size === b.active.ids.length &&
+        isObj(b.active.answers) && Object.values(b.active.answers).every((answer) => Number.isInteger(answer) && answer >= 0 && answer < 6) &&
+        isObj(b.active.flagged) && Object.values(b.active.flagged).every((flag) => typeof flag === 'boolean') &&
+        Number.isInteger(b.active.index) && b.active.index >= 0 && b.active.index < b.active.ids.length &&
+        isNum(b.active.endsAt) && isNum(b.active.startedAt) && b.active.endsAt >= b.active.startedAt)
     )
       errors.push('boss.active should be null or an in-progress exam')
     if (!dayOrNull(b.lastBonusDay)) errors.push('boss.lastBonusDay should be a date or null')
@@ -105,6 +110,7 @@ export function parseProgress(input) {
   if (!isObj(data) || typeof data.xp !== 'number')
     return { ok: false, error: "This doesn't look like a Lakehouse Quest progress file. Pick a file exported from Settings → Export." }
   const value = deepMerge(emptyProgress(), data)
+  if (isObj(value.boss?.active)) value.boss.active = { index: 0, flagged: {}, ...value.boss.active }
   const errors = validateProgress(value)
   if (errors.length)
     return {

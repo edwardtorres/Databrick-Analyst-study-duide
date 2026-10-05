@@ -22,7 +22,7 @@ test('Medallion Sorter: a wrong placement is explained and can be moved; all cor
   }
   await expect(page.getByText('Correct 12/12')).toBeVisible()
   await expect(page.getByText(/All 12 placed correctly/)).toBeVisible()
-  expect((await progress(page)).labs['ms-all']).toBe(true)
+  await expect.poll(async () => (await progress(page)).labs['ms-all']).toBe(true)
   await page.reload()
   await expect(page.getByText('Correct 12/12')).toBeVisible()
 })
@@ -52,8 +52,8 @@ test('Star Schema Builder: grain, columns and snowflake, with explanations for w
   await expect(snow.getByRole('status')).toContainText('Measures belong in the fact')
   await snow.getByRole('button', { name: /dim_region/ }).click()
   await expect(page.getByText(/Model complete/)).toBeVisible()
-  const labs = (await progress(page)).labs
-  for (const k of ['ss-grain', 'ss-columns', 'ss-snowflake']) expect(labs[k]).toBe(true)
+  for (const k of ['ss-grain', 'ss-columns', 'ss-snowflake'])
+    await expect.poll(async () => (await progress(page)).labs[k]).toBe(true)
 })
 
 test('Chapter 8 challenges: the fan-out is explained, the fix passes; snowflake hop passes', async ({ page }) => {

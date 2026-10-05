@@ -37,7 +37,7 @@ export default function Home() {
       <header className="flex items-center gap-2">
         <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand to-brand2 text-lg">🏰</div>
         <div className="flex-1">
-          <div className="text-lg font-black leading-none tracking-tight">Lakehouse Quest</div>
+          <h1 className="text-lg font-black leading-none tracking-tight">Lakehouse Quest</h1>
           <div className="text-xs text-slate-400">Data Analyst Associate prep</div>
         </div>
         <button onClick={() => go('/settings')} className="rounded-lg p-2 text-slate-400 hover:bg-panel2" aria-label="Settings">
@@ -134,6 +134,10 @@ export default function Home() {
         </div>
         <p className="mt-3 text-xs text-slate-400">
           Content follows the exam guide version dated <strong className="text-slate-200">{EXAM.guideVersionLabel}</strong>, one chapter per section.
+        </p>
+        <p className="mt-2 text-xs text-slate-400">
+          <a href="https://www.databricks.com/learn/certification/data-analyst-associate" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand2 underline">Official exam details</a>
+          {' · '}<a href="https://www.databricks.com/sites/default/files/2025-10/databricks-certified-data-analyst-associate-oct-2025.pdf" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand2 underline">Exam guide</a>
         </p>
         <div className={`mt-3 flex gap-2 rounded-xl border p-2.5 text-xs ${recheckNow ? 'border-rose-500/60 bg-rose-500/10 text-rose-200' : 'border-amber-500/40 bg-amber-500/10 text-amber-200'}`}>
           <AlertTriangle size={16} className="mt-0.5 shrink-0" />

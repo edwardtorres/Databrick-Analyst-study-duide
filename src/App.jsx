@@ -1,24 +1,26 @@
+import { Suspense, lazy } from 'react'
 import { Home as HomeIcon, Map, Terminal, Repeat, Swords } from 'lucide-react'
 import { useRoute, match } from './lib/router.js'
 import { useProgress } from './lib/store.jsx'
 import { allQuestions } from './data/chapters.js'
 import { dueQuestions } from './lib/srs.js'
 import { useContentVersion } from './lib/useContent.js'
-import { Toasts } from './components/ui.jsx'
+import { Toasts, Loading } from './components/ui.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import DamagedNotice from './components/DamagedNotice.jsx'
 import Home from './pages/Home.jsx'
 import Chapters from './pages/Chapters.jsx'
 import Chapter from './pages/Chapter.jsx'
-import Level from './pages/Level.jsx'
 import ChapterTest from './pages/ChapterTest.jsx'
-import Sandbox from './pages/Sandbox.jsx'
-import ChallengePage from './pages/ChallengePage.jsx'
 import Review from './pages/Review.jsx'
 import Boss from './pages/Boss.jsx'
 import Labs from './pages/Labs.jsx'
 import LabPage from './pages/LabPage.jsx'
 import Settings from './pages/Settings.jsx'
+
+const Level = lazy(() => import('./pages/Level.jsx'))
+const Sandbox = lazy(() => import('./pages/Sandbox.jsx'))
+const ChallengePage = lazy(() => import('./pages/ChallengePage.jsx'))
 
 const ROUTES = [
   ['/', Home],
@@ -63,7 +65,7 @@ const NAV = [
 
 export default function App() {
   const path = useRoute()
-  const { state } = useProgress()
+  const { state, storageError } = useProgress()
   useContentVersion() // re-render pages as chapter chunks arrive
   const [Page, params] = resolve(path)
   const due = dueQuestions(allQuestions(), state.questions).length
@@ -73,18 +75,27 @@ export default function App() {
     <div className="mx-auto min-h-dvh max-w-2xl">
       <Toasts />
       <DamagedNotice />
-      <main className="pb-safe px-4 pt-4">
+      <a href="#main-content" className="skip-link" onClick={(event) => {
+        event.preventDefault()
+        document.getElementById('main-content')?.focus()
+      }}>Skip to main content</a>
+      <main id="main-content" tabIndex={-1} className="pb-safe px-4 pt-4">
+        {storageError && <div role="alert" className="mb-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+          Progress cannot be saved in this browser. <a href="#/settings" className="font-bold underline">Export a backup in Settings</a> before closing this page.
+        </div>}
         {/* Inner boundary keeps the nav bar usable and resets on navigation. */}
         <ErrorBoundary resetKey={path}>
-          <Page {...params} key={path} />
+          <Suspense fallback={<Loading label="Loading page…" />}>
+            <Page {...params} key={path} />
+          </Suspense>
         </ErrorBoundary>
       </main>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink/95 backdrop-blur" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <nav aria-label="Main navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink/95 backdrop-blur" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="mx-auto grid max-w-2xl grid-cols-5">
           {NAV.map(([to, label, Icon, isActive]) => {
             const active = isActive(path)
             return (
-              <a key={to} href={`#${to}`} className={`relative flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold ${active ? 'text-brand2' : 'text-slate-400'}`}>
+              <a key={to} href={`#${to}`} aria-current={active ? 'page' : undefined} className={`relative flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold ${active ? 'text-brand2' : 'text-slate-400'}`}>
                 <Icon size={21} strokeWidth={active ? 2.5 : 2} />
                 {label}
                 {to === '/review' && due > 0 && (

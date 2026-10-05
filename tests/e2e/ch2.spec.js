@@ -74,8 +74,9 @@ test('Catalog Explorer: all five missions by browsing, tagging and following lin
   await missions.getByRole('button', { name: 'Check dashboards' }).click()
   await expect(page.getByText('Missions 5/5')).toBeVisible()
 
+  for (const k of ['certified', 'external', 'tag', 'upstream', 'downstream'])
+    await expect.poll(async () => (await progress(page)).labs[`ce-${k}`]).toBe(true)
   const p = await progress(page)
-  for (const k of ['certified', 'external', 'tag', 'upstream', 'downstream']) expect(p.labs[`ce-${k}`]).toBe(true)
   expect(p.labState.catalogExplorer.tags['prod.sales.customers#email']).toEqual(['pii=email'])
 
   // state survives a reload

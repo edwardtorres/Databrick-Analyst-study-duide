@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import initSqlJs from 'sql.js'
-import { checkChallenge, createDb, runSql } from '../src/lib/sqlCore.js'
+import { checkChallenge, compareResults, createDb, runSql } from '../src/lib/sqlCore.js'
 import { challenges as ch4 } from '../src/data/ch4/challenges.js'
 import { challenges as ch5 } from '../src/data/ch5/challenges.js'
 import { challenges as ch2 } from '../src/data/ch2/challenges.js'
@@ -10,6 +10,42 @@ import { challenges as ch8 } from '../src/data/ch8/challenges.js'
 const challenges = [...ch2, ...ch4, ...ch5, ...ch8]
 
 const SQL = await initSqlJs()
+
+test('result grading rejects columns that swap positions between rows', () => {
+  const expected = { columns: ['id', 'value'], rows: [[1, 2], [3, 4]] }
+  const actual = { columns: ['id', 'value'], rows: [[1, 2], [4, 3]] }
+  assert.equal(compareResults(actual, expected).ok, false)
+})
+
+test('result grading accepts one consistent column permutation and preserves row order rules', () => {
+  const expected = { columns: ['id', 'value'], rows: [[1, 2], [3, 4]] }
+  const actual = { columns: ['value', 'id'], rows: [[2, 1], [4, 3]] }
+  assert.equal(compareResults(actual, expected, { ordered: true }).ok, true)
+  actual.rows.reverse()
+  assert.equal(compareResults(actual, expected).ok, true)
+  assert.equal(compareResults(actual, expected, { ordered: true }).ok, false)
+})
+
+test('result grading distinguishes NULL from the text null even when columns are reordered', () => {
+  const expected = { columns: ['a', 'b'], rows: [[null, 1]] }
+  const actual = { columns: ['b', 'a'], rows: [[1, 'null']] }
+  assert.equal(compareResults(actual, expected).ok, false)
+})
+
+test('column mapping preserves row relationships when column distributions are identical', () => {
+  const expected = { columns: ['a', 'b'], rows: [[1, 1], [2, 2]] }
+  const actual = { columns: ['a', 'b'], rows: [[1, 2], [2, 1]] }
+  assert.equal(compareResults(actual, expected).ok, false)
+})
+
+test('required DDL cannot be supplied by a comment or string literal', () => {
+  const ch = ch4.find((c) => c.id === 'c4-ddl-view')
+  const body = ch.solution.replace(/CREATE\s+(?:OR\s+REPLACE\s+)?VIEW/i, 'CREATE TABLE')
+  for (const prefix of ['-- CREATE VIEW\n', '/* CREATE VIEW */\n', "SELECT 'CREATE VIEW';\n", 'SELECT 1 AS "CREATE VIEW";\n']) {
+    assert.equal(checkChallenge(SQL, ch, prefix + body).ok, false, prefix)
+  }
+  assert.equal(checkChallenge(SQL, ch, '-- a useful comment\n' + ch.solution).ok, true)
+})
 
 for (const ch of challenges) {
   test(`${ch.id}: reference solution passes`, () => {

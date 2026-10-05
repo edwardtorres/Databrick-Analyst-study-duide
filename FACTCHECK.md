@@ -2,7 +2,7 @@
 
 **Checked:** 2026-10-04, against official Databricks sources only: docs.databricks.com (AWS), the official exam page and exam guide on databricks.com, and Databricks' own glossary/blog pages where docs were silent. Nothing was verified from memory.
 **Scope:** all 161 "Verify in Databricks docs" flags in chapter content, plus the 16 in-lab notes.
-**Result:** 159 of 161 content flags resolved (103 confirmed, 57 fixed) and 15 of 16 lab notes resolved. **2 flags remain** (1 content, 1 lab), both narrowed to the exact gap in the docs.
+**Result:** 160 of 161 content flags resolved (103 confirmed, 57 fixed) and 15 of 16 lab notes resolved. **2 flags remain** (1 content, 1 lab), both narrowed to the exact gap in the docs.
 
 ---
 

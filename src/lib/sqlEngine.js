@@ -1,5 +1,5 @@
 // Browser loader for sql.js. The .wasm file is bundled by Vite so the app
-// works fully offline / from any static host.
+// loads from the same static host without an external CDN dependency.
 import initSqlJs from 'sql.js'
 import wasmUrl from 'sql.js/dist/sql-wasm-browser.wasm?url'
 

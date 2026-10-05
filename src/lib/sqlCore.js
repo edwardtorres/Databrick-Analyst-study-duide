@@ -266,7 +266,47 @@ function normCell(v) {
 }
 
 const rowKey = (row) => JSON.stringify(row.map(normCell))
-const sortedRowKey = (row) => JSON.stringify(row.map(normCell).map(String).sort())
+
+// Allow reordered SELECT columns only when one consistent permutation works
+// for every row. Sorting cells within each row loses column relationships.
+function reorderedColumnsMatch(actual, expected, ordered) {
+  const signature = (rows, col) => {
+    const cells = rows.map((row) => JSON.stringify(normCell(row[col])))
+    if (!ordered) cells.sort()
+    return JSON.stringify(cells)
+  }
+  const a = actual.columns.map((_, col) => signature(actual.rows, col))
+  const e = expected.columns.map((_, col) => signature(expected.rows, col))
+  const candidates = e.map((s) => a.flatMap((v, col) => v === s ? [col] : []))
+  if (candidates.some((cols) => !cols.length)) return false
+  const mapping = []
+  const used = new Set()
+  const search = (col) => {
+    if (col === e.length) {
+      const rows = actual.rows.map((row) => rowKey(mapping.map((i) => row[i])))
+      const reference = expected.rows.map(rowKey)
+      if (!ordered) { rows.sort(); reference.sort() }
+      return rows.every((row, i) => row === reference[i])
+    }
+    for (const i of candidates[col]) {
+      if (used.has(i)) continue
+      used.add(i)
+      mapping[col] = i
+      if (search(col + 1)) return true
+      used.delete(i)
+    }
+    return false
+  }
+  return search(0)
+}
+
+// Syntax requirements must be present in executable SQL, not in a comment
+// or quoted text. Replace quoted identifiers with a placeholder so a name
+// such as "CREATE VIEW" cannot satisfy a required SQL command either.
+function executableSql(sql) {
+  return sql.replace(/--[^\r\n]*|\/\*[\s\S]*?\*\/|'(?:[^']|'')*'|"(?:[^"]|"")*"|`(?:[^`]|``)*`|\[[^\]]*\]/g,
+    (token) => token.startsWith('--') || token.startsWith('/*') || token.startsWith("'") ? ' ' : '__quoted_identifier__')
+}
 
 export function compareResults(actual, expected, { ordered = false } = {}) {
   if (!actual || !actual.columns.length)
@@ -289,7 +329,7 @@ export function compareResults(actual, expected, { ordered = false } = {}) {
     return a.every((k, i) => k === e[i])
   }
   if (same(rowKey)) return { ok: true }
-  if (same(sortedRowKey)) return { ok: true, note: 'Columns are in a different order than the reference - still correct.' }
+  if (reorderedColumnsMatch(actual, expected, ordered)) return { ok: true, note: 'Columns are in a different order than the reference - still correct.' }
   if (ordered) {
     const unorderedOk = [...actual.rows.map(rowKey)].sort().join() === [...expected.rows.map(rowKey)].sort().join()
     if (unorderedOk) return { ok: false, reason: 'Right rows, wrong order. Check your ORDER BY.' }
@@ -318,7 +358,8 @@ export function checkChallenge(SQL, challenge, userSql) {
   }
   const result = compareResults(actual, expected, { ordered: challenge.ordered })
   if (result.ok) {
-    const miss = (challenge.mustMatch || []).find((m) => !m.re.test(userSql))
+    const code = executableSql(userSql)
+    const miss = (challenge.mustMatch || []).find((m) => !m.re.test(code))
     if (miss) return { ok: false, reason: `Right data, but: ${miss.msg}`, actual, expected }
   }
   if (!result.ok && challenge.broken) {

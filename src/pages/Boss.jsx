@@ -49,7 +49,10 @@ function BossInner() {
     setResult(null)
   }
 
-  const update = (patch) => actions.setBossActive({ ...active, ...patch })
+  const update = (patch) => {
+    if (Date.now() >= active.endsAt) return submit()
+    actions.setBossActive({ ...active, ...patch })
+  }
 
   const submit = () => {
     if (!active) return
@@ -61,7 +64,7 @@ function BossInner() {
       byChapter[q.chapter].total++
       if (q.options[answers[q.id]]?.ok) byChapter[q.chapter].right++
     }
-    qs.forEach((q) => answers[q.id] !== undefined && actions.answer(q.id, !!q.options[answers[q.id]].ok, 0))
+    qs.forEach((q) => answers[q.id] !== undefined && actions.answer(q.id, !!q.options[answers[q.id]]?.ok, 0))
     const res = {
       date: Date.now(),
       score: correct / qs.length,

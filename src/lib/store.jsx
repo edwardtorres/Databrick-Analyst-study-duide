@@ -126,6 +126,7 @@ const Ctx = createContext(null)
 export function ProgressProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, undefined, () => load().state)
   const [damaged, setDamaged] = useState(() => load().damaged)
+  const [storageError, setStorageError] = useState(false)
   const [toasts, setToasts] = useState([])
   const prevLevel = useRef(levelInfo(state.xp).level)
   const prevXp = useRef(state.xp)
@@ -133,12 +134,14 @@ export function ProgressProvider({ children }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      setStorageError(false)
     } catch {
-      /* storage full or blocked: progress stays in memory */
+      setStorageError(true)
     }
   }, [state])
 
   const timers = useRef({})
+  useEffect(() => () => Object.values(timers.current).forEach(clearTimeout), [])
   // One toast per kind: rapid XP gains merge into a single running total
   // instead of stacking over the content.
   const toast = useCallback((t) => {
@@ -184,7 +187,7 @@ export function ProgressProvider({ children }) {
 
   const dismissDamaged = useCallback(() => setDamaged(null), [])
 
-  return <Ctx.Provider value={{ state, actions, toasts, damaged, dismissDamaged }}>{children}</Ctx.Provider>
+  return <Ctx.Provider value={{ state, actions, toasts, damaged, dismissDamaged, storageError }}>{children}</Ctx.Provider>
 }
 
 export function useProgress() {

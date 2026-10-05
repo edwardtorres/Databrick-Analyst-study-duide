@@ -22,7 +22,7 @@ function chapterChunkMap() {
 }
 
 // base: './' keeps every asset path relative, so the build works from a
-// subdomain root, a sub-folder, or a file preview without changes.
+// subdomain root or a sub-folder without changes. Use an HTTP server to preview.
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss(), chapterChunkMap()],

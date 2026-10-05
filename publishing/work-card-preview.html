@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Databricks Study · Works card draft</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 40px 24px; font-family: Arial, sans-serif; color: #161616; background: #fff; }
+    main { max-width: 900px; margin: auto; }
+    h1 { font-size: clamp(30px, 5vw, 48px); margin: 0 0 24px; letter-spacing: -.04em; }
+    .note { margin: 0 0 24px; color: #666; font-size: 14px; line-height: 1.6; }
+    .gallery-item { position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-height: 400px; padding: 32px 40px; color: white; text-decoration: none; overflow: hidden; text-align: center; background: #0b1020; }
+    .gallery-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,.52); transition: background .2s; }
+    .gallery-item:hover::after { background: rgba(0,0,0,.42); }
+    .gallery-item:focus-visible { outline: 3px solid #ff5a36; outline-offset: 5px; }
+    .project-cue, .project-title, .project-tagline { position: relative; z-index: 1; }
+    .project-cue { font-size: 12px; letter-spacing: .12em; }
+    .project-title { font-weight: 700; font-size: clamp(27px, 5vw, 42px); text-transform: uppercase; }
+    .project-tagline { font-size: 16px; line-height: 1.5; max-width: 560px; }
+    @media (max-width: 550px) { .gallery-item { min-height: 300px; padding: 24px 20px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Selected work</h1>
+    <p class="note">Draft for edwardtorres.dev. The card uses your existing screenshot, title, technology cue, and description format. Click it to open the local app preview.</p>
+    <a class="gallery-item" href="http://127.0.0.1:5173/" aria-label="Open the local Databricks Study preview">
+      <img src="./lakehouse-quest-home.jpg" alt="Lakehouse Quest home screen with SQL Arena, interactive labs, review, and mock exam" width="1265" height="712">
+      <span class="project-cue">REACT · SQL · INTERACTIVE LEARNING</span>
+      <span class="project-title">Databricks Study</span>
+      <span class="project-tagline">Databricks exam practice with SQL challenges, interactive labs, daily reviews, and a timed mock exam</span>
+    </a>
+  </main>
+</body>
+</html>

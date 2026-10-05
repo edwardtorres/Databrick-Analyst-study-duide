@@ -48,3 +48,19 @@ test('with every chapter built, the Boss page offers the full exam, not a mini-b
   await expect(page.getByText(/mini-boss/i)).toHaveCount(0)
   await expect(page.getByText('Every exam section is included.', { exact: false })).toBeVisible()
 })
+
+test('answers submitted after the deadline are excluded even before the timer ticks', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-10-05T12:00:00Z') })
+  await page.clock.pauseAt(new Date('2026-10-05T12:00:01Z'))
+  await page.goto('#/boss')
+  await page.getByRole('button', { name: /Start Boss Battle/ }).click()
+  await expect(page.getByText('Question 1 of 45')).toBeVisible()
+  const active = (await progress(page)).boss.active
+  await page.clock.setSystemTime(active.endsAt + 1)
+  await page.getByRole('button', { name: /^A / }).click()
+  await expect(page.getByText('0 / 45 correct', { exact: false })).toBeVisible()
+  await expect.poll(async () => (await progress(page)).boss.active).toBeNull()
+  const saved = await progress(page)
+  expect(saved.boss.active).toBeNull()
+  expect(saved.boss.history.at(-1).correct).toBe(0)
+})
